@@ -11,6 +11,6 @@ public class QueryRespDTO implements Serializable {
 
     private String key;
 
-    private Integer remainingTokens;
+    private Integer remainingTokenCount;
 
 }
