@@ -1,7 +1,6 @@
 package com.alioth4j.corneast_core.util;
 
-import org.springframework.stereotype.Component;
-
+// maybe needless to use
 public final class SnowflakeIdUtil {
 
     // Prevent instantiation of the util class.
