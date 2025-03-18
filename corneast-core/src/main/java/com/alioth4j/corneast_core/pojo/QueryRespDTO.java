@@ -9,8 +9,8 @@ public class QueryRespDTO implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private Long id;
+    private String key;
 
-    private Integer remainingStock;
+    private Integer remainingTokens;
 
 }
