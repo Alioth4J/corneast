@@ -33,7 +33,7 @@ public class CorneastController {
         return reduceService.reduce(reduceReqDTO);
     }
 
-    @GetMapping("/query")
+    @PostMapping("/query")
     public CompletableFuture<QueryRespDTO> query(@RequestBody QueryReqDTO queryReqDTO) {
         return queryService.query(queryReqDTO);
     }
