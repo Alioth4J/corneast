@@ -9,20 +9,27 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 @Service
 public class QueryServiceImpl implements QueryService {
 
     @Autowired
-    private RedissonClient redissonClient;
+    private List<RedissonClient> redissonClients;
 
     @Async
     @Override
     public CompletableFuture<QueryRespDTO> query(QueryReqDTO queryReqDTO) {
         return CompletableFuture.supplyAsync(() -> {
-            RBucket<Integer> bucket = redissonClient.getBucket(queryReqDTO.getKey());
-            return new QueryRespDTO(queryReqDTO.getKey(), bucket.get());
+            // sum tokenCount from each node
+            String key = queryReqDTO.getKey();
+            int totalTokenCount = 0;
+            for (RedissonClient redissonClient : redissonClients) {
+                RBucket<Integer> bucket = redissonClient.getBucket(key);
+                totalTokenCount += bucket.get();
+            }
+            return new QueryRespDTO(key, totalTokenCount);
         });
     }
 

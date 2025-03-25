@@ -8,16 +8,32 @@ import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class RegisterServiceImpl implements RegisterService {
 
     @Autowired
-    private RedissonClient redissonClient;
+    private List<RedissonClient> redissonClients;
 
     @Override
     public RegisterRespDTO register(RegisterReqDTO registerReqDTO) {
-        RBucket<Integer> bucket = redissonClient.getBucket(registerReqDTO.getKey());
-        bucket.set(registerReqDTO.getTokenCount());
+        // distribute tokenCount to all the nodes evenly
+        String key = registerReqDTO.getKey();
+        int totalTokenCount = registerReqDTO.getTokenCount();
+        int nodeSize = redissonClients.size();
+        int averageTokenCount = totalTokenCount / nodeSize;
+        int remainingTokenCount = totalTokenCount % nodeSize;
+        for (int i = 0; i < nodeSize; i++) {
+            RedissonClient redissonClient = redissonClients.get(i);
+            RBucket<Integer> bucket = redissonClient.getBucket(key);
+            if (remainingTokenCount > 0) {
+                bucket.set(averageTokenCount + 1);
+                remainingTokenCount--;
+            } else {
+                bucket.set(averageTokenCount);
+            }
+        }
         return new RegisterRespDTO(registerReqDTO.getKey(), Boolean.TRUE);
     }
 

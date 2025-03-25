@@ -9,6 +9,14 @@ eureka:
     service-url:
       defaultZone: http://localhost:8761/eureka/
 
-snowflake:
-  workerId: 0
-  datacenterId: 0
+redis-config:
+  nodes:
+    - id: 1
+      address: "redis://127.0.0.1:7001"
+      database: 0
+    - id: 2
+      address: "redis://127.0.0.1:7002"
+      database: 0
+    - id: 3
+      address: "redis://127.0.0.1:7003"
+      database: 0
