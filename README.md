@@ -1,5 +1,14 @@
 # Corneast
 
+20 cores CPU, 16GB Memory, 5 Redis Instances, add thread pool  
+2025-03-26
+
+| Label          | # Samples | Average | Median | 90% Line | 95% Line | 99% Line | Min | Max | Error % | Throughput    | Received KB/sec | Sent KB/sec |
+|----------------|-----------|---------|--------|----------|----------|----------|-----|-----|---------|---------------|-----------------|-------------|
+| HTTP Request   | 485036    | 11      | 7      | 26       | 35       | 65       | 0   | 515 | 0.016%  | 4670.09436    | 945.82          | 962.14      |
+| TOTAL          | 485036    | 11      | 7      | 26       | 35       | 65       | 0   | 515 | 0.016%  | 4670.09436    | 945.82          | 962.14      |
+
+---
 20 cores CPU, 16GB Memory, 5 Redis Instances  
 2025-03-26  
 (It seems that CPU becomes the bottleneck.)  

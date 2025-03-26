@@ -21,7 +21,7 @@ public class ReduceServiceImpl implements ReduceService {
     @Autowired
     private List<RedissonClient> redissonClients;
 
-    @Async
+    @Async("reduceExecutor")
     @Override
     public CompletableFuture<ReduceRespDTO> reduce(ReduceReqDTO reduceReqDTO) {
         return CompletableFuture.supplyAsync(() -> {
