@@ -1,7 +1,17 @@
 # Corneast
 
+20 cores CPU, 16GB Memory, 5 Redis Instances  
+2025-03-26  
+(It seems that CPU becomes the bottleneck.)  
+
+| Label          | # Samples | Average | Median | 90% Line | 95% Line | 99% Line | Min | Max  | Error % | Throughput   | Received KB/sec | Sent KB/sec |
+|----------------|-----------|---------|--------|----------|----------|----------|-----|------|---------|--------------|-----------------|-------------|
+| HTTP Request   | 100000    | 241     | 270    | 325      | 338      | 379      | 1   | 1171 | 0.000%  | 3523.60817   | 712.29          | 726.06      |
+| TOTAL          | 100000    | 241     | 270    | 325      | 338      | 379      | 1   | 1171 | 0.000%  | 3523.60817   | 712.29          | 726.06      |
+
+---
 20 cores CPU, 16GB Memory, 3 Redis Instances  
-2025-03-26
+2025-03-26  
 
 | Label         | # Samples | Average | Median | 90% Line | 95% Line | 99% Line | Min | Max | Error %   | Throughput  | Received KB/sec | Sent KB/sec |
 |---------------|----------:|--------:|-------:|---------:|---------:|---------:|----:|----:|----------:|------------:|----------------:|------------:|
@@ -10,7 +20,7 @@
 
 ---
 20 cores CPU, 16GB Memory  
-2025-03-21
+2025-03-21  
 
 | Label         | # Samples | Average | Median | 90% Line | 95% Line | 99% Line | Min | Max   | Error % | Throughput   | Received KB/sec | Sent KB/sec |
 |---------------|-----------|---------|--------|----------|----------|----------|-----|-------|---------|--------------|-----------------|-------------|

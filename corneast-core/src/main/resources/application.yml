@@ -20,3 +20,9 @@ redis-config:
     - id: 3
       address: "redis://127.0.0.1:7003"
       database: 0
+    - id: 4
+      address: "redis://127.0.0.1:7004"
+      database: 0
+    - id: 5
+      address: "redis://127.0.0.1:7005"
+      database: 0
