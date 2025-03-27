@@ -13,8 +13,8 @@ public class ThreadPoolConfig {
     @Bean(value = "reduceExecutor")
     public Executor reduceExecutor() {
         return new ThreadPoolExecutor(
-                21,
-                21,
+                40,
+                40,
                 10,
                 TimeUnit.SECONDS,
                 // TODO queue size
