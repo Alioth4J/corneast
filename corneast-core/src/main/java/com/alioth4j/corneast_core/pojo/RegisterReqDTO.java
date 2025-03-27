@@ -15,6 +15,6 @@ public class RegisterReqDTO implements Serializable {
 
     private String key;
 
-    private Integer tokenCount;
+    private Long tokenCount;
 
 }
