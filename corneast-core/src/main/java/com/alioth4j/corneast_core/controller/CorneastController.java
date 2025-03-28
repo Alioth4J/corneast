@@ -1,6 +1,5 @@
 package com.alioth4j.corneast_core.controller;
 
-import com.alioth4j.corneast_core.pojo.*;
 import com.alioth4j.corneast_core.proto.QueryProto;
 import com.alioth4j.corneast_core.proto.ReduceProto;
 import com.alioth4j.corneast_core.proto.RegisterProto;

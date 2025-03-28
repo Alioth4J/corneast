@@ -4,17 +4,30 @@ import com.alioth4j.corneast_core.proto.ReduceProto;
 import com.alioth4j.corneast_core.service.ReduceService;
 import org.redisson.api.RScript;
 import org.redisson.api.RedissonClient;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.TimeUnit;
 
 @Service
 public class ReduceServiceImpl implements ReduceService {
+
+    private List<RedissonClient> redissonClients;
+
+    private int nodeSize;
+
+    public ReduceServiceImpl(List<RedissonClient> redissonClients) {
+        this.redissonClients = redissonClients;
+        this.nodeSize = redissonClients.size();
+    }
+
+    private static final Random random = new Random();
+
+    private static final ReduceProto.ReduceRespDTO.Builder successRespBuilder = ReduceProto.ReduceRespDTO.newBuilder().setSuccess(true);
+
+    private static final ReduceProto.ReduceRespDTO.Builder failRespBuilder = ReduceProto.ReduceRespDTO.newBuilder().setSuccess(false);
 
     private static final String luaScript = """
                                             local n = tonumber(redis.call('GET', KEYS[1]) or "0")
@@ -26,27 +39,20 @@ public class ReduceServiceImpl implements ReduceService {
                                             end
                                             """;
 
-    @Autowired
-    private List<RedissonClient> redissonClients;
-
     @Async("reduceExecutor")
     @Override
     public CompletableFuture<ReduceProto.ReduceRespDTO> reduce(ReduceProto.ReduceReqDTO reduceReqDTO) {
         return CompletableFuture.supplyAsync(() -> {
             // pick a redissonClient randomly
-            Random random = new Random();
-            int nodeSize = redissonClients.size();
             RedissonClient redissonClient = redissonClients.get(random.nextInt(nodeSize));
             long result = redissonClient.getScript().eval(RScript.Mode.READ_WRITE, luaScript, RScript.ReturnType.INTEGER, List.of(reduceReqDTO.getKey()));
             if (result == 1) {
-                return ReduceProto.ReduceRespDTO.newBuilder()
+                return successRespBuilder
                         .setKey(reduceReqDTO.getKey())
-                        .setSuccess(true)
                         .build();
             } else {
-                return ReduceProto.ReduceRespDTO.newBuilder()
+                return failRespBuilder
                         .setKey(reduceReqDTO.getKey())
-                        .setSuccess(false)
                         .build();
             }
         });

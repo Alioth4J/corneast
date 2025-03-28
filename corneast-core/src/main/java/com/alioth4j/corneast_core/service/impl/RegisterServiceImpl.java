@@ -5,7 +5,6 @@ import com.alioth4j.corneast_core.service.RegisterService;
 import org.redisson.api.RScript;
 import org.redisson.api.RedissonClient;
 import org.redisson.client.codec.StringCodec;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,20 +12,27 @@ import java.util.List;
 @Service
 public class RegisterServiceImpl implements RegisterService {
 
+    private List<RedissonClient> redissonClients;
+
+    private int nodeSize;
+
+    public RegisterServiceImpl(List<RedissonClient> redissonClients) {
+        this.redissonClients = redissonClients;
+        this.nodeSize = redissonClients.size();
+    }
+
+    private static final RegisterProto.RegisterRespDTO.Builder successRespBuilder = RegisterProto.RegisterRespDTO.newBuilder().setSuccess(true);
+
     private static final String luaScript = """
                                             redis.call('SET', KEYS[1], ARGV[1])
                                             return 1
                                             """;
-
-    @Autowired
-    private List<RedissonClient> redissonClients;
 
     @Override
     public RegisterProto.RegisterRespDTO register(RegisterProto.RegisterReqDTO registerReqDTO) {
         // distribute tokenCount to all the nodes evenly
         String key = registerReqDTO.getKey();
         long totalTokenCount = registerReqDTO.getTokenCount();
-        int nodeSize = redissonClients.size();
         long averageTokenCount = totalTokenCount / nodeSize;
         long remainingTokenCount = totalTokenCount % nodeSize;
         for (int i = 0; i < nodeSize; i++) {
@@ -38,9 +44,8 @@ public class RegisterServiceImpl implements RegisterService {
             }
             redissonClient.getScript(StringCodec.INSTANCE).eval(RScript.Mode.READ_WRITE, luaScript, RScript.ReturnType.VALUE, List.of(key), curTokenCount);
         }
-        return RegisterProto.RegisterRespDTO.newBuilder()
+        return successRespBuilder
                 .setKey(key)
-                .setSuccess(true)
                 .build();
     }
 
