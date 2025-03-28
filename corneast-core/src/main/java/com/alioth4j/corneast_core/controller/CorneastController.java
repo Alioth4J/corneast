@@ -1,6 +1,9 @@
 package com.alioth4j.corneast_core.controller;
 
 import com.alioth4j.corneast_core.pojo.*;
+import com.alioth4j.corneast_core.proto.QueryProto;
+import com.alioth4j.corneast_core.proto.ReduceProto;
+import com.alioth4j.corneast_core.proto.RegisterProto;
 import com.alioth4j.corneast_core.service.QueryService;
 import com.alioth4j.corneast_core.service.ReduceService;
 import com.alioth4j.corneast_core.service.RegisterService;
@@ -23,18 +26,18 @@ public class CorneastController {
     private QueryService queryService;
 
 
-    @PostMapping("/register")
-    public RegisterRespDTO register(@RequestBody RegisterReqDTO registerReqDTO) {
+    @PostMapping(value = "/register", consumes = "application/x-protobuf", produces = "application/x-protobuf")
+    public RegisterProto.RegisterRespDTO register(@RequestBody RegisterProto.RegisterReqDTO registerReqDTO) {
         return registerService.register(registerReqDTO);
     }
 
-    @PostMapping("/reduce")
-    public CompletableFuture<ReduceRespDTO> reduce(@RequestBody ReduceReqDTO reduceReqDTO) {
+    @PostMapping(value = "reduce", consumes = "application/x-protobuf", produces = "application/x-protobuf")
+    public CompletableFuture<ReduceProto.ReduceRespDTO> reduce(@RequestBody ReduceProto.ReduceReqDTO reduceReqDTO) {
         return reduceService.reduce(reduceReqDTO);
     }
 
-    @PostMapping("/query")
-    public CompletableFuture<QueryRespDTO> query(@RequestBody QueryReqDTO queryReqDTO) {
+    @PostMapping(value = "query", consumes = "application/x-protobuf", produces = "application/x-protobuf")
+    public CompletableFuture<QueryProto.QueryRespDTO> query(@RequestBody QueryProto.QueryReqDTO queryReqDTO) {
         return queryService.query(queryReqDTO);
     }
 

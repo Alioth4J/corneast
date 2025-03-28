@@ -1,7 +1,6 @@
 package com.alioth4j.corneast_core.service.impl;
 
-import com.alioth4j.corneast_core.pojo.QueryReqDTO;
-import com.alioth4j.corneast_core.pojo.QueryRespDTO;
+import com.alioth4j.corneast_core.proto.QueryProto;
 import com.alioth4j.corneast_core.service.QueryService;
 import org.redisson.api.RScript;
 import org.redisson.api.RedissonClient;
@@ -25,7 +24,7 @@ public class QueryServiceImpl implements QueryService {
 
     @Async
     @Override
-    public CompletableFuture<QueryRespDTO> query(QueryReqDTO queryReqDTO) {
+    public CompletableFuture<QueryProto.QueryRespDTO> query(QueryProto.QueryReqDTO queryReqDTO) {
         return CompletableFuture.supplyAsync(() -> {
             // sum tokenCount from each node
             String key = queryReqDTO.getKey();
@@ -33,7 +32,10 @@ public class QueryServiceImpl implements QueryService {
             for (RedissonClient redissonClient : redissonClients) {
                 totalTokenCount += (long) redissonClient.getScript().eval(RScript.Mode.READ_ONLY, luaScript, RScript.ReturnType.INTEGER, List.of(key));
             }
-            return new QueryRespDTO(key, totalTokenCount);
+            return QueryProto.QueryRespDTO.newBuilder()
+                    .setKey(key)
+                    .setRemainingTokenCount(totalTokenCount)
+                    .build();
         });
     }
 

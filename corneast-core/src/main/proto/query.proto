@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+option java_package = "com.alioth4j.corneast_core.proto";
+option java_outer_classname = "QueryProto";
+
+message QueryReqDTO {
+    string key = 1;
+}
+
+message QueryRespDTO {
+    string key = 1;
+    int64 remainingTokenCount = 2;
+}

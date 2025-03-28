@@ -1,10 +1,7 @@
 package com.alioth4j.corneast_core.service.impl;
 
-import com.alioth4j.corneast_core.pojo.ReduceReqDTO;
-import com.alioth4j.corneast_core.pojo.ReduceRespDTO;
+import com.alioth4j.corneast_core.proto.ReduceProto;
 import com.alioth4j.corneast_core.service.ReduceService;
-import org.redisson.api.RBucket;
-import org.redisson.api.RLock;
 import org.redisson.api.RScript;
 import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +35,7 @@ public class ReduceServiceImpl implements ReduceService {
 
     @Async("reduceExecutor")
     @Override
-    public CompletableFuture<ReduceRespDTO> reduce(ReduceReqDTO reduceReqDTO) {
+    public CompletableFuture<ReduceProto.ReduceRespDTO> reduce(ReduceProto.ReduceReqDTO reduceReqDTO) {
         return CompletableFuture.supplyAsync(() -> {
             // pick a redissonClient randomly
             Random random = new Random();
@@ -46,9 +43,15 @@ public class ReduceServiceImpl implements ReduceService {
             RedissonClient redissonClient = redissonClients.get(random.nextInt(nodeSize));
             long result = redissonClient.getScript().eval(RScript.Mode.READ_WRITE, luaScript, RScript.ReturnType.INTEGER, List.of(reduceReqDTO.getKey()));
             if (result == 1) {
-                return new ReduceRespDTO(reduceReqDTO.getKey(), Boolean.TRUE);
+                return ReduceProto.ReduceRespDTO.newBuilder()
+                        .setKey(reduceReqDTO.getKey())
+                        .setSuccess(true)
+                        .build();
             } else {
-                return new ReduceRespDTO(reduceReqDTO.getKey(), Boolean.FALSE);
+                return ReduceProto.ReduceRespDTO.newBuilder()
+                        .setKey(reduceReqDTO.getKey())
+                        .setSuccess(false)
+                        .build();
             }
         });
     }

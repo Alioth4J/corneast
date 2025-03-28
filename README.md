@@ -1,7 +1,16 @@
 # Corneast
 
-20 cores CPU, 16GB Memory, 5 Redis Instances, lua script
-2025-03-27
+20 cores CPU, 16GB Memory, 10 Redis Instances, lua script, protobuf  
+2025-03-28  
+
+| Label          | # Samples | Average | Median | 90% Line | 95% Line | 99% Line | Min | Max  | Error % | Throughput   | Received KB/sec | Sent KB/sec |
+|----------------|-----------|---------|--------|----------|----------|----------|-----|------|---------|--------------|------------------|-------------|
+| HTTP Request   | 1000000   | 1       | 1      | 2        | 2        | 3        | 0   | 1033 | 0.000%  | 7483.12555   | 1870.80          | 1468.86     |
+| TOTAL          | 1000000   | 1       | 1      | 2        | 2        | 3        | 0   | 1033 | 0.000%  | 7483.12555   | 1870.80          | 1468.86     |
+
+---
+20 cores CPU, 16GB Memory, 5 Redis Instances, lua script  
+2025-03-27  
 
 | Label          | # Samples | Average | Median | 90% Line | 95% Line | 99% Line | Min | Max | Error % | Throughput    | Received KB/sec | Sent KB/sec |
 |----------------|-----------|---------|--------|----------|----------|----------|-----|-----|---------|---------------|------------------|-------------|
@@ -10,7 +19,7 @@
 
 ---
 20 cores CPU, 16GB Memory, 5 Redis Instances, add thread pool  
-2025-03-26
+2025-03-26  
 
 | Label          | # Samples | Average | Median | 90% Line | 95% Line | 99% Line | Min | Max | Error % | Throughput    | Received KB/sec | Sent KB/sec |
 |----------------|-----------|---------|--------|----------|----------|----------|-----|-----|---------|---------------|-----------------|-------------|

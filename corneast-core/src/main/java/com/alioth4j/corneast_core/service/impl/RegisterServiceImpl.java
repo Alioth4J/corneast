@@ -1,7 +1,6 @@
 package com.alioth4j.corneast_core.service.impl;
 
-import com.alioth4j.corneast_core.pojo.RegisterReqDTO;
-import com.alioth4j.corneast_core.pojo.RegisterRespDTO;
+import com.alioth4j.corneast_core.proto.RegisterProto;
 import com.alioth4j.corneast_core.service.RegisterService;
 import org.redisson.api.RScript;
 import org.redisson.api.RedissonClient;
@@ -23,7 +22,7 @@ public class RegisterServiceImpl implements RegisterService {
     private List<RedissonClient> redissonClients;
 
     @Override
-    public RegisterRespDTO register(RegisterReqDTO registerReqDTO) {
+    public RegisterProto.RegisterRespDTO register(RegisterProto.RegisterReqDTO registerReqDTO) {
         // distribute tokenCount to all the nodes evenly
         String key = registerReqDTO.getKey();
         long totalTokenCount = registerReqDTO.getTokenCount();
@@ -39,7 +38,10 @@ public class RegisterServiceImpl implements RegisterService {
             }
             redissonClient.getScript(StringCodec.INSTANCE).eval(RScript.Mode.READ_WRITE, luaScript, RScript.ReturnType.VALUE, List.of(key), curTokenCount);
         }
-        return new RegisterRespDTO(registerReqDTO.getKey(), Boolean.TRUE);
+        return RegisterProto.RegisterRespDTO.newBuilder()
+                .setKey(key)
+                .setSuccess(true)
+                .build();
     }
 
 }
