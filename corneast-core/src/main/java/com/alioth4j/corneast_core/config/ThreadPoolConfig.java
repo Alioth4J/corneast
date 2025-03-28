@@ -13,12 +13,11 @@ public class ThreadPoolConfig {
     @Bean(value = "reduceExecutor")
     public Executor reduceExecutor() {
         return new ThreadPoolExecutor(
-                40,
-                40,
+                1000,
+                1000,
                 10,
                 TimeUnit.SECONDS,
-                // TODO queue size
-                new LinkedBlockingQueue<>(),
+                new SynchronousQueue<>(),
                 Executors.defaultThreadFactory(),
                 new ThreadPoolExecutor.CallerRunsPolicy()
         );
