@@ -14,30 +14,60 @@ redis-config:
     - id: 1
       address: "redis://127.0.0.1:7001"
       database: 0
+      timeout: 100
+      connectTimeout: 100
+      connectionPoolSize: 2000
     - id: 2
       address: "redis://127.0.0.1:7002"
       database: 0
+      timeout: 100
+      connectTimeout: 100
+      connectionPoolSize: 2000
     - id: 3
       address: "redis://127.0.0.1:7003"
       database: 0
+      timeout: 100
+      connectTimeout: 100
+      connectionPoolSize: 2000
     - id: 4
       address: "redis://127.0.0.1:7004"
       database: 0
+      timeout: 100
+      connectTimeout: 100
+      connectionPoolSize: 2000
     - id: 5
       address: "redis://127.0.0.1:7005"
       database: 0
+      timeout: 100
+      connectTimeout: 100
+      connectionPoolSize: 2000
     - id: 6
       address: "redis://127.0.0.1:7006"
       database: 0
+      timeout: 100
+      connectTimeout: 100
+      connectionPoolSize: 2000
     - id: 7
       address: "redis://127.0.0.1:7007"
       database: 0
+      timeout: 100
+      connectTimeout: 100
+      connectionPoolSize: 2000
     - id: 8
       address: "redis://127.0.0.1:7008"
       database: 0
+      timeout: 100
+      connectTimeout: 100
+      connectionPoolSize: 2000
     - id: 9
       address: "redis://127.0.0.1:7009"
       database: 0
+      timeout: 100
+      connectTimeout: 100
+      connectionPoolSize: 2000
     - id: 10
       address: "redis://127.0.0.1:7010"
       database: 0
+      timeout: 100
+      connectTimeout: 100
+      connectionPoolSize: 2000

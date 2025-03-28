@@ -1,8 +1,11 @@
 package com.alioth4j.corneast_core.config;
 
+import lombok.Data;
+
 /**
  * This class corresponds with the configuration in application.yml
  */
+@Data
 public class RedisNodeProperties {
 
     private String id;
@@ -11,28 +14,10 @@ public class RedisNodeProperties {
 
     private int database;
 
-    public String getId() {
-        return id;
-    }
+    private int timeout;
 
-    public void setId(String id) {
-        this.id = id;
-    }
+    private int connectTimeout;
 
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    public int getDatabase() {
-        return database;
-    }
-
-    public void setDatabase(int database) {
-        this.database = database;
-    }
+    private int connectionPoolSize;
 
 }

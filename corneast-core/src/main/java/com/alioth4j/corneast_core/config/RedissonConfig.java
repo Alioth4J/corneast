@@ -21,7 +21,10 @@ public class RedissonConfig {
             Config config = new Config();
             config.useSingleServer()
                   .setAddress(node.getAddress())
-                  .setDatabase(node.getDatabase());
+                  .setDatabase(node.getDatabase())
+                  .setTimeout(node.getTimeout())
+                  .setConnectTimeout(node.getConnectTimeout())
+                  .setConnectionPoolSize(node.getConnectionPoolSize());
             RedissonClient redissonClient = Redisson.create(config);
             redissonClients.add(redissonClient);
         }
