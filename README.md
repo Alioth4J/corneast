@@ -1,5 +1,14 @@
 # Corneast
 
+20 cores CPU, 16GB Memory, 10 Redis Instances, lua script, protobuf, some optimization  
+2025-03-28
+
+| Label          | # Samples | Average | Median | 90% Line | 95% Line | 99% Line | Min | Max | Error % | Throughput   | Received KB/sec | Sent KB/sec |
+|----------------|-----------|---------|--------|----------|----------|----------|-----|-----|---------|--------------|-----------------|-------------|
+| HTTP Request   | 1000000   | 1       | 1      | 2        | 2        | 3        | 0   | 204 | 0.000%  | 7718.25290   | 1929.58         | 1515.01     |
+| TOTAL          | 1000000   | 1       | 1      | 2        | 2        | 3        | 0   | 204 | 0.000%  | 7718.25290   | 1929.58         | 1515.01     |
+
+---
 20 cores CPU, 16GB Memory, 10 Redis Instances, lua script, protobuf  
 2025-03-28  
 
