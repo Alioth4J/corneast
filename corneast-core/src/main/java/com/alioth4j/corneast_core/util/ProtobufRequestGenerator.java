@@ -9,6 +9,8 @@ import org.springframework.stereotype.Component;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 @Component
 public class ProtobufRequestGenerator implements CommandLineRunner {
@@ -16,7 +18,9 @@ public class ProtobufRequestGenerator implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         // params
-        String key = "20250329";
+        LocalDate now = LocalDate.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+        String key = now.format(formatter);
         Long tokenCount = 1000L;
 
         // create dir
