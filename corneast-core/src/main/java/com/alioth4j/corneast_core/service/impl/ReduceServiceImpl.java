@@ -17,15 +17,11 @@ import java.util.concurrent.TimeUnit;
 public class ReduceServiceImpl implements ReduceService {
 
     private static final String luaScript = """
-                                            local current = redis.call('GET', KEYS[1])
-                                            if not current then
-                                                return 0
-                                            end
-                                            current = tonumber(current)
-                                            if current > 0 then
+                                            local n = tonumber(redis.call('GET', KEYS[1]) or "0")
+                                            if n > 0 then
                                                 redis.call('DECR', KEYS[1])
                                                 return 1
-                                            else
+                                            else 
                                                 return 0
                                             end
                                             """;

@@ -1,7 +1,5 @@
 package com.alioth4j.corneast_core.service;
 
-import com.alioth4j.corneast_core.pojo.ReduceReqDTO;
-import com.alioth4j.corneast_core.pojo.ReduceRespDTO;
 import com.alioth4j.corneast_core.proto.ReduceProto;
 
 import java.util.concurrent.CompletableFuture;
