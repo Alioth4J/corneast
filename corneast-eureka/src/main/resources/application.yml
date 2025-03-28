@@ -11,3 +11,6 @@ eureka:
      fetch-registry: false
      service-url:
        defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka/
+   server:
+     enableSelfPreservation: false
+     responseCacheUpdateIntervalMs: 100

@@ -16,7 +16,7 @@ public class ProtobufRequestGenerator implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         // params
-        String key = "20250328";
+        String key = "20250329";
         Long tokenCount = 1000L;
 
         // create dir
