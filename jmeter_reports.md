@@ -1,4 +1,4 @@
-# Corneast
+# JMeter Reports
 
 20 cores CPU, 16GB Memory, 10 Redis Instances, lua script, protobuf, some optimization  
 2025-03-28
