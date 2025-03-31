@@ -1,7 +1,7 @@
 local function read_bin_file(path)
     local file, err = io.open(path, "rb")
     if not file then
-        error("Unable to open request bin file: ", err)
+        error("Unable to open request bin file: " .. err)
     end
     local content = file:read("*a")
     file:close()
