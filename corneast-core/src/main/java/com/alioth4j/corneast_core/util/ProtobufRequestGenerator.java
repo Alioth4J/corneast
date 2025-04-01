@@ -18,9 +18,7 @@ public class ProtobufRequestGenerator implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         // params
-        LocalDate now = LocalDate.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
-        String key = now.format(formatter);
+        String key = DateTimeFormatter.ofPattern("yyyyMMdd").format(LocalDate.now());
         Long tokenCount = 1000L;
 
         // create dir
