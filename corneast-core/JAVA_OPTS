@@ -1,1 +1,1 @@
--XX:+UseG1GC -XX:+UseStringDeduplication
+-XX:+UseG1GC -XX:+AlwaysPreTouch -Dio.netty.allocator.type=pooled -Dio.netty.leakDetectionLevel=DISABLED -Dio.netty.recycler.maxCapacity=0 -Dio.netty.noPreferDirect=false
