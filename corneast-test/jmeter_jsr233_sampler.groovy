@@ -4,6 +4,8 @@ import org.apache.commons.io.FileUtils
 String host = "127.0.0.1"
 int port = 8088
 
+// Change this!
+// Place the binary file into a jmeter-readable place.
 String filePath = "/var/home/alioth4j/Documents/reduce.bin"
 File requestFile = new File(filePath)
 
