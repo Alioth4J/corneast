@@ -30,6 +30,7 @@ public class CorneastController {
         return registerService.register(registerReqDTO);
     }
 
+    @Deprecated
     @PostMapping(value = "reduce", consumes = "application/x-protobuf", produces = "application/x-protobuf")
     public CompletableFuture<ReduceProto.ReduceRespDTO> reduce(@RequestBody ReduceProto.ReduceReqDTO reduceReqDTO) {
         return reduceService.reduce(reduceReqDTO);

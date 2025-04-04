@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.concurrent.CompletableFuture;
 
+@Deprecated
 @Service
 public class ReduceServiceImpl implements ReduceService {
 

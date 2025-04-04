@@ -6,6 +6,7 @@ import org.springframework.scheduling.annotation.EnableAsync;
 
 import java.util.concurrent.*;
 
+//@Deprecated
 @Configuration
 @EnableAsync
 public class ThreadPoolConfig {
