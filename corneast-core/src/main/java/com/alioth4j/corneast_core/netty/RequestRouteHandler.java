@@ -3,9 +3,11 @@ package com.alioth4j.corneast_core.netty;
 import com.alioth4j.corneast_core.proto.RequestProto;
 import com.alioth4j.corneast_core.proto.ResponseProto;
 import com.alioth4j.corneast_core.service.RequestHandlingStrategy;
+import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
@@ -13,6 +15,8 @@ import java.util.concurrent.CompletableFuture;
 /**
  * Route requests for netty.
  */
+@Component
+@ChannelHandler.Sharable
 public class RequestRouteHandler extends SimpleChannelInboundHandler<RequestProto.RequestDTO> {
 
     @Autowired

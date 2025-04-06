@@ -13,6 +13,7 @@ import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.beans.factory.annotation.Value;
 
@@ -27,11 +28,8 @@ public class NettyServer {
 
     private ChannelFuture channelFuture;
 
-    private ReduceServiceHandler reduceServiceHandler;
-
-    public NettyServer(ReduceServiceHandler reduceServiceHandler) {
-        this.reduceServiceHandler = reduceServiceHandler;
-    }
+    @Autowired
+    private RequestRouteHandler requestRouteHandler;
 
     @PostConstruct
     public void start() {
@@ -57,7 +55,7 @@ public class NettyServer {
                                 ch.pipeline().addLast(new ProtobufEncoder());
 
                                 // route handler
-                                ch.pipeline().addLast(new RequestRouteHandler());
+                                ch.pipeline().addLast(requestRouteHandler);
                             }
                         });
                 channelFuture = bootstrap.bind(port).sync();
