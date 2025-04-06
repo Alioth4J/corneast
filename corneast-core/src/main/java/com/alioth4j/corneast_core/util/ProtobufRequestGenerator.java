@@ -1,8 +1,7 @@
 package com.alioth4j.corneast_core.util;
 
 import com.alioth4j.corneast_core.proto.QueryProto;
-import com.alioth4j.corneast_core.proto.ReduceProto;
-import com.alioth4j.corneast_core.proto.RegisterProto;
+import com.alioth4j.corneast_core.proto.RequestProto;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
@@ -34,11 +33,11 @@ public class ProtobufRequestGenerator implements CommandLineRunner {
         }
 
         // register request
-        RegisterProto.RegisterReqDTO registerReqDTO = RegisterProto.RegisterReqDTO.newBuilder()
-                .setKey(key)
-                .setTokenCount(tokenCount)
+        RequestProto.RequestDTO registerRequestDTO = RequestProto.RequestDTO.newBuilder()
+                .setType("register")
+                .setRegisterReqDTO(RequestProto.RegisterReqDTO.newBuilder().setKey(key).setTokenCount(1000).build())
                 .build();
-        byte[] registerReqByteArray = registerReqDTO.toByteArray();
+        byte[] registerReqByteArray = registerRequestDTO.toByteArray();
         File registerReqFile = new File(dir, "register.bin");
         try (FileOutputStream fos = new FileOutputStream(registerReqFile)) {
             fos.write(registerReqByteArray);
@@ -47,10 +46,11 @@ public class ProtobufRequestGenerator implements CommandLineRunner {
         }
 
         // reduce request
-        ReduceProto.ReduceReqDTO reduceReqDTO = ReduceProto.ReduceReqDTO.newBuilder()
-                .setKey(key)
+        RequestProto.RequestDTO reduceRequestDTO = RequestProto.RequestDTO.newBuilder()
+                .setType("reduce")
+                .setReduceReqDTO(RequestProto.ReduceReqDTO.newBuilder().setKey(key).build())
                 .build();
-        byte[] reduceReqByteArray = reduceReqDTO.toByteArray();
+        byte[] reduceReqByteArray = reduceRequestDTO.toByteArray();
         File reduceReqFile = new File(dir, "reduce.bin");
         try (FileOutputStream fos = new FileOutputStream(reduceReqFile)) {
             fos.write(reduceReqByteArray);
@@ -59,10 +59,11 @@ public class ProtobufRequestGenerator implements CommandLineRunner {
         }
 
         // query request
-        QueryProto.QueryReqDTO queryReqDTO = QueryProto.QueryReqDTO.newBuilder()
-                .setKey(key)
+        RequestProto.RequestDTO queryRequestDTO = RequestProto.RequestDTO.newBuilder()
+                .setType("query")
+                .setQueryReqDTO(RequestProto.QueryReqDTO.newBuilder().setKey(key))
                 .build();
-        byte[] queryReqByteArray = queryReqDTO.toByteArray();
+        byte[] queryReqByteArray = queryRequestDTO.toByteArray();
         File queryReqFile = new File(dir, "query.bin");
         try (FileOutputStream fos = new FileOutputStream(queryReqFile)) {
             fos.write(queryReqByteArray);
