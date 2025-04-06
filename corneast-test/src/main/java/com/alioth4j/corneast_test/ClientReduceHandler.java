@@ -4,6 +4,7 @@ import com.alioth4j.corneast_core.proto.ReduceProto;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 
+@Deprecated
 public class ClientReduceHandler extends SimpleChannelInboundHandler<ReduceProto.ReduceRespDTO> {
 
     @Override
