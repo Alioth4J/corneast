@@ -1,6 +1,6 @@
 package com.alioth4j.corneast_core.netty;
 
-import com.alioth4j.corneast_core.proto.ReduceProto;
+import com.alioth4j.corneast_core.proto.RequestProto;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.buffer.PooledByteBufAllocator;
 import io.netty.channel.*;
@@ -53,7 +53,7 @@ public class NettyServer {
                             @Override
                             protected void initChannel(SocketChannel ch) {
                                 // protobuf handler
-                                ch.pipeline().addLast(new ProtobufDecoder(ReduceProto.ReduceReqDTO.getDefaultInstance()));
+                                ch.pipeline().addLast(new ProtobufDecoder(RequestProto.RequestDTO.getDefaultInstance()));
                                 ch.pipeline().addLast(new ProtobufEncoder());
 
                                 // route handler
