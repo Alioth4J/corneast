@@ -36,7 +36,6 @@ public class NettyServer {
     @PostConstruct
     public void start() {
         new Thread(() -> {
-            // TODO adjust params
             bossGroup = new NioEventLoopGroup(1);
             workerGroup = new NioEventLoopGroup(80); // 4 * (CPU cores)
             try {
@@ -57,8 +56,8 @@ public class NettyServer {
                                 ch.pipeline().addLast(new ProtobufDecoder(ReduceProto.ReduceReqDTO.getDefaultInstance()));
                                 ch.pipeline().addLast(new ProtobufEncoder());
 
-                                // reduce handler
-                                ch.pipeline().addLast(reduceServiceHandler);
+                                // route handler
+                                ch.pipeline().addLast(new RequestRouteHandler());
                             }
                         });
                 channelFuture = bootstrap.bind(port).sync();

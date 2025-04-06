@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.concurrent.CompletableFuture;
 
+@Deprecated
 @Component
 @ChannelHandler.Sharable
 public class ReduceServiceHandler extends SimpleChannelInboundHandler<ReduceProto.ReduceReqDTO> {

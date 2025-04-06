@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+package com.alioth4j.corneast_core.proto;
+
+option java_package = "com.alioth4j.corneast_core.proto";
+option java_outer_classname = "RequestProto";
+
+message RequestDTO {
+    string type = 1;
+
+    oneof request {
+        RegisterReqDTO registerReqDTO = 2;
+        ReduceReqDTO reduceReqDTO = 3;
+        QueryReqDTO queryReqDTO = 4;
+    }
+}
+
+message RegisterReqDTO {
+    string key = 1;
+    int64 tokenCount = 2;
+}
+
+message ReduceReqDTO {
+    string key = 1;
+}
+
+message QueryReqDTO {
+    string key = 1;
+}

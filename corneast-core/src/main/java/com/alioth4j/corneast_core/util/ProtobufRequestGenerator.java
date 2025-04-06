@@ -17,6 +17,8 @@ public class ProtobufRequestGenerator implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
+        // TODO update this class
+
         // params
         String key = DateTimeFormatter.ofPattern("yyyyMMdd").format(LocalDate.now());
         Long tokenCount = 1000L;

@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.concurrent.CompletableFuture;
 
+@Deprecated
 @RestController
 @RequestMapping("/corneast")
 public class CorneastController {

@@ -3,6 +3,7 @@
 
 package com.alioth4j.corneast_core.proto;
 
+@Deprecated
 public final class RegisterProto {
   private RegisterProto() {}
   public static void registerAllExtensions(

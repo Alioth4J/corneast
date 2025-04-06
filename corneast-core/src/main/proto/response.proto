@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+package com.alioth4j.corneast_core.proto;
+
+option java_package = "com.alioth4j.corneast_core.proto";
+option java_outer_classname = "ResponseProto";
+
+message ResponseDTO {
+    string type = 1;
+
+    oneof response {
+        RegisterRespDTO registerRespDTO = 2;
+        ReduceRespDTO reduceRespDTO = 3;
+        QueryRespDTO queryRespDTO = 4;
+    }
+}
+
+message RegisterRespDTO {
+    string key = 1;
+    bool success = 2;
+}
+
+message ReduceRespDTO {
+    string key = 1;
+    bool success = 2;
+}
+
+message QueryRespDTO {
+    string key = 1;
+    int64 remainingTokenCount = 2;
+}
