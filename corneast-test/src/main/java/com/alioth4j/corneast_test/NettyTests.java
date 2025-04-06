@@ -15,6 +15,7 @@ import java.time.format.DateTimeFormatter;
 /**
  * Netty client for test.
  */
+@Deprecated
 public class NettyTests {
 
     public static void main(String[] args) {

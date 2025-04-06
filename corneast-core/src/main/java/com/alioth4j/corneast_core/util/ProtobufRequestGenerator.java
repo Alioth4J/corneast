@@ -1,6 +1,5 @@
 package com.alioth4j.corneast_core.util;
 
-import com.alioth4j.corneast_core.proto.QueryProto;
 import com.alioth4j.corneast_core.proto.RequestProto;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
@@ -16,8 +15,6 @@ public class ProtobufRequestGenerator implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        // TODO update this class
-
         // params
         String key = DateTimeFormatter.ofPattern("yyyyMMdd").format(LocalDate.now());
         Long tokenCount = 1000L;
