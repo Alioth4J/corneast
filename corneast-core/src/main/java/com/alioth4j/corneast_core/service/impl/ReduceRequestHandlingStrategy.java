@@ -11,8 +11,10 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Component("reduce")
 public class ReduceRequestHandlingStrategy implements RequestHandlingStrategy {
@@ -26,6 +28,9 @@ public class ReduceRequestHandlingStrategy implements RequestHandlingStrategy {
     public void init() {
         this.nodeSize = redissonClients.size();
     }
+
+    private static final Map<String, ResponseProto.ResponseDTO> cachedSuccessResponses = new ConcurrentHashMap<>();
+    private static final Map<String, ResponseProto.ResponseDTO> cachedFailResponses = new ConcurrentHashMap<>();
 
     private static final Random random = new Random();
 
@@ -48,21 +53,28 @@ public class ReduceRequestHandlingStrategy implements RequestHandlingStrategy {
     @Async("reduceExecutor")
     public CompletableFuture<ResponseProto.ResponseDTO> handle(RequestProto.RequestDTO requestDTO) {
         return CompletableFuture.supplyAsync(() -> {
+            String key = requestDTO.getReduceReqDTO().getKey();
             // pick a redissonClient randomly
             RedissonClient redissonClient = redissonClients.get(random.nextInt(nodeSize));
-            long result = redissonClient.getScript().eval(RScript.Mode.READ_WRITE, luaScript, RScript.ReturnType.INTEGER, List.of(requestDTO.getReduceReqDTO().getKey()));
+            long result = redissonClient.getScript().eval(RScript.Mode.READ_WRITE, luaScript, RScript.ReturnType.INTEGER, List.of(key));
             if (result == 1) {
-                return responseBuilder
-                       .setReduceRespDTO(successReduceRespBuilder
-                                         .setKey(requestDTO.getReduceReqDTO().getKey())
-                                         .build())
-                       .build();
+                if (!cachedSuccessResponses.containsKey(key)) {
+                    cachedSuccessResponses.put(key, responseBuilder
+                                                    .setReduceRespDTO(successReduceRespBuilder
+                                                                      .setKey(requestDTO.getReduceReqDTO().getKey())
+                                                                      .build())
+                                                    .build());
+                }
+                return cachedSuccessResponses.get(key);
             } else {
-                return responseBuilder
-                       .setReduceRespDTO(failReduceRespBuilder
-                                         .setKey(requestDTO.getReduceReqDTO().getKey())
-                                         .build())
-                       .build();
+                if (!cachedFailResponses.containsKey(key)) {
+                    cachedFailResponses.put(key, responseBuilder
+                                                 .setReduceRespDTO(failReduceRespBuilder
+                                                                   .setKey(requestDTO.getReduceReqDTO().getKey())
+                                                                   .build())
+                                                 .build());
+                }
+                return cachedFailResponses.get(key);
             }
         });
     }
