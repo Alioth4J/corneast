@@ -12,6 +12,10 @@ eureka:
       defaultZone: http://localhost:8761/eureka/
     initialInstanceInfoReplicationIntervalSeconds: 0
 
+netty:
+  server:
+    port: 8088
+
 redis-config:
   nodes:
     - id: 1
@@ -74,7 +78,33 @@ redis-config:
       timeout: 100
       connectTimeout: 100
       connectionPoolSize: 2000
-
-netty:
-  server:
-    port: 8088
+    - id: 11
+      address: "redis://127.0.0.1:7011"
+      database: 0
+      timeout: 100
+      connectTimeout: 100
+      connectionPoolSize: 2000
+    - id: 12
+      address: "redis://127.0.0.1:7012"
+      database: 0
+      timeout: 100
+      connectTimeout: 100
+      connectionPoolSize: 2000
+    - id: 13
+      address: "redis://127.0.0.1:7013"
+      database: 0
+      timeout: 100
+      connectTimeout: 100
+      connectionPoolSize: 2000
+    - id: 14
+      address: "redis://127.0.0.1:7014"
+      database: 0
+      timeout: 100
+      connectTimeout: 100
+      connectionPoolSize: 2000
+    - id: 15
+      address: "redis://127.0.0.1:7015"
+      database: 0
+      timeout: 100
+      connectTimeout: 100
+      connectionPoolSize: 2000
