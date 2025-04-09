@@ -31,3 +31,6 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### corneast-test binary requests ###
+/corneast-test/request/
