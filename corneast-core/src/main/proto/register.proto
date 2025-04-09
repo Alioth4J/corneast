@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+option java_package = "com.alioth4j.corneast_core.proto";
+option java_outer_classname = "RegisterProto";
+
+message RegisterReqDTO {
+    string key = 1;
+    int64 tokenCount = 2;
+}
+
+message RegisterRespDTO {
+    string key = 1;
+    bool success = 2;
+}
