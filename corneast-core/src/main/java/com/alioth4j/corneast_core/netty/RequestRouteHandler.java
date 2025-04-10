@@ -2,7 +2,7 @@ package com.alioth4j.corneast_core.netty;
 
 import com.alioth4j.corneast_core.proto.RequestProto;
 import com.alioth4j.corneast_core.proto.ResponseProto;
-import com.alioth4j.corneast_core.service.RequestHandlingStrategy;
+import com.alioth4j.corneast_core.strategy.RequestHandlingStrategy;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;

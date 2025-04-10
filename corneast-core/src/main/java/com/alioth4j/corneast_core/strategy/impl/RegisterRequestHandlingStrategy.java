@@ -1,8 +1,8 @@
-package com.alioth4j.corneast_core.service.impl;
+package com.alioth4j.corneast_core.strategy.impl;
 
 import com.alioth4j.corneast_core.proto.RequestProto;
 import com.alioth4j.corneast_core.proto.ResponseProto;
-import com.alioth4j.corneast_core.service.RequestHandlingStrategy;
+import com.alioth4j.corneast_core.strategy.RequestHandlingStrategy;
 import jakarta.annotation.PostConstruct;
 import org.redisson.api.RScript;
 import org.redisson.api.RedissonClient;
