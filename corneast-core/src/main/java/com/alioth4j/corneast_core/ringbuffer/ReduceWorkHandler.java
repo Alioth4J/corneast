@@ -1,11 +1,12 @@
 package com.alioth4j.corneast_core.ringbuffer;
 
 import com.alioth4j.corneast_core.proto.ResponseProto;
-import com.lmax.disruptor.EventHandler;
+import com.lmax.disruptor.WorkHandler;
 import jakarta.annotation.PostConstruct;
 import org.redisson.api.RScript;
 import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -14,9 +15,9 @@ import java.util.Random;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 
-@Deprecated
 @Component
-public class ReduceEventHandler implements EventHandler<ReduceEvent>  {
+@Scope("prototype")
+public class ReduceWorkHandler implements WorkHandler<ReduceEvent>  {
 
     @Autowired
     private List<RedissonClient> redissonClients;
@@ -49,7 +50,7 @@ public class ReduceEventHandler implements EventHandler<ReduceEvent>  {
                                             """;
 
     @Override
-    public void onEvent(ReduceEvent reduceEvent, long l, boolean b) throws Exception {
+    public void onEvent(ReduceEvent reduceEvent) throws Exception {
         String key = reduceEvent.getKey();
         CompletableFuture<ResponseProto.ResponseDTO> future = reduceEvent.getFuture();
 
