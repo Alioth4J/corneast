@@ -16,6 +16,9 @@ netty:
   server:
     port: 8088
 
+ringbuffer:
+  workHandlerCount: 1000
+
 redis-config:
   nodes:
     - id: 1

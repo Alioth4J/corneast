@@ -8,6 +8,7 @@ import com.lmax.disruptor.dsl.ProducerType;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
@@ -31,6 +32,9 @@ public class ReduceDisruptor {
     private static final int BUFFER_SIZE = 1024 * 1024;
 
     private ExecutorService executor;
+
+    @Value("${ringbuffer.workHandlerCount}")
+    private int workHandlerCount;
 
     @PostConstruct
     public void init() {
@@ -57,8 +61,8 @@ public class ReduceDisruptor {
                 throwable.printStackTrace();
             }
         };
-        List<WorkHandler<ReduceEvent>> workHandlerList = new ArrayList<>(1000);
-        for (int i = 0; i < 1000; i++) {
+        List<WorkHandler<ReduceEvent>> workHandlerList = new ArrayList<>(workHandlerCount);
+        for (int i = 0; i < workHandlerCount; i++) {
             workHandlerList.add(applicationContext.getBean(ReduceWorkHandler.class));
         }
         workerPool = new WorkerPool<>(ringBuffer, ringBuffer.newBarrier(), exceptionHandler, workHandlerList.toArray(new WorkHandler[0]));
