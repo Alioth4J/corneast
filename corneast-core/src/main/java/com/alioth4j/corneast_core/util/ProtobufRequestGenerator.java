@@ -32,7 +32,7 @@ public class ProtobufRequestGenerator implements CommandLineRunner {
         // register request
         RequestProto.RequestDTO registerRequestDTO = RequestProto.RequestDTO.newBuilder()
                 .setType("register")
-                .setRegisterReqDTO(RequestProto.RegisterReqDTO.newBuilder().setKey(key).setTokenCount(1000).build())
+                .setRegisterReqDTO(RequestProto.RegisterReqDTO.newBuilder().setKey(key).setTokenCount(tokenCount).build())
                 .build();
         byte[] registerReqByteArray = registerRequestDTO.toByteArray();
         File registerReqFile = new File(dir, "register.bin");
