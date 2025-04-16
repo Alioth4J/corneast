@@ -14,6 +14,11 @@ import java.util.Random;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * Single thread event handler for RingBuffer.
+ *
+ * @author Alioth Null
+ */
 @Deprecated
 @Component
 public class ReduceEventHandler implements EventHandler<ReduceEvent>  {

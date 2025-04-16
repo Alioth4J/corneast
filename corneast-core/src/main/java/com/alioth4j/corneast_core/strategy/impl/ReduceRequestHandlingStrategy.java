@@ -10,6 +10,11 @@ import org.springframework.stereotype.Component;
 
 import java.util.concurrent.CompletableFuture;
 
+/**
+ * Reduce request handling strategy.
+ *
+ * @author Alioth Null
+ */
 @Component("reduce")
 public class ReduceRequestHandlingStrategy implements RequestHandlingStrategy {
 

@@ -14,6 +14,11 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
+/**
+ * Register request handling strategy.
+ *
+ * @author Alioth Null
+ */
 @Component("register")
 public class RegisterRequestHandlingStrategy implements RequestHandlingStrategy {
 

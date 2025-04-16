@@ -6,6 +6,11 @@ import org.springframework.scheduling.annotation.EnableAsync;
 
 import java.util.concurrent.*;
 
+/**
+ * Custom thread pool used by @async.
+ *
+ * @author Alioth Null
+ */
 //@Deprecated
 @Configuration
 @EnableAsync

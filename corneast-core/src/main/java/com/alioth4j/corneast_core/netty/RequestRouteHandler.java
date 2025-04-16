@@ -14,6 +14,8 @@ import java.util.concurrent.CompletableFuture;
 
 /**
  * Route requests for netty.
+ *
+ * @author Alioth Null
  */
 @Component
 @ChannelHandler.Sharable

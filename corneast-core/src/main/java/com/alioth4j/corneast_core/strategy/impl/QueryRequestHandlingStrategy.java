@@ -12,6 +12,11 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
+/**
+ * Query request handling strategy.
+ *
+ * @author Alioth Null
+ */
 @Component("query")
 public class QueryRequestHandlingStrategy implements RequestHandlingStrategy {
 

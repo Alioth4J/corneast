@@ -18,6 +18,11 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+/**
+ * RingBuffer for reduce requests.
+ *
+ * @author Alioth Null
+ */
 @Component
 public class ReduceDisruptor {
 

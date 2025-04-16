@@ -3,7 +3,9 @@ package com.alioth4j.corneast_core.config;
 import lombok.Data;
 
 /**
- * This class corresponds with the configuration in application.yml
+ * Configuration class of a Redis node, corresponding with application.yml
+ *
+ * @author Alioth Null
  */
 @Data
 public class RedisNodeProperties {

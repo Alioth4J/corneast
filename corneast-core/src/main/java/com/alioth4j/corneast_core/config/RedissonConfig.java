@@ -10,6 +10,13 @@ import org.springframework.context.annotation.Configuration;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Configurati class of RedissonClient.
+ *
+ * The count of RedissonClient is equal to the count of Redis nodes.
+ *
+ * @author Alioth Null
+ */
 @Configuration
 @EnableConfigurationProperties(RedisConfigProperties.class)
 public class RedissonConfig {

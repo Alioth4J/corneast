@@ -15,6 +15,11 @@ import java.util.Random;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * Processes reduce requests.
+ *
+ * @author Alioth Null
+ */
 @Component
 @Scope("prototype")
 public class ReduceWorkHandler implements WorkHandler<ReduceEvent>  {

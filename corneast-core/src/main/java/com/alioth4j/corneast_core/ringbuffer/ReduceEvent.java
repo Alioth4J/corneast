@@ -4,6 +4,13 @@ import com.alioth4j.corneast_core.proto.ResponseProto;
 
 import java.util.concurrent.CompletableFuture;
 
+/**
+ * Used in RingBuffer.
+ *
+ * Stores the key and the CompletableFuture for the response.
+ *
+ * @author Alioth Null
+ */
 public class ReduceEvent {
 
     private String key;

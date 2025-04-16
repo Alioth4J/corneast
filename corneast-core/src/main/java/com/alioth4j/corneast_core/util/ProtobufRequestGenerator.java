@@ -10,6 +10,15 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
+/**
+ * Util class to generate binary request files:
+ * register.bin, reduce.bin, query.bin.
+ *
+ * If the working class is the root directory of the project,
+ * the files will be generated in corneast/test/request.
+ *
+ * @author Alioth Null
+ */
 @Component
 public class ProtobufRequestGenerator implements CommandLineRunner {
 
