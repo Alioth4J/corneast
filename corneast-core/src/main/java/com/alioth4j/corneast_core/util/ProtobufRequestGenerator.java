@@ -36,11 +36,7 @@ public class ProtobufRequestGenerator implements CommandLineRunner {
                 .build();
         byte[] registerReqByteArray = registerRequestDTO.toByteArray();
         File registerReqFile = new File(dir, "register.bin");
-        try (FileOutputStream fos = new FileOutputStream(registerReqFile)) {
-            fos.write(registerReqByteArray);
-        } catch (IOException e) {
-            handleIOException(e);
-        }
+        writeWithLengthPrefix(registerReqFile, registerReqByteArray);
 
         // reduce request
         RequestProto.RequestDTO reduceRequestDTO = RequestProto.RequestDTO.newBuilder()
@@ -49,11 +45,7 @@ public class ProtobufRequestGenerator implements CommandLineRunner {
                 .build();
         byte[] reduceReqByteArray = reduceRequestDTO.toByteArray();
         File reduceReqFile = new File(dir, "reduce.bin");
-        try (FileOutputStream fos = new FileOutputStream(reduceReqFile)) {
-            fos.write(reduceReqByteArray);
-        } catch (IOException e) {
-            handleIOException(e);
-        }
+        writeWithLengthPrefix(reduceReqFile, reduceReqByteArray);
 
         // query request
         RequestProto.RequestDTO queryRequestDTO = RequestProto.RequestDTO.newBuilder()
@@ -62,11 +54,37 @@ public class ProtobufRequestGenerator implements CommandLineRunner {
                 .build();
         byte[] queryReqByteArray = queryRequestDTO.toByteArray();
         File queryReqFile = new File(dir, "query.bin");
-        try (FileOutputStream fos = new FileOutputStream(queryReqFile)) {
-            fos.write(queryReqByteArray);
+        writeWithLengthPrefix(queryReqFile, queryReqByteArray);
+    }
+
+    private void writeWithLengthPrefix(File file, byte[] data) {
+        try (FileOutputStream fos = new FileOutputStream(file)) {
+            fos.write(encodeVarint32(data.length));
+            fos.write(data);
         } catch (IOException e) {
             handleIOException(e);
         }
+    }
+
+    /**
+     * Encodes an integer into a varint32 format as used by Protobuf.
+     *
+     * @param value int to encode
+     * @return length prefix
+     */
+    private byte[] encodeVarint32(int value) {
+        // 最多需要5个字节（int32）
+        byte[] buffer = new byte[5];
+        int position = 0;
+        while ((value & ~0x7F) != 0) {
+            buffer[position++] = (byte)((value & 0x7F) | 0x80);
+            value >>>= 7;
+        }
+        buffer[position++] = (byte)(value);
+        // 创建一个长度合适的数组返回
+        byte[] result = new byte[position];
+        System.arraycopy(buffer, 0, result, 0, position);
+        return result;
     }
 
     private static void handleIOException(IOException e) {
