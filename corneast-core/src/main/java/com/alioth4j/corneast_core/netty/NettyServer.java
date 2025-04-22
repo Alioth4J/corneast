@@ -36,6 +36,9 @@ public class NettyServer {
     private ChannelFuture channelFuture;
 
     @Autowired
+    private RateLimitingHandler rateLimitingHandler;
+
+    @Autowired
     private RequestRouteHandler requestRouteHandler;
 
     @PostConstruct
@@ -57,6 +60,9 @@ public class NettyServer {
                         .childHandler(new ChannelInitializer<SocketChannel>() {
                             @Override
                             protected void initChannel(SocketChannel ch) {
+                                // rate limiting
+                                ch.pipeline().addLast(rateLimitingHandler);
+
                                 // protobuf handler
                                 ch.pipeline().addLast(new ProtobufVarint32FrameDecoder());
                                 ch.pipeline().addLast(new ProtobufDecoder(RequestProto.RequestDTO.getDefaultInstance()));
