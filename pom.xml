@@ -19,7 +19,7 @@
 	<modules>
 		<module>corneast-core</module>
 		<module>corneast-eureka</module>
-		<module>corneast-gateway</module>
+<!--		<module>corneast-gateway</module>-->
     </modules>
 
 	<properties>
