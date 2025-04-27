@@ -25,15 +25,16 @@ public class RequestStatisticsAspect {
         RequestProto.RequestDTO requestDTO = (RequestProto.RequestDTO) args[0];
 
         long startTime = System.nanoTime();
+        Object result;
         try {
-            Object result = joinPoint.proceed();
+            result = joinPoint.proceed();
             long endTime = System.nanoTime();
             log.info("Stated Request: type={}, key={}, requestCount={}; processedTime={}", requestDTO.getType(), requestDTO.getRegisterReqDTO().getKey(), requestDTO.getRegisterReqDTO().getTokenCount(), endTime - startTime);
-            return result;
         } catch (Throwable t) {
             log.error("Error stat request: type={}, key={}, requestCount={}", requestDTO.getType(), requestDTO.getRegisterReqDTO().getKey(), requestDTO.getRegisterReqDTO().getTokenCount());
             throw t;
         }
+        return result;
     }
 
     @Around("execution(* com.alioth4j.corneast_core.strategy.impl.ReduceRequestHandlingStrategy.handle(..))")
@@ -42,15 +43,16 @@ public class RequestStatisticsAspect {
         RequestProto.RequestDTO requestDTO = (RequestProto.RequestDTO) args[0];
 
         long startTime = System.nanoTime();
+        Object result;
         try {
-            Object result = joinPoint.proceed();
+            result = joinPoint.proceed();
             long endTime = System.nanoTime();
             log.info("Stated Request: type={}, key={}; processedTime={}", requestDTO.getType(), requestDTO.getReduceReqDTO().getKey(), endTime - startTime);
-            return result;
         } catch (Throwable t) {
             log.error("Error stat request: type={}, key={}", requestDTO.getType(), requestDTO.getRegisterReqDTO().getKey());
             throw t;
         }
+        return result;
     }
 
     @Around("execution(* com.alioth4j.corneast_core.strategy.impl.QueryRequestHandlingStrategy.handle(..))")
@@ -59,15 +61,16 @@ public class RequestStatisticsAspect {
         RequestProto.RequestDTO requestDTO = (RequestProto.RequestDTO) args[0];
 
         long startTime = System.nanoTime();
+        Object result;
         try {
-            Object result = joinPoint.proceed();
+            result = joinPoint.proceed();
             long endTime = System.nanoTime();
             log.info("Stated Request: type={}, key={}; processedTime={}", requestDTO.getType(), requestDTO.getQueryReqDTO().getKey(), endTime - startTime);
-            return result;
         } catch (Throwable t) {
             log.error("Error stat request: type={}, key={}", requestDTO.getType(), requestDTO.getRegisterReqDTO().getKey());
             throw t;
         }
+        return result;
     }
 
 }

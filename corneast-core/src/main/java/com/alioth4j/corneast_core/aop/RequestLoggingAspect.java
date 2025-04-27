@@ -24,13 +24,14 @@ public class RequestLoggingAspect {
         Object[] args = joinPoint.getArgs();
         RequestProto.RequestDTO requestDTO = (RequestProto.RequestDTO) args[0];
         log.info("Received request: type={}, key={}, tokenCount={}", requestDTO.getType(), requestDTO.getRegisterReqDTO().getKey(), requestDTO.getRegisterReqDTO().getTokenCount());
+        Object result;
         try {
-            Object result = joinPoint.proceed();
-            return result;
+            result = joinPoint.proceed();
         } catch (Throwable t) {
             log.error("Error processing request: type={}, key={}, tokenCount={}", requestDTO.getType(), requestDTO.getRegisterReqDTO().getKey(), requestDTO.getRegisterReqDTO().getTokenCount());
             throw t;
         }
+        return result;
     }
 
     @Around("execution(* com.alioth4j.corneast_core.strategy.impl.ReduceRequestHandlingStrategy.handle(..))")
@@ -38,13 +39,14 @@ public class RequestLoggingAspect {
         Object[] args = joinPoint.getArgs();
         RequestProto.RequestDTO requestDTO = (RequestProto.RequestDTO) args[0];
         log.info("Received request: type={}, key={}", requestDTO.getType(), requestDTO.getReduceReqDTO().getKey());
+        Object result;
         try {
-            Object result = joinPoint.proceed();
-            return result;
+            result = joinPoint.proceed();
         } catch (Throwable t) {
             log.error("Error processing request: type={}, key={}", requestDTO.getType(), requestDTO.getReduceReqDTO().getKey());
             throw t;
         }
+        return result;
     }
 
     @Around("execution(* com.alioth4j.corneast_core.strategy.impl.QueryRequestHandlingStrategy.handle(..))")
@@ -52,13 +54,14 @@ public class RequestLoggingAspect {
         Object[] args = joinPoint.getArgs();
         RequestProto.RequestDTO requestDTO = (RequestProto.RequestDTO) args[0];
         log.info("Received request: type={}, key={}", requestDTO.getType(), requestDTO.getQueryReqDTO().getKey());
+        Object result;
         try {
-            Object result = joinPoint.proceed();
-            return result;
+            result = joinPoint.proceed();
         } catch (Throwable t) {
             log.error("Error processing request: type={}, key={}", requestDTO.getType(), requestDTO.getRegisterReqDTO().getKey());
             throw t;
         }
+        return result;
     }
 
 }
