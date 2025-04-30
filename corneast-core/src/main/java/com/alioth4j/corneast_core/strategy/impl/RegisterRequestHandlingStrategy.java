@@ -62,7 +62,7 @@ public class RegisterRequestHandlingStrategy implements RequestHandlingStrategy 
             }
             return responseBuilder
                    .setRegisterRespDTO(successRespBuilder
-                                       .setKey(requestDTO.getRegisterReqDTO().getKey())
+                                       .setKey(key)
                                        .build())
                    .build();
         });

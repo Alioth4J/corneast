@@ -45,7 +45,7 @@ public class QueryRequestHandlingStrategy implements RequestHandlingStrategy {
             }
             return responseBuilder
                    .setQueryRespDTO(queryResponseBuilder
-                                    .setKey(requestDTO.getQueryReqDTO().getKey())
+                                    .setKey(key)
                                     .setRemainingTokenCount(totalTokenCount)
                                     .build())
                    .build();
