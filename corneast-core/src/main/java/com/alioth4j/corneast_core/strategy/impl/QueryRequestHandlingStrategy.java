@@ -6,11 +6,13 @@ import com.alioth4j.corneast_core.strategy.RequestHandlingStrategy;
 import org.redisson.api.RScript;
 import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
 
 /**
  * Query request handling strategy.
@@ -19,6 +21,10 @@ import java.util.concurrent.CompletableFuture;
  */
 @Component("query")
 public class QueryRequestHandlingStrategy implements RequestHandlingStrategy {
+
+    @Autowired
+    @Qualifier("queryExecutor")
+    private Executor queryExecutor;
 
     @Autowired
     private List<RedissonClient> redissonClients;
@@ -31,9 +37,7 @@ public class QueryRequestHandlingStrategy implements RequestHandlingStrategy {
                                             return tonumber(current)
                                             """;
 
-    // TODO use custom thread pool
     @Override
-    @Async
     public CompletableFuture<ResponseProto.ResponseDTO> handle(RequestProto.RequestDTO requestDTO) {
         return CompletableFuture.supplyAsync(() -> {
             // sum tokenCount from each node
@@ -49,7 +53,7 @@ public class QueryRequestHandlingStrategy implements RequestHandlingStrategy {
                                     .setRemainingTokenCount(totalTokenCount)
                                     .build())
                    .build();
-        });
+        }, queryExecutor);
     }
 
 }

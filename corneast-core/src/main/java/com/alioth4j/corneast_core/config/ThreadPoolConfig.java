@@ -7,11 +7,12 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import java.util.concurrent.*;
 
 /**
- * Custom thread pool used by @async.
+ * Custom thread pool used by async methods.
+ *
+ * Adjust parameters according to your machines.
  *
  * @author Alioth Null
  */
-//@Deprecated
 @Configuration
 @EnableAsync
 public class ThreadPoolConfig {
@@ -21,6 +22,32 @@ public class ThreadPoolConfig {
         return new ThreadPoolExecutor(
                 1000,
                 1000,
+                10,
+                TimeUnit.SECONDS,
+                new SynchronousQueue<>(),
+                Executors.defaultThreadFactory(),
+                new ThreadPoolExecutor.CallerRunsPolicy()
+        );
+    }
+
+    @Bean(value = "registerExecutor")
+    public Executor registerExecutor() {
+        return new ThreadPoolExecutor(
+                1,
+                10,
+                10,
+                TimeUnit.SECONDS,
+                new SynchronousQueue<>(),
+                Executors.defaultThreadFactory(),
+                new ThreadPoolExecutor.CallerRunsPolicy()
+        );
+    }
+
+    @Bean(value = "queryExecutor")
+    public Executor queryExecutor() {
+        return new ThreadPoolExecutor(
+                1,
+                10,
                 10,
                 TimeUnit.SECONDS,
                 new SynchronousQueue<>(),
