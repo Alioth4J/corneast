@@ -56,4 +56,17 @@ public class ThreadPoolConfig {
         );
     }
 
+    @Bean(value = "releaseExecutor")
+    public Executor releaseExecutor() {
+        return new ThreadPoolExecutor(
+                20,
+                40,
+                10,
+                TimeUnit.SECONDS,
+                new SynchronousQueue<>(),
+                Executors.defaultThreadFactory(),
+                new ThreadPoolExecutor.CallerRunsPolicy()
+        );
+    }
+
 }

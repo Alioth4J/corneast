@@ -49,7 +49,7 @@ public class RequestStatisticsAspect {
             long endTime = System.nanoTime();
             log.info("Stated Request: type={}, key={}; processedTime={}", requestDTO.getType(), requestDTO.getReduceReqDTO().getKey(), endTime - startTime);
         } catch (Throwable t) {
-            log.error("Error stat request: type={}, key={}", requestDTO.getType(), requestDTO.getRegisterReqDTO().getKey());
+            log.error("Error stat request: type={}, key={}", requestDTO.getType(), requestDTO.getReduceReqDTO().getKey());
             throw t;
         }
         return result;
@@ -67,7 +67,25 @@ public class RequestStatisticsAspect {
             long endTime = System.nanoTime();
             log.info("Stated Request: type={}, key={}; processedTime={}", requestDTO.getType(), requestDTO.getQueryReqDTO().getKey(), endTime - startTime);
         } catch (Throwable t) {
-            log.error("Error stat request: type={}, key={}", requestDTO.getType(), requestDTO.getRegisterReqDTO().getKey());
+            log.error("Error stat request: type={}, key={}", requestDTO.getType(), requestDTO.getQueryReqDTO().getKey());
+            throw t;
+        }
+        return result;
+    }
+
+    @Around("execution(* com.alioth4j.corneast_core.strategy.impl.ReleaseRequestHandlingStrategy.handle(..))")
+    public Object statReleaseRequest(ProceedingJoinPoint joinPoint) throws Throwable {
+        Object[] args = joinPoint.getArgs();
+        RequestProto.RequestDTO requestDTO = (RequestProto.RequestDTO) args[0];
+
+        long startTime = System.nanoTime();
+        Object result;
+        try {
+            result = joinPoint.proceed();
+            long endTime = System.nanoTime();
+            log.info("Stated Request: type={}, key={}; processedTime={}", requestDTO.getType(), requestDTO.getReleaseReqDTO().getKey(), endTime - startTime);
+        } catch (Throwable t) {
+            log.error("Error stat request: type={}, key={}", requestDTO.getType(), requestDTO.getReleaseReqDTO().getKey());
             throw t;
         }
         return result;

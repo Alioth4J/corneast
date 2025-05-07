@@ -58,7 +58,22 @@ public class RequestLoggingAspect {
         try {
             result = joinPoint.proceed();
         } catch (Throwable t) {
-            log.error("Error processing request: type={}, key={}", requestDTO.getType(), requestDTO.getRegisterReqDTO().getKey());
+            log.error("Error processing request: type={}, key={}", requestDTO.getType(), requestDTO.getQueryReqDTO().getKey());
+            throw t;
+        }
+        return result;
+    }
+
+    @Around("execution(* com.alioth4j.corneast_core.strategy.impl.ReleaseRequestHandlingStrategy.handle(..))")
+    public Object logReleaseRequest(ProceedingJoinPoint joinPoint) throws Throwable {
+        Object[] args = joinPoint.getArgs();
+        RequestProto.RequestDTO requestDTO = (RequestProto.RequestDTO) args[0];
+        log.info("Received request: type={}, key={}", requestDTO.getType(), requestDTO.getReleaseReqDTO().getKey());
+        Object result;
+        try {
+            result = joinPoint.proceed();
+        } catch (Throwable t) {
+            log.error("Error processing request: type={}, key={}", requestDTO.getType(), requestDTO.getReleaseReqDTO().getKey());
             throw t;
         }
         return result;

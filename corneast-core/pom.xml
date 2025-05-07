@@ -5,13 +5,13 @@
 	<parent>
 		<groupId>com.alioth4j</groupId>
 		<artifactId>corneast</artifactId>
-		<version>1.3.3</version>
+		<version>1.4.0</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 
 	<groupId>com.alioth4j</groupId>
 	<artifactId>corneast-core</artifactId>
-	<version>1.3.3</version>
+	<version>1.4.0</version>
 	<name>corneast-core</name>
 	<description>corneast core module</description>
 	<packaging>jar</packaging>
