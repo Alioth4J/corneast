@@ -15,26 +15,23 @@ import java.time.format.DateTimeFormatter;
  * register.bin, reduce.bin, query.bin.
  *
  * If the working class is the root directory of the project,
- * the files will be generated in corneast/test/request.
+ * the files will be generated in corneast-test/request.
  *
  * @author Alioth Null
  */
-@Component
-public class ProtobufRequestGenerator implements CommandLineRunner {
+public class ProtobufRequestGenerator {
 
-    @Override
-    public void run(String... args) throws Exception {
+    public static void generate() {
         // params
         String key = DateTimeFormatter.ofPattern("yyyyMMdd").format(LocalDate.now());
         Long tokenCount = 1000L;
 
         // create dir
-        String workingDir = System.getProperty("working.dir");
-        File dir = new File(workingDir, "corneast-test/request");
+        File dir = new File("../", "corneast-test/request");
         if (!dir.exists()) {
             boolean success = dir.mkdirs();
             if (!success) {
-                System.err.println("Unable to mkdirs: " + dir.getCanonicalPath());
+                System.err.println("Unable to mkdirs: " + dir.getAbsolutePath());
                 return;
             }
         }
@@ -65,9 +62,18 @@ public class ProtobufRequestGenerator implements CommandLineRunner {
         byte[] queryReqByteArray = queryRequestDTO.toByteArray();
         File queryReqFile = new File(dir, "query.bin");
         writeWithLengthPrefix(queryReqFile, queryReqByteArray);
+
+        // release request
+        RequestProto.RequestDTO releaseRequestDTO = RequestProto.RequestDTO.newBuilder()
+                .setType("release")
+                .setReleaseReqDTO(RequestProto.ReleaseReqDTO.newBuilder().setKey(key).build())
+                .build();
+        byte[] releaseReqByteArray = releaseRequestDTO.toByteArray();
+        File releaseReqFile = new File(dir, "release.bin");
+        writeWithLengthPrefix(releaseReqFile, releaseReqByteArray);
     }
 
-    private void writeWithLengthPrefix(File file, byte[] data) {
+    private static void writeWithLengthPrefix(File file, byte[] data) {
         try (FileOutputStream fos = new FileOutputStream(file)) {
             fos.write(encodeVarint32(data.length));
             fos.write(data);
@@ -82,7 +88,7 @@ public class ProtobufRequestGenerator implements CommandLineRunner {
      * @param value int to encode
      * @return length prefix
      */
-    private byte[] encodeVarint32(int value) {
+    private static byte[] encodeVarint32(int value) {
         // 最多需要5个字节（int32）
         byte[] buffer = new byte[5];
         int position = 0;

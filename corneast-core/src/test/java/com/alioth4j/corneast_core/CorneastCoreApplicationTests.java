@@ -1,5 +1,6 @@
 package com.alioth4j.corneast_core;
 
+import com.alioth4j.corneast_core.util.ProtobufRequestGenerator;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -7,7 +8,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 class CorneastCoreApplicationTests {
 
 	@Test
-	void contextLoads() {
+	void generateProtobufRequest() {
+		ProtobufRequestGenerator.generate();
 	}
 
 }

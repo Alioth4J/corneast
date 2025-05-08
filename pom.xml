@@ -11,7 +11,7 @@
 
 	<groupId>com.alioth4j</groupId>
 	<artifactId>corneast</artifactId>
-	<version>1.4.0</version>
+	<version>1.4.1</version>
 	<name>corneast</name>
 	<description>coreneast project</description>
 	<packaging>pom</packaging>
@@ -19,7 +19,6 @@
 	<modules>
 		<module>corneast-core</module>
 		<module>corneast-eureka</module>
-<!--		<module>corneast-gateway</module>-->
     </modules>
 
 	<properties>
