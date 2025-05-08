@@ -12,6 +12,7 @@ message RequestDTO {
         RegisterReqDTO registerReqDTO = 2;
         ReduceReqDTO reduceReqDTO = 3;
         QueryReqDTO queryReqDTO = 4;
+        ReleaseReqDTO releaseReqDTO = 5;
     }
 }
 
@@ -25,5 +26,9 @@ message ReduceReqDTO {
 }
 
 message QueryReqDTO {
+    string key = 1;
+}
+
+message ReleaseReqDTO {
     string key = 1;
 }

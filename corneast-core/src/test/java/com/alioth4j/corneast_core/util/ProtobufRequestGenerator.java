@@ -29,7 +29,8 @@ public class ProtobufRequestGenerator implements CommandLineRunner {
         Long tokenCount = 1000L;
 
         // create dir
-        File dir = new File("corneast-test", "request");
+        String workingDir = System.getProperty("working.dir");
+        File dir = new File(workingDir, "corneast-test/request");
         if (!dir.exists()) {
             boolean success = dir.mkdirs();
             if (!success) {

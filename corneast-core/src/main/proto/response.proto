@@ -12,6 +12,7 @@ message ResponseDTO {
         RegisterRespDTO registerRespDTO = 2;
         ReduceRespDTO reduceRespDTO = 3;
         QueryRespDTO queryRespDTO = 4;
+        ReleaseRespDTO releaseRespDTO = 5;
     }
 }
 
@@ -28,4 +29,9 @@ message ReduceRespDTO {
 message QueryRespDTO {
     string key = 1;
     int64 remainingTokenCount = 2;
+}
+
+message ReleaseRespDTO {
+    string key = 1;
+    bool success = 2;
 }
