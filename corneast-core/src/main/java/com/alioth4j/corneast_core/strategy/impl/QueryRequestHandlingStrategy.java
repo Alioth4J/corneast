@@ -34,14 +34,17 @@ public class QueryRequestHandlingStrategy implements RequestHandlingStrategy {
 
     private static final String luaScript = """
                                             local current = redis.call('GET', KEYS[1])
-                                            return tonumber(current)
+                                            if current == nil then
+                                                return 0
+                                            else
+                                                return tonumber(current)
+                                            end
                                             """;
 
     @Override
     public CompletableFuture<ResponseProto.ResponseDTO> handle(RequestProto.RequestDTO requestDTO) {
         return CompletableFuture.supplyAsync(() -> {
             // sum tokenCount from each node
-            // TODO robust
             String key = requestDTO.getQueryReqDTO().getKey();
             long totalTokenCount = 0;
             for (RedissonClient redissonClient : redissonClients) {

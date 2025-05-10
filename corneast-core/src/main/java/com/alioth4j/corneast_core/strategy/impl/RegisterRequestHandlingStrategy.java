@@ -43,7 +43,6 @@ public class RegisterRequestHandlingStrategy implements RequestHandlingStrategy 
 
     private static final String luaScript = """
                                             redis.call('SET', KEYS[1], ARGV[1])
-                                            return 1
                                             """;
 
     @Override

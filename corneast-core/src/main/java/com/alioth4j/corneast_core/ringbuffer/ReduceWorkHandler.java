@@ -49,7 +49,7 @@ public class ReduceWorkHandler implements WorkHandler<ReduceEvent>  {
                                             if n > 0 then
                                                 redis.call('DECR', KEYS[1])
                                                 return 1
-                                            else 
+                                            else
                                                 return 0
                                             end
                                             """;
