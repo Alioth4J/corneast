@@ -1,8 +1,6 @@
 package com.alioth4j.corneast_core.util;
 
 import com.alioth4j.corneast_core.proto.RequestProto;
-import org.springframework.boot.CommandLineRunner;
-import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -39,6 +37,7 @@ public class ProtobufRequestGenerator {
         // register request
         RequestProto.RequestDTO registerRequestDTO = RequestProto.RequestDTO.newBuilder()
                 .setType("register")
+                .setId("123456")
                 .setRegisterReqDTO(RequestProto.RegisterReqDTO.newBuilder().setKey(key).setTokenCount(tokenCount).build())
                 .build();
         byte[] registerReqByteArray = registerRequestDTO.toByteArray();
@@ -48,6 +47,7 @@ public class ProtobufRequestGenerator {
         // reduce request
         RequestProto.RequestDTO reduceRequestDTO = RequestProto.RequestDTO.newBuilder()
                 .setType("reduce")
+                .setId("123456")
                 .setReduceReqDTO(RequestProto.ReduceReqDTO.newBuilder().setKey(key).build())
                 .build();
         byte[] reduceReqByteArray = reduceRequestDTO.toByteArray();
@@ -57,6 +57,7 @@ public class ProtobufRequestGenerator {
         // query request
         RequestProto.RequestDTO queryRequestDTO = RequestProto.RequestDTO.newBuilder()
                 .setType("query")
+                .setId("123456")
                 .setQueryReqDTO(RequestProto.QueryReqDTO.newBuilder().setKey(key))
                 .build();
         byte[] queryReqByteArray = queryRequestDTO.toByteArray();
@@ -66,6 +67,7 @@ public class ProtobufRequestGenerator {
         // release request
         RequestProto.RequestDTO releaseRequestDTO = RequestProto.RequestDTO.newBuilder()
                 .setType("release")
+                .setId("123456")
                 .setReleaseReqDTO(RequestProto.ReleaseReqDTO.newBuilder().setKey(key).build())
                 .build();
         byte[] releaseReqByteArray = releaseRequestDTO.toByteArray();

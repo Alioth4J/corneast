@@ -28,6 +28,7 @@ public class RegisterRequestHandlingStrategy implements RequestHandlingStrategy 
     private Executor registerExecutor;
 
     @Autowired
+    @Qualifier("redissonClients")
     private List<RedissonClient> redissonClients;
 
     private int nodeSize;

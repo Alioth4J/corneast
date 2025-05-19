@@ -25,6 +25,7 @@ public class ReleaseRequestHandlingStrategy implements RequestHandlingStrategy {
     private Executor releaseExecutor;
 
     @Autowired
+    @Qualifier("redissonClients")
     private List<RedissonClient> redissonClients;
 
     private int nodeSize;

@@ -39,6 +39,9 @@ public class NettyServer {
     private RateLimitingHandler rateLimitingHandler;
 
     @Autowired
+    private IdempotentHandler idempotentHandler;
+
+    @Autowired
     private RequestRouteHandler requestRouteHandler;
 
     @PostConstruct
@@ -68,6 +71,9 @@ public class NettyServer {
                                 ch.pipeline().addLast(new ProtobufDecoder(RequestProto.RequestDTO.getDefaultInstance()));
                                 ch.pipeline().addLast(new ProtobufVarint32LengthFieldPrepender());
                                 ch.pipeline().addLast(new ProtobufEncoder());
+
+                                // idempotent handler
+                                ch.pipeline().addLast(idempotentHandler);
 
                                 // route handler
                                 ch.pipeline().addLast(requestRouteHandler);

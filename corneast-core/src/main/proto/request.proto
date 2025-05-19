@@ -7,12 +7,13 @@ option java_outer_classname = "RequestProto";
 
 message RequestDTO {
     string type = 1;
+    string id = 2;
 
     oneof request {
-        RegisterReqDTO registerReqDTO = 2;
-        ReduceReqDTO reduceReqDTO = 3;
-        QueryReqDTO queryReqDTO = 4;
-        ReleaseReqDTO releaseReqDTO = 5;
+        RegisterReqDTO registerReqDTO = 3;
+        ReduceReqDTO reduceReqDTO = 4;
+        QueryReqDTO queryReqDTO = 5;
+        ReleaseReqDTO releaseReqDTO = 6;
     }
 }
 

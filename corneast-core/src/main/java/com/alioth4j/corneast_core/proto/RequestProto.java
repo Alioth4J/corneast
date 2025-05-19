@@ -31,62 +31,74 @@ public final class RequestProto {
         getTypeBytes();
 
     /**
-     * <code>.com.alioth4j.corneast_core.proto.RegisterReqDTO registerReqDTO = 2;</code>
+     * <code>string id = 2;</code>
+     * @return The id.
+     */
+    java.lang.String getId();
+    /**
+     * <code>string id = 2;</code>
+     * @return The bytes for id.
+     */
+    com.google.protobuf.ByteString
+        getIdBytes();
+
+    /**
+     * <code>.com.alioth4j.corneast_core.proto.RegisterReqDTO registerReqDTO = 3;</code>
      * @return Whether the registerReqDTO field is set.
      */
     boolean hasRegisterReqDTO();
     /**
-     * <code>.com.alioth4j.corneast_core.proto.RegisterReqDTO registerReqDTO = 2;</code>
+     * <code>.com.alioth4j.corneast_core.proto.RegisterReqDTO registerReqDTO = 3;</code>
      * @return The registerReqDTO.
      */
     com.alioth4j.corneast_core.proto.RequestProto.RegisterReqDTO getRegisterReqDTO();
     /**
-     * <code>.com.alioth4j.corneast_core.proto.RegisterReqDTO registerReqDTO = 2;</code>
+     * <code>.com.alioth4j.corneast_core.proto.RegisterReqDTO registerReqDTO = 3;</code>
      */
     com.alioth4j.corneast_core.proto.RequestProto.RegisterReqDTOOrBuilder getRegisterReqDTOOrBuilder();
 
     /**
-     * <code>.com.alioth4j.corneast_core.proto.ReduceReqDTO reduceReqDTO = 3;</code>
+     * <code>.com.alioth4j.corneast_core.proto.ReduceReqDTO reduceReqDTO = 4;</code>
      * @return Whether the reduceReqDTO field is set.
      */
     boolean hasReduceReqDTO();
     /**
-     * <code>.com.alioth4j.corneast_core.proto.ReduceReqDTO reduceReqDTO = 3;</code>
+     * <code>.com.alioth4j.corneast_core.proto.ReduceReqDTO reduceReqDTO = 4;</code>
      * @return The reduceReqDTO.
      */
     com.alioth4j.corneast_core.proto.RequestProto.ReduceReqDTO getReduceReqDTO();
     /**
-     * <code>.com.alioth4j.corneast_core.proto.ReduceReqDTO reduceReqDTO = 3;</code>
+     * <code>.com.alioth4j.corneast_core.proto.ReduceReqDTO reduceReqDTO = 4;</code>
      */
     com.alioth4j.corneast_core.proto.RequestProto.ReduceReqDTOOrBuilder getReduceReqDTOOrBuilder();
 
     /**
-     * <code>.com.alioth4j.corneast_core.proto.QueryReqDTO queryReqDTO = 4;</code>
+     * <code>.com.alioth4j.corneast_core.proto.QueryReqDTO queryReqDTO = 5;</code>
      * @return Whether the queryReqDTO field is set.
      */
     boolean hasQueryReqDTO();
     /**
-     * <code>.com.alioth4j.corneast_core.proto.QueryReqDTO queryReqDTO = 4;</code>
+     * <code>.com.alioth4j.corneast_core.proto.QueryReqDTO queryReqDTO = 5;</code>
      * @return The queryReqDTO.
      */
     com.alioth4j.corneast_core.proto.RequestProto.QueryReqDTO getQueryReqDTO();
     /**
-     * <code>.com.alioth4j.corneast_core.proto.QueryReqDTO queryReqDTO = 4;</code>
+     * <code>.com.alioth4j.corneast_core.proto.QueryReqDTO queryReqDTO = 5;</code>
      */
     com.alioth4j.corneast_core.proto.RequestProto.QueryReqDTOOrBuilder getQueryReqDTOOrBuilder();
 
     /**
-     * <code>.com.alioth4j.corneast_core.proto.ReleaseReqDTO releaseReqDTO = 5;</code>
+     * <code>.com.alioth4j.corneast_core.proto.ReleaseReqDTO releaseReqDTO = 6;</code>
      * @return Whether the releaseReqDTO field is set.
      */
     boolean hasReleaseReqDTO();
     /**
-     * <code>.com.alioth4j.corneast_core.proto.ReleaseReqDTO releaseReqDTO = 5;</code>
+     * <code>.com.alioth4j.corneast_core.proto.ReleaseReqDTO releaseReqDTO = 6;</code>
      * @return The releaseReqDTO.
      */
     com.alioth4j.corneast_core.proto.RequestProto.ReleaseReqDTO getReleaseReqDTO();
     /**
-     * <code>.com.alioth4j.corneast_core.proto.ReleaseReqDTO releaseReqDTO = 5;</code>
+     * <code>.com.alioth4j.corneast_core.proto.ReleaseReqDTO releaseReqDTO = 6;</code>
      */
     com.alioth4j.corneast_core.proto.RequestProto.ReleaseReqDTOOrBuilder getReleaseReqDTOOrBuilder();
 
@@ -106,6 +118,7 @@ public final class RequestProto {
     }
     private RequestDTO() {
       type_ = "";
+      id_ = "";
     }
 
     @java.lang.Override
@@ -138,10 +151,10 @@ public final class RequestProto {
     public enum RequestCase
         implements com.google.protobuf.Internal.EnumLite,
             com.google.protobuf.AbstractMessage.InternalOneOfEnum {
-      REGISTERREQDTO(2),
-      REDUCEREQDTO(3),
-      QUERYREQDTO(4),
-      RELEASEREQDTO(5),
+      REGISTERREQDTO(3),
+      REDUCEREQDTO(4),
+      QUERYREQDTO(5),
+      RELEASEREQDTO(6),
       REQUEST_NOT_SET(0);
       private final int value;
       private RequestCase(int value) {
@@ -159,10 +172,10 @@ public final class RequestProto {
 
       public static RequestCase forNumber(int value) {
         switch (value) {
-          case 2: return REGISTERREQDTO;
-          case 3: return REDUCEREQDTO;
-          case 4: return QUERYREQDTO;
-          case 5: return RELEASEREQDTO;
+          case 3: return REGISTERREQDTO;
+          case 4: return REDUCEREQDTO;
+          case 5: return QUERYREQDTO;
+          case 6: return RELEASEREQDTO;
           case 0: return REQUEST_NOT_SET;
           default: return null;
         }
@@ -216,125 +229,163 @@ public final class RequestProto {
       }
     }
 
-    public static final int REGISTERREQDTO_FIELD_NUMBER = 2;
+    public static final int ID_FIELD_NUMBER = 2;
+    private volatile java.lang.Object id_;
     /**
-     * <code>.com.alioth4j.corneast_core.proto.RegisterReqDTO registerReqDTO = 2;</code>
+     * <code>string id = 2;</code>
+     * @return The id.
+     */
+    @java.lang.Override
+    public java.lang.String getId() {
+      java.lang.Object ref = id_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        id_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string id = 2;</code>
+     * @return The bytes for id.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getIdBytes() {
+      java.lang.Object ref = id_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        id_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int REGISTERREQDTO_FIELD_NUMBER = 3;
+    /**
+     * <code>.com.alioth4j.corneast_core.proto.RegisterReqDTO registerReqDTO = 3;</code>
      * @return Whether the registerReqDTO field is set.
      */
     @java.lang.Override
     public boolean hasRegisterReqDTO() {
-      return requestCase_ == 2;
+      return requestCase_ == 3;
     }
     /**
-     * <code>.com.alioth4j.corneast_core.proto.RegisterReqDTO registerReqDTO = 2;</code>
+     * <code>.com.alioth4j.corneast_core.proto.RegisterReqDTO registerReqDTO = 3;</code>
      * @return The registerReqDTO.
      */
     @java.lang.Override
     public com.alioth4j.corneast_core.proto.RequestProto.RegisterReqDTO getRegisterReqDTO() {
-      if (requestCase_ == 2) {
+      if (requestCase_ == 3) {
          return (com.alioth4j.corneast_core.proto.RequestProto.RegisterReqDTO) request_;
       }
       return com.alioth4j.corneast_core.proto.RequestProto.RegisterReqDTO.getDefaultInstance();
     }
     /**
-     * <code>.com.alioth4j.corneast_core.proto.RegisterReqDTO registerReqDTO = 2;</code>
+     * <code>.com.alioth4j.corneast_core.proto.RegisterReqDTO registerReqDTO = 3;</code>
      */
     @java.lang.Override
     public com.alioth4j.corneast_core.proto.RequestProto.RegisterReqDTOOrBuilder getRegisterReqDTOOrBuilder() {
-      if (requestCase_ == 2) {
+      if (requestCase_ == 3) {
          return (com.alioth4j.corneast_core.proto.RequestProto.RegisterReqDTO) request_;
       }
       return com.alioth4j.corneast_core.proto.RequestProto.RegisterReqDTO.getDefaultInstance();
     }
 
-    public static final int REDUCEREQDTO_FIELD_NUMBER = 3;
+    public static final int REDUCEREQDTO_FIELD_NUMBER = 4;
     /**
-     * <code>.com.alioth4j.corneast_core.proto.ReduceReqDTO reduceReqDTO = 3;</code>
+     * <code>.com.alioth4j.corneast_core.proto.ReduceReqDTO reduceReqDTO = 4;</code>
      * @return Whether the reduceReqDTO field is set.
      */
     @java.lang.Override
     public boolean hasReduceReqDTO() {
-      return requestCase_ == 3;
+      return requestCase_ == 4;
     }
     /**
-     * <code>.com.alioth4j.corneast_core.proto.ReduceReqDTO reduceReqDTO = 3;</code>
+     * <code>.com.alioth4j.corneast_core.proto.ReduceReqDTO reduceReqDTO = 4;</code>
      * @return The reduceReqDTO.
      */
     @java.lang.Override
     public com.alioth4j.corneast_core.proto.RequestProto.ReduceReqDTO getReduceReqDTO() {
-      if (requestCase_ == 3) {
+      if (requestCase_ == 4) {
          return (com.alioth4j.corneast_core.proto.RequestProto.ReduceReqDTO) request_;
       }
       return com.alioth4j.corneast_core.proto.RequestProto.ReduceReqDTO.getDefaultInstance();
     }
     /**
-     * <code>.com.alioth4j.corneast_core.proto.ReduceReqDTO reduceReqDTO = 3;</code>
+     * <code>.com.alioth4j.corneast_core.proto.ReduceReqDTO reduceReqDTO = 4;</code>
      */
     @java.lang.Override
     public com.alioth4j.corneast_core.proto.RequestProto.ReduceReqDTOOrBuilder getReduceReqDTOOrBuilder() {
-      if (requestCase_ == 3) {
+      if (requestCase_ == 4) {
          return (com.alioth4j.corneast_core.proto.RequestProto.ReduceReqDTO) request_;
       }
       return com.alioth4j.corneast_core.proto.RequestProto.ReduceReqDTO.getDefaultInstance();
     }
 
-    public static final int QUERYREQDTO_FIELD_NUMBER = 4;
+    public static final int QUERYREQDTO_FIELD_NUMBER = 5;
     /**
-     * <code>.com.alioth4j.corneast_core.proto.QueryReqDTO queryReqDTO = 4;</code>
+     * <code>.com.alioth4j.corneast_core.proto.QueryReqDTO queryReqDTO = 5;</code>
      * @return Whether the queryReqDTO field is set.
      */
     @java.lang.Override
     public boolean hasQueryReqDTO() {
-      return requestCase_ == 4;
+      return requestCase_ == 5;
     }
     /**
-     * <code>.com.alioth4j.corneast_core.proto.QueryReqDTO queryReqDTO = 4;</code>
+     * <code>.com.alioth4j.corneast_core.proto.QueryReqDTO queryReqDTO = 5;</code>
      * @return The queryReqDTO.
      */
     @java.lang.Override
     public com.alioth4j.corneast_core.proto.RequestProto.QueryReqDTO getQueryReqDTO() {
-      if (requestCase_ == 4) {
+      if (requestCase_ == 5) {
          return (com.alioth4j.corneast_core.proto.RequestProto.QueryReqDTO) request_;
       }
       return com.alioth4j.corneast_core.proto.RequestProto.QueryReqDTO.getDefaultInstance();
     }
     /**
-     * <code>.com.alioth4j.corneast_core.proto.QueryReqDTO queryReqDTO = 4;</code>
+     * <code>.com.alioth4j.corneast_core.proto.QueryReqDTO queryReqDTO = 5;</code>
      */
     @java.lang.Override
     public com.alioth4j.corneast_core.proto.RequestProto.QueryReqDTOOrBuilder getQueryReqDTOOrBuilder() {
-      if (requestCase_ == 4) {
+      if (requestCase_ == 5) {
          return (com.alioth4j.corneast_core.proto.RequestProto.QueryReqDTO) request_;
       }
       return com.alioth4j.corneast_core.proto.RequestProto.QueryReqDTO.getDefaultInstance();
     }
 
-    public static final int RELEASEREQDTO_FIELD_NUMBER = 5;
+    public static final int RELEASEREQDTO_FIELD_NUMBER = 6;
     /**
-     * <code>.com.alioth4j.corneast_core.proto.ReleaseReqDTO releaseReqDTO = 5;</code>
+     * <code>.com.alioth4j.corneast_core.proto.ReleaseReqDTO releaseReqDTO = 6;</code>
      * @return Whether the releaseReqDTO field is set.
      */
     @java.lang.Override
     public boolean hasReleaseReqDTO() {
-      return requestCase_ == 5;
+      return requestCase_ == 6;
     }
     /**
-     * <code>.com.alioth4j.corneast_core.proto.ReleaseReqDTO releaseReqDTO = 5;</code>
+     * <code>.com.alioth4j.corneast_core.proto.ReleaseReqDTO releaseReqDTO = 6;</code>
      * @return The releaseReqDTO.
      */
     @java.lang.Override
     public com.alioth4j.corneast_core.proto.RequestProto.ReleaseReqDTO getReleaseReqDTO() {
-      if (requestCase_ == 5) {
+      if (requestCase_ == 6) {
          return (com.alioth4j.corneast_core.proto.RequestProto.ReleaseReqDTO) request_;
       }
       return com.alioth4j.corneast_core.proto.RequestProto.ReleaseReqDTO.getDefaultInstance();
     }
     /**
-     * <code>.com.alioth4j.corneast_core.proto.ReleaseReqDTO releaseReqDTO = 5;</code>
+     * <code>.com.alioth4j.corneast_core.proto.ReleaseReqDTO releaseReqDTO = 6;</code>
      */
     @java.lang.Override
     public com.alioth4j.corneast_core.proto.RequestProto.ReleaseReqDTOOrBuilder getReleaseReqDTOOrBuilder() {
-      if (requestCase_ == 5) {
+      if (requestCase_ == 6) {
          return (com.alioth4j.corneast_core.proto.RequestProto.ReleaseReqDTO) request_;
       }
       return com.alioth4j.corneast_core.proto.RequestProto.ReleaseReqDTO.getDefaultInstance();
@@ -357,17 +408,20 @@ public final class RequestProto {
       if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(type_)) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 1, type_);
       }
-      if (requestCase_ == 2) {
-        output.writeMessage(2, (com.alioth4j.corneast_core.proto.RequestProto.RegisterReqDTO) request_);
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(id_)) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 2, id_);
       }
       if (requestCase_ == 3) {
-        output.writeMessage(3, (com.alioth4j.corneast_core.proto.RequestProto.ReduceReqDTO) request_);
+        output.writeMessage(3, (com.alioth4j.corneast_core.proto.RequestProto.RegisterReqDTO) request_);
       }
       if (requestCase_ == 4) {
-        output.writeMessage(4, (com.alioth4j.corneast_core.proto.RequestProto.QueryReqDTO) request_);
+        output.writeMessage(4, (com.alioth4j.corneast_core.proto.RequestProto.ReduceReqDTO) request_);
       }
       if (requestCase_ == 5) {
-        output.writeMessage(5, (com.alioth4j.corneast_core.proto.RequestProto.ReleaseReqDTO) request_);
+        output.writeMessage(5, (com.alioth4j.corneast_core.proto.RequestProto.QueryReqDTO) request_);
+      }
+      if (requestCase_ == 6) {
+        output.writeMessage(6, (com.alioth4j.corneast_core.proto.RequestProto.ReleaseReqDTO) request_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -381,21 +435,24 @@ public final class RequestProto {
       if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(type_)) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, type_);
       }
-      if (requestCase_ == 2) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(2, (com.alioth4j.corneast_core.proto.RequestProto.RegisterReqDTO) request_);
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(id_)) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, id_);
       }
       if (requestCase_ == 3) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(3, (com.alioth4j.corneast_core.proto.RequestProto.ReduceReqDTO) request_);
+          .computeMessageSize(3, (com.alioth4j.corneast_core.proto.RequestProto.RegisterReqDTO) request_);
       }
       if (requestCase_ == 4) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(4, (com.alioth4j.corneast_core.proto.RequestProto.QueryReqDTO) request_);
+          .computeMessageSize(4, (com.alioth4j.corneast_core.proto.RequestProto.ReduceReqDTO) request_);
       }
       if (requestCase_ == 5) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(5, (com.alioth4j.corneast_core.proto.RequestProto.ReleaseReqDTO) request_);
+          .computeMessageSize(5, (com.alioth4j.corneast_core.proto.RequestProto.QueryReqDTO) request_);
+      }
+      if (requestCase_ == 6) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(6, (com.alioth4j.corneast_core.proto.RequestProto.ReleaseReqDTO) request_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSize = size;
@@ -414,21 +471,23 @@ public final class RequestProto {
 
       if (!getType()
           .equals(other.getType())) return false;
+      if (!getId()
+          .equals(other.getId())) return false;
       if (!getRequestCase().equals(other.getRequestCase())) return false;
       switch (requestCase_) {
-        case 2:
+        case 3:
           if (!getRegisterReqDTO()
               .equals(other.getRegisterReqDTO())) return false;
           break;
-        case 3:
+        case 4:
           if (!getReduceReqDTO()
               .equals(other.getReduceReqDTO())) return false;
           break;
-        case 4:
+        case 5:
           if (!getQueryReqDTO()
               .equals(other.getQueryReqDTO())) return false;
           break;
-        case 5:
+        case 6:
           if (!getReleaseReqDTO()
               .equals(other.getReleaseReqDTO())) return false;
           break;
@@ -448,20 +507,22 @@ public final class RequestProto {
       hash = (19 * hash) + getDescriptor().hashCode();
       hash = (37 * hash) + TYPE_FIELD_NUMBER;
       hash = (53 * hash) + getType().hashCode();
+      hash = (37 * hash) + ID_FIELD_NUMBER;
+      hash = (53 * hash) + getId().hashCode();
       switch (requestCase_) {
-        case 2:
+        case 3:
           hash = (37 * hash) + REGISTERREQDTO_FIELD_NUMBER;
           hash = (53 * hash) + getRegisterReqDTO().hashCode();
           break;
-        case 3:
+        case 4:
           hash = (37 * hash) + REDUCEREQDTO_FIELD_NUMBER;
           hash = (53 * hash) + getReduceReqDTO().hashCode();
           break;
-        case 4:
+        case 5:
           hash = (37 * hash) + QUERYREQDTO_FIELD_NUMBER;
           hash = (53 * hash) + getQueryReqDTO().hashCode();
           break;
-        case 5:
+        case 6:
           hash = (37 * hash) + RELEASEREQDTO_FIELD_NUMBER;
           hash = (53 * hash) + getReleaseReqDTO().hashCode();
           break;
@@ -598,6 +659,8 @@ public final class RequestProto {
         super.clear();
         type_ = "";
 
+        id_ = "";
+
         if (registerReqDTOBuilder_ != null) {
           registerReqDTOBuilder_.clear();
         }
@@ -639,28 +702,29 @@ public final class RequestProto {
       public com.alioth4j.corneast_core.proto.RequestProto.RequestDTO buildPartial() {
         com.alioth4j.corneast_core.proto.RequestProto.RequestDTO result = new com.alioth4j.corneast_core.proto.RequestProto.RequestDTO(this);
         result.type_ = type_;
-        if (requestCase_ == 2) {
+        result.id_ = id_;
+        if (requestCase_ == 3) {
           if (registerReqDTOBuilder_ == null) {
             result.request_ = request_;
           } else {
             result.request_ = registerReqDTOBuilder_.build();
           }
         }
-        if (requestCase_ == 3) {
+        if (requestCase_ == 4) {
           if (reduceReqDTOBuilder_ == null) {
             result.request_ = request_;
           } else {
             result.request_ = reduceReqDTOBuilder_.build();
           }
         }
-        if (requestCase_ == 4) {
+        if (requestCase_ == 5) {
           if (queryReqDTOBuilder_ == null) {
             result.request_ = request_;
           } else {
             result.request_ = queryReqDTOBuilder_.build();
           }
         }
-        if (requestCase_ == 5) {
+        if (requestCase_ == 6) {
           if (releaseReqDTOBuilder_ == null) {
             result.request_ = request_;
           } else {
@@ -720,6 +784,10 @@ public final class RequestProto {
           type_ = other.type_;
           onChanged();
         }
+        if (!other.getId().isEmpty()) {
+          id_ = other.id_;
+          onChanged();
+        }
         switch (other.getRequestCase()) {
           case REGISTERREQDTO: {
             mergeRegisterReqDTO(other.getRegisterReqDTO());
@@ -773,33 +841,38 @@ public final class RequestProto {
                 break;
               } // case 10
               case 18: {
-                input.readMessage(
-                    getRegisterReqDTOFieldBuilder().getBuilder(),
-                    extensionRegistry);
-                requestCase_ = 2;
+                id_ = input.readStringRequireUtf8();
+
                 break;
               } // case 18
               case 26: {
                 input.readMessage(
-                    getReduceReqDTOFieldBuilder().getBuilder(),
+                    getRegisterReqDTOFieldBuilder().getBuilder(),
                     extensionRegistry);
                 requestCase_ = 3;
                 break;
               } // case 26
               case 34: {
                 input.readMessage(
-                    getQueryReqDTOFieldBuilder().getBuilder(),
+                    getReduceReqDTOFieldBuilder().getBuilder(),
                     extensionRegistry);
                 requestCase_ = 4;
                 break;
               } // case 34
               case 42: {
                 input.readMessage(
-                    getReleaseReqDTOFieldBuilder().getBuilder(),
+                    getQueryReqDTOFieldBuilder().getBuilder(),
                     extensionRegistry);
                 requestCase_ = 5;
                 break;
               } // case 42
+              case 50: {
+                input.readMessage(
+                    getReleaseReqDTOFieldBuilder().getBuilder(),
+                    extensionRegistry);
+                requestCase_ = 6;
+                break;
+              } // case 50
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -907,36 +980,112 @@ public final class RequestProto {
         return this;
       }
 
+      private java.lang.Object id_ = "";
+      /**
+       * <code>string id = 2;</code>
+       * @return The id.
+       */
+      public java.lang.String getId() {
+        java.lang.Object ref = id_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          id_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string id = 2;</code>
+       * @return The bytes for id.
+       */
+      public com.google.protobuf.ByteString
+          getIdBytes() {
+        java.lang.Object ref = id_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          id_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string id = 2;</code>
+       * @param value The id to set.
+       * @return This builder for chaining.
+       */
+      public Builder setId(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        id_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string id = 2;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearId() {
+        
+        id_ = getDefaultInstance().getId();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string id = 2;</code>
+       * @param value The bytes for id to set.
+       * @return This builder for chaining.
+       */
+      public Builder setIdBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        id_ = value;
+        onChanged();
+        return this;
+      }
+
       private com.google.protobuf.SingleFieldBuilderV3<
           com.alioth4j.corneast_core.proto.RequestProto.RegisterReqDTO, com.alioth4j.corneast_core.proto.RequestProto.RegisterReqDTO.Builder, com.alioth4j.corneast_core.proto.RequestProto.RegisterReqDTOOrBuilder> registerReqDTOBuilder_;
       /**
-       * <code>.com.alioth4j.corneast_core.proto.RegisterReqDTO registerReqDTO = 2;</code>
+       * <code>.com.alioth4j.corneast_core.proto.RegisterReqDTO registerReqDTO = 3;</code>
        * @return Whether the registerReqDTO field is set.
        */
       @java.lang.Override
       public boolean hasRegisterReqDTO() {
-        return requestCase_ == 2;
+        return requestCase_ == 3;
       }
       /**
-       * <code>.com.alioth4j.corneast_core.proto.RegisterReqDTO registerReqDTO = 2;</code>
+       * <code>.com.alioth4j.corneast_core.proto.RegisterReqDTO registerReqDTO = 3;</code>
        * @return The registerReqDTO.
        */
       @java.lang.Override
       public com.alioth4j.corneast_core.proto.RequestProto.RegisterReqDTO getRegisterReqDTO() {
         if (registerReqDTOBuilder_ == null) {
-          if (requestCase_ == 2) {
+          if (requestCase_ == 3) {
             return (com.alioth4j.corneast_core.proto.RequestProto.RegisterReqDTO) request_;
           }
           return com.alioth4j.corneast_core.proto.RequestProto.RegisterReqDTO.getDefaultInstance();
         } else {
-          if (requestCase_ == 2) {
+          if (requestCase_ == 3) {
             return registerReqDTOBuilder_.getMessage();
           }
           return com.alioth4j.corneast_core.proto.RequestProto.RegisterReqDTO.getDefaultInstance();
         }
       }
       /**
-       * <code>.com.alioth4j.corneast_core.proto.RegisterReqDTO registerReqDTO = 2;</code>
+       * <code>.com.alioth4j.corneast_core.proto.RegisterReqDTO registerReqDTO = 3;</code>
        */
       public Builder setRegisterReqDTO(com.alioth4j.corneast_core.proto.RequestProto.RegisterReqDTO value) {
         if (registerReqDTOBuilder_ == null) {
@@ -948,11 +1097,11 @@ public final class RequestProto {
         } else {
           registerReqDTOBuilder_.setMessage(value);
         }
-        requestCase_ = 2;
+        requestCase_ = 3;
         return this;
       }
       /**
-       * <code>.com.alioth4j.corneast_core.proto.RegisterReqDTO registerReqDTO = 2;</code>
+       * <code>.com.alioth4j.corneast_core.proto.RegisterReqDTO registerReqDTO = 3;</code>
        */
       public Builder setRegisterReqDTO(
           com.alioth4j.corneast_core.proto.RequestProto.RegisterReqDTO.Builder builderForValue) {
@@ -962,15 +1111,15 @@ public final class RequestProto {
         } else {
           registerReqDTOBuilder_.setMessage(builderForValue.build());
         }
-        requestCase_ = 2;
+        requestCase_ = 3;
         return this;
       }
       /**
-       * <code>.com.alioth4j.corneast_core.proto.RegisterReqDTO registerReqDTO = 2;</code>
+       * <code>.com.alioth4j.corneast_core.proto.RegisterReqDTO registerReqDTO = 3;</code>
        */
       public Builder mergeRegisterReqDTO(com.alioth4j.corneast_core.proto.RequestProto.RegisterReqDTO value) {
         if (registerReqDTOBuilder_ == null) {
-          if (requestCase_ == 2 &&
+          if (requestCase_ == 3 &&
               request_ != com.alioth4j.corneast_core.proto.RequestProto.RegisterReqDTO.getDefaultInstance()) {
             request_ = com.alioth4j.corneast_core.proto.RequestProto.RegisterReqDTO.newBuilder((com.alioth4j.corneast_core.proto.RequestProto.RegisterReqDTO) request_)
                 .mergeFrom(value).buildPartial();
@@ -979,26 +1128,26 @@ public final class RequestProto {
           }
           onChanged();
         } else {
-          if (requestCase_ == 2) {
+          if (requestCase_ == 3) {
             registerReqDTOBuilder_.mergeFrom(value);
           }
           registerReqDTOBuilder_.setMessage(value);
         }
-        requestCase_ = 2;
+        requestCase_ = 3;
         return this;
       }
       /**
-       * <code>.com.alioth4j.corneast_core.proto.RegisterReqDTO registerReqDTO = 2;</code>
+       * <code>.com.alioth4j.corneast_core.proto.RegisterReqDTO registerReqDTO = 3;</code>
        */
       public Builder clearRegisterReqDTO() {
         if (registerReqDTOBuilder_ == null) {
-          if (requestCase_ == 2) {
+          if (requestCase_ == 3) {
             requestCase_ = 0;
             request_ = null;
             onChanged();
           }
         } else {
-          if (requestCase_ == 2) {
+          if (requestCase_ == 3) {
             requestCase_ = 0;
             request_ = null;
           }
@@ -1007,33 +1156,33 @@ public final class RequestProto {
         return this;
       }
       /**
-       * <code>.com.alioth4j.corneast_core.proto.RegisterReqDTO registerReqDTO = 2;</code>
+       * <code>.com.alioth4j.corneast_core.proto.RegisterReqDTO registerReqDTO = 3;</code>
        */
       public com.alioth4j.corneast_core.proto.RequestProto.RegisterReqDTO.Builder getRegisterReqDTOBuilder() {
         return getRegisterReqDTOFieldBuilder().getBuilder();
       }
       /**
-       * <code>.com.alioth4j.corneast_core.proto.RegisterReqDTO registerReqDTO = 2;</code>
+       * <code>.com.alioth4j.corneast_core.proto.RegisterReqDTO registerReqDTO = 3;</code>
        */
       @java.lang.Override
       public com.alioth4j.corneast_core.proto.RequestProto.RegisterReqDTOOrBuilder getRegisterReqDTOOrBuilder() {
-        if ((requestCase_ == 2) && (registerReqDTOBuilder_ != null)) {
+        if ((requestCase_ == 3) && (registerReqDTOBuilder_ != null)) {
           return registerReqDTOBuilder_.getMessageOrBuilder();
         } else {
-          if (requestCase_ == 2) {
+          if (requestCase_ == 3) {
             return (com.alioth4j.corneast_core.proto.RequestProto.RegisterReqDTO) request_;
           }
           return com.alioth4j.corneast_core.proto.RequestProto.RegisterReqDTO.getDefaultInstance();
         }
       }
       /**
-       * <code>.com.alioth4j.corneast_core.proto.RegisterReqDTO registerReqDTO = 2;</code>
+       * <code>.com.alioth4j.corneast_core.proto.RegisterReqDTO registerReqDTO = 3;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
           com.alioth4j.corneast_core.proto.RequestProto.RegisterReqDTO, com.alioth4j.corneast_core.proto.RequestProto.RegisterReqDTO.Builder, com.alioth4j.corneast_core.proto.RequestProto.RegisterReqDTOOrBuilder> 
           getRegisterReqDTOFieldBuilder() {
         if (registerReqDTOBuilder_ == null) {
-          if (!(requestCase_ == 2)) {
+          if (!(requestCase_ == 3)) {
             request_ = com.alioth4j.corneast_core.proto.RequestProto.RegisterReqDTO.getDefaultInstance();
           }
           registerReqDTOBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
@@ -1043,7 +1192,7 @@ public final class RequestProto {
                   isClean());
           request_ = null;
         }
-        requestCase_ = 2;
+        requestCase_ = 3;
         onChanged();;
         return registerReqDTOBuilder_;
       }
@@ -1051,33 +1200,33 @@ public final class RequestProto {
       private com.google.protobuf.SingleFieldBuilderV3<
           com.alioth4j.corneast_core.proto.RequestProto.ReduceReqDTO, com.alioth4j.corneast_core.proto.RequestProto.ReduceReqDTO.Builder, com.alioth4j.corneast_core.proto.RequestProto.ReduceReqDTOOrBuilder> reduceReqDTOBuilder_;
       /**
-       * <code>.com.alioth4j.corneast_core.proto.ReduceReqDTO reduceReqDTO = 3;</code>
+       * <code>.com.alioth4j.corneast_core.proto.ReduceReqDTO reduceReqDTO = 4;</code>
        * @return Whether the reduceReqDTO field is set.
        */
       @java.lang.Override
       public boolean hasReduceReqDTO() {
-        return requestCase_ == 3;
+        return requestCase_ == 4;
       }
       /**
-       * <code>.com.alioth4j.corneast_core.proto.ReduceReqDTO reduceReqDTO = 3;</code>
+       * <code>.com.alioth4j.corneast_core.proto.ReduceReqDTO reduceReqDTO = 4;</code>
        * @return The reduceReqDTO.
        */
       @java.lang.Override
       public com.alioth4j.corneast_core.proto.RequestProto.ReduceReqDTO getReduceReqDTO() {
         if (reduceReqDTOBuilder_ == null) {
-          if (requestCase_ == 3) {
+          if (requestCase_ == 4) {
             return (com.alioth4j.corneast_core.proto.RequestProto.ReduceReqDTO) request_;
           }
           return com.alioth4j.corneast_core.proto.RequestProto.ReduceReqDTO.getDefaultInstance();
         } else {
-          if (requestCase_ == 3) {
+          if (requestCase_ == 4) {
             return reduceReqDTOBuilder_.getMessage();
           }
           return com.alioth4j.corneast_core.proto.RequestProto.ReduceReqDTO.getDefaultInstance();
         }
       }
       /**
-       * <code>.com.alioth4j.corneast_core.proto.ReduceReqDTO reduceReqDTO = 3;</code>
+       * <code>.com.alioth4j.corneast_core.proto.ReduceReqDTO reduceReqDTO = 4;</code>
        */
       public Builder setReduceReqDTO(com.alioth4j.corneast_core.proto.RequestProto.ReduceReqDTO value) {
         if (reduceReqDTOBuilder_ == null) {
@@ -1089,11 +1238,11 @@ public final class RequestProto {
         } else {
           reduceReqDTOBuilder_.setMessage(value);
         }
-        requestCase_ = 3;
+        requestCase_ = 4;
         return this;
       }
       /**
-       * <code>.com.alioth4j.corneast_core.proto.ReduceReqDTO reduceReqDTO = 3;</code>
+       * <code>.com.alioth4j.corneast_core.proto.ReduceReqDTO reduceReqDTO = 4;</code>
        */
       public Builder setReduceReqDTO(
           com.alioth4j.corneast_core.proto.RequestProto.ReduceReqDTO.Builder builderForValue) {
@@ -1103,15 +1252,15 @@ public final class RequestProto {
         } else {
           reduceReqDTOBuilder_.setMessage(builderForValue.build());
         }
-        requestCase_ = 3;
+        requestCase_ = 4;
         return this;
       }
       /**
-       * <code>.com.alioth4j.corneast_core.proto.ReduceReqDTO reduceReqDTO = 3;</code>
+       * <code>.com.alioth4j.corneast_core.proto.ReduceReqDTO reduceReqDTO = 4;</code>
        */
       public Builder mergeReduceReqDTO(com.alioth4j.corneast_core.proto.RequestProto.ReduceReqDTO value) {
         if (reduceReqDTOBuilder_ == null) {
-          if (requestCase_ == 3 &&
+          if (requestCase_ == 4 &&
               request_ != com.alioth4j.corneast_core.proto.RequestProto.ReduceReqDTO.getDefaultInstance()) {
             request_ = com.alioth4j.corneast_core.proto.RequestProto.ReduceReqDTO.newBuilder((com.alioth4j.corneast_core.proto.RequestProto.ReduceReqDTO) request_)
                 .mergeFrom(value).buildPartial();
@@ -1120,26 +1269,26 @@ public final class RequestProto {
           }
           onChanged();
         } else {
-          if (requestCase_ == 3) {
+          if (requestCase_ == 4) {
             reduceReqDTOBuilder_.mergeFrom(value);
           }
           reduceReqDTOBuilder_.setMessage(value);
         }
-        requestCase_ = 3;
+        requestCase_ = 4;
         return this;
       }
       /**
-       * <code>.com.alioth4j.corneast_core.proto.ReduceReqDTO reduceReqDTO = 3;</code>
+       * <code>.com.alioth4j.corneast_core.proto.ReduceReqDTO reduceReqDTO = 4;</code>
        */
       public Builder clearReduceReqDTO() {
         if (reduceReqDTOBuilder_ == null) {
-          if (requestCase_ == 3) {
+          if (requestCase_ == 4) {
             requestCase_ = 0;
             request_ = null;
             onChanged();
           }
         } else {
-          if (requestCase_ == 3) {
+          if (requestCase_ == 4) {
             requestCase_ = 0;
             request_ = null;
           }
@@ -1148,33 +1297,33 @@ public final class RequestProto {
         return this;
       }
       /**
-       * <code>.com.alioth4j.corneast_core.proto.ReduceReqDTO reduceReqDTO = 3;</code>
+       * <code>.com.alioth4j.corneast_core.proto.ReduceReqDTO reduceReqDTO = 4;</code>
        */
       public com.alioth4j.corneast_core.proto.RequestProto.ReduceReqDTO.Builder getReduceReqDTOBuilder() {
         return getReduceReqDTOFieldBuilder().getBuilder();
       }
       /**
-       * <code>.com.alioth4j.corneast_core.proto.ReduceReqDTO reduceReqDTO = 3;</code>
+       * <code>.com.alioth4j.corneast_core.proto.ReduceReqDTO reduceReqDTO = 4;</code>
        */
       @java.lang.Override
       public com.alioth4j.corneast_core.proto.RequestProto.ReduceReqDTOOrBuilder getReduceReqDTOOrBuilder() {
-        if ((requestCase_ == 3) && (reduceReqDTOBuilder_ != null)) {
+        if ((requestCase_ == 4) && (reduceReqDTOBuilder_ != null)) {
           return reduceReqDTOBuilder_.getMessageOrBuilder();
         } else {
-          if (requestCase_ == 3) {
+          if (requestCase_ == 4) {
             return (com.alioth4j.corneast_core.proto.RequestProto.ReduceReqDTO) request_;
           }
           return com.alioth4j.corneast_core.proto.RequestProto.ReduceReqDTO.getDefaultInstance();
         }
       }
       /**
-       * <code>.com.alioth4j.corneast_core.proto.ReduceReqDTO reduceReqDTO = 3;</code>
+       * <code>.com.alioth4j.corneast_core.proto.ReduceReqDTO reduceReqDTO = 4;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
           com.alioth4j.corneast_core.proto.RequestProto.ReduceReqDTO, com.alioth4j.corneast_core.proto.RequestProto.ReduceReqDTO.Builder, com.alioth4j.corneast_core.proto.RequestProto.ReduceReqDTOOrBuilder> 
           getReduceReqDTOFieldBuilder() {
         if (reduceReqDTOBuilder_ == null) {
-          if (!(requestCase_ == 3)) {
+          if (!(requestCase_ == 4)) {
             request_ = com.alioth4j.corneast_core.proto.RequestProto.ReduceReqDTO.getDefaultInstance();
           }
           reduceReqDTOBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
@@ -1184,7 +1333,7 @@ public final class RequestProto {
                   isClean());
           request_ = null;
         }
-        requestCase_ = 3;
+        requestCase_ = 4;
         onChanged();;
         return reduceReqDTOBuilder_;
       }
@@ -1192,33 +1341,33 @@ public final class RequestProto {
       private com.google.protobuf.SingleFieldBuilderV3<
           com.alioth4j.corneast_core.proto.RequestProto.QueryReqDTO, com.alioth4j.corneast_core.proto.RequestProto.QueryReqDTO.Builder, com.alioth4j.corneast_core.proto.RequestProto.QueryReqDTOOrBuilder> queryReqDTOBuilder_;
       /**
-       * <code>.com.alioth4j.corneast_core.proto.QueryReqDTO queryReqDTO = 4;</code>
+       * <code>.com.alioth4j.corneast_core.proto.QueryReqDTO queryReqDTO = 5;</code>
        * @return Whether the queryReqDTO field is set.
        */
       @java.lang.Override
       public boolean hasQueryReqDTO() {
-        return requestCase_ == 4;
+        return requestCase_ == 5;
       }
       /**
-       * <code>.com.alioth4j.corneast_core.proto.QueryReqDTO queryReqDTO = 4;</code>
+       * <code>.com.alioth4j.corneast_core.proto.QueryReqDTO queryReqDTO = 5;</code>
        * @return The queryReqDTO.
        */
       @java.lang.Override
       public com.alioth4j.corneast_core.proto.RequestProto.QueryReqDTO getQueryReqDTO() {
         if (queryReqDTOBuilder_ == null) {
-          if (requestCase_ == 4) {
+          if (requestCase_ == 5) {
             return (com.alioth4j.corneast_core.proto.RequestProto.QueryReqDTO) request_;
           }
           return com.alioth4j.corneast_core.proto.RequestProto.QueryReqDTO.getDefaultInstance();
         } else {
-          if (requestCase_ == 4) {
+          if (requestCase_ == 5) {
             return queryReqDTOBuilder_.getMessage();
           }
           return com.alioth4j.corneast_core.proto.RequestProto.QueryReqDTO.getDefaultInstance();
         }
       }
       /**
-       * <code>.com.alioth4j.corneast_core.proto.QueryReqDTO queryReqDTO = 4;</code>
+       * <code>.com.alioth4j.corneast_core.proto.QueryReqDTO queryReqDTO = 5;</code>
        */
       public Builder setQueryReqDTO(com.alioth4j.corneast_core.proto.RequestProto.QueryReqDTO value) {
         if (queryReqDTOBuilder_ == null) {
@@ -1230,11 +1379,11 @@ public final class RequestProto {
         } else {
           queryReqDTOBuilder_.setMessage(value);
         }
-        requestCase_ = 4;
+        requestCase_ = 5;
         return this;
       }
       /**
-       * <code>.com.alioth4j.corneast_core.proto.QueryReqDTO queryReqDTO = 4;</code>
+       * <code>.com.alioth4j.corneast_core.proto.QueryReqDTO queryReqDTO = 5;</code>
        */
       public Builder setQueryReqDTO(
           com.alioth4j.corneast_core.proto.RequestProto.QueryReqDTO.Builder builderForValue) {
@@ -1244,15 +1393,15 @@ public final class RequestProto {
         } else {
           queryReqDTOBuilder_.setMessage(builderForValue.build());
         }
-        requestCase_ = 4;
+        requestCase_ = 5;
         return this;
       }
       /**
-       * <code>.com.alioth4j.corneast_core.proto.QueryReqDTO queryReqDTO = 4;</code>
+       * <code>.com.alioth4j.corneast_core.proto.QueryReqDTO queryReqDTO = 5;</code>
        */
       public Builder mergeQueryReqDTO(com.alioth4j.corneast_core.proto.RequestProto.QueryReqDTO value) {
         if (queryReqDTOBuilder_ == null) {
-          if (requestCase_ == 4 &&
+          if (requestCase_ == 5 &&
               request_ != com.alioth4j.corneast_core.proto.RequestProto.QueryReqDTO.getDefaultInstance()) {
             request_ = com.alioth4j.corneast_core.proto.RequestProto.QueryReqDTO.newBuilder((com.alioth4j.corneast_core.proto.RequestProto.QueryReqDTO) request_)
                 .mergeFrom(value).buildPartial();
@@ -1261,26 +1410,26 @@ public final class RequestProto {
           }
           onChanged();
         } else {
-          if (requestCase_ == 4) {
+          if (requestCase_ == 5) {
             queryReqDTOBuilder_.mergeFrom(value);
           }
           queryReqDTOBuilder_.setMessage(value);
         }
-        requestCase_ = 4;
+        requestCase_ = 5;
         return this;
       }
       /**
-       * <code>.com.alioth4j.corneast_core.proto.QueryReqDTO queryReqDTO = 4;</code>
+       * <code>.com.alioth4j.corneast_core.proto.QueryReqDTO queryReqDTO = 5;</code>
        */
       public Builder clearQueryReqDTO() {
         if (queryReqDTOBuilder_ == null) {
-          if (requestCase_ == 4) {
+          if (requestCase_ == 5) {
             requestCase_ = 0;
             request_ = null;
             onChanged();
           }
         } else {
-          if (requestCase_ == 4) {
+          if (requestCase_ == 5) {
             requestCase_ = 0;
             request_ = null;
           }
@@ -1289,33 +1438,33 @@ public final class RequestProto {
         return this;
       }
       /**
-       * <code>.com.alioth4j.corneast_core.proto.QueryReqDTO queryReqDTO = 4;</code>
+       * <code>.com.alioth4j.corneast_core.proto.QueryReqDTO queryReqDTO = 5;</code>
        */
       public com.alioth4j.corneast_core.proto.RequestProto.QueryReqDTO.Builder getQueryReqDTOBuilder() {
         return getQueryReqDTOFieldBuilder().getBuilder();
       }
       /**
-       * <code>.com.alioth4j.corneast_core.proto.QueryReqDTO queryReqDTO = 4;</code>
+       * <code>.com.alioth4j.corneast_core.proto.QueryReqDTO queryReqDTO = 5;</code>
        */
       @java.lang.Override
       public com.alioth4j.corneast_core.proto.RequestProto.QueryReqDTOOrBuilder getQueryReqDTOOrBuilder() {
-        if ((requestCase_ == 4) && (queryReqDTOBuilder_ != null)) {
+        if ((requestCase_ == 5) && (queryReqDTOBuilder_ != null)) {
           return queryReqDTOBuilder_.getMessageOrBuilder();
         } else {
-          if (requestCase_ == 4) {
+          if (requestCase_ == 5) {
             return (com.alioth4j.corneast_core.proto.RequestProto.QueryReqDTO) request_;
           }
           return com.alioth4j.corneast_core.proto.RequestProto.QueryReqDTO.getDefaultInstance();
         }
       }
       /**
-       * <code>.com.alioth4j.corneast_core.proto.QueryReqDTO queryReqDTO = 4;</code>
+       * <code>.com.alioth4j.corneast_core.proto.QueryReqDTO queryReqDTO = 5;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
           com.alioth4j.corneast_core.proto.RequestProto.QueryReqDTO, com.alioth4j.corneast_core.proto.RequestProto.QueryReqDTO.Builder, com.alioth4j.corneast_core.proto.RequestProto.QueryReqDTOOrBuilder> 
           getQueryReqDTOFieldBuilder() {
         if (queryReqDTOBuilder_ == null) {
-          if (!(requestCase_ == 4)) {
+          if (!(requestCase_ == 5)) {
             request_ = com.alioth4j.corneast_core.proto.RequestProto.QueryReqDTO.getDefaultInstance();
           }
           queryReqDTOBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
@@ -1325,7 +1474,7 @@ public final class RequestProto {
                   isClean());
           request_ = null;
         }
-        requestCase_ = 4;
+        requestCase_ = 5;
         onChanged();;
         return queryReqDTOBuilder_;
       }
@@ -1333,33 +1482,33 @@ public final class RequestProto {
       private com.google.protobuf.SingleFieldBuilderV3<
           com.alioth4j.corneast_core.proto.RequestProto.ReleaseReqDTO, com.alioth4j.corneast_core.proto.RequestProto.ReleaseReqDTO.Builder, com.alioth4j.corneast_core.proto.RequestProto.ReleaseReqDTOOrBuilder> releaseReqDTOBuilder_;
       /**
-       * <code>.com.alioth4j.corneast_core.proto.ReleaseReqDTO releaseReqDTO = 5;</code>
+       * <code>.com.alioth4j.corneast_core.proto.ReleaseReqDTO releaseReqDTO = 6;</code>
        * @return Whether the releaseReqDTO field is set.
        */
       @java.lang.Override
       public boolean hasReleaseReqDTO() {
-        return requestCase_ == 5;
+        return requestCase_ == 6;
       }
       /**
-       * <code>.com.alioth4j.corneast_core.proto.ReleaseReqDTO releaseReqDTO = 5;</code>
+       * <code>.com.alioth4j.corneast_core.proto.ReleaseReqDTO releaseReqDTO = 6;</code>
        * @return The releaseReqDTO.
        */
       @java.lang.Override
       public com.alioth4j.corneast_core.proto.RequestProto.ReleaseReqDTO getReleaseReqDTO() {
         if (releaseReqDTOBuilder_ == null) {
-          if (requestCase_ == 5) {
+          if (requestCase_ == 6) {
             return (com.alioth4j.corneast_core.proto.RequestProto.ReleaseReqDTO) request_;
           }
           return com.alioth4j.corneast_core.proto.RequestProto.ReleaseReqDTO.getDefaultInstance();
         } else {
-          if (requestCase_ == 5) {
+          if (requestCase_ == 6) {
             return releaseReqDTOBuilder_.getMessage();
           }
           return com.alioth4j.corneast_core.proto.RequestProto.ReleaseReqDTO.getDefaultInstance();
         }
       }
       /**
-       * <code>.com.alioth4j.corneast_core.proto.ReleaseReqDTO releaseReqDTO = 5;</code>
+       * <code>.com.alioth4j.corneast_core.proto.ReleaseReqDTO releaseReqDTO = 6;</code>
        */
       public Builder setReleaseReqDTO(com.alioth4j.corneast_core.proto.RequestProto.ReleaseReqDTO value) {
         if (releaseReqDTOBuilder_ == null) {
@@ -1371,11 +1520,11 @@ public final class RequestProto {
         } else {
           releaseReqDTOBuilder_.setMessage(value);
         }
-        requestCase_ = 5;
+        requestCase_ = 6;
         return this;
       }
       /**
-       * <code>.com.alioth4j.corneast_core.proto.ReleaseReqDTO releaseReqDTO = 5;</code>
+       * <code>.com.alioth4j.corneast_core.proto.ReleaseReqDTO releaseReqDTO = 6;</code>
        */
       public Builder setReleaseReqDTO(
           com.alioth4j.corneast_core.proto.RequestProto.ReleaseReqDTO.Builder builderForValue) {
@@ -1385,15 +1534,15 @@ public final class RequestProto {
         } else {
           releaseReqDTOBuilder_.setMessage(builderForValue.build());
         }
-        requestCase_ = 5;
+        requestCase_ = 6;
         return this;
       }
       /**
-       * <code>.com.alioth4j.corneast_core.proto.ReleaseReqDTO releaseReqDTO = 5;</code>
+       * <code>.com.alioth4j.corneast_core.proto.ReleaseReqDTO releaseReqDTO = 6;</code>
        */
       public Builder mergeReleaseReqDTO(com.alioth4j.corneast_core.proto.RequestProto.ReleaseReqDTO value) {
         if (releaseReqDTOBuilder_ == null) {
-          if (requestCase_ == 5 &&
+          if (requestCase_ == 6 &&
               request_ != com.alioth4j.corneast_core.proto.RequestProto.ReleaseReqDTO.getDefaultInstance()) {
             request_ = com.alioth4j.corneast_core.proto.RequestProto.ReleaseReqDTO.newBuilder((com.alioth4j.corneast_core.proto.RequestProto.ReleaseReqDTO) request_)
                 .mergeFrom(value).buildPartial();
@@ -1402,26 +1551,26 @@ public final class RequestProto {
           }
           onChanged();
         } else {
-          if (requestCase_ == 5) {
+          if (requestCase_ == 6) {
             releaseReqDTOBuilder_.mergeFrom(value);
           }
           releaseReqDTOBuilder_.setMessage(value);
         }
-        requestCase_ = 5;
+        requestCase_ = 6;
         return this;
       }
       /**
-       * <code>.com.alioth4j.corneast_core.proto.ReleaseReqDTO releaseReqDTO = 5;</code>
+       * <code>.com.alioth4j.corneast_core.proto.ReleaseReqDTO releaseReqDTO = 6;</code>
        */
       public Builder clearReleaseReqDTO() {
         if (releaseReqDTOBuilder_ == null) {
-          if (requestCase_ == 5) {
+          if (requestCase_ == 6) {
             requestCase_ = 0;
             request_ = null;
             onChanged();
           }
         } else {
-          if (requestCase_ == 5) {
+          if (requestCase_ == 6) {
             requestCase_ = 0;
             request_ = null;
           }
@@ -1430,33 +1579,33 @@ public final class RequestProto {
         return this;
       }
       /**
-       * <code>.com.alioth4j.corneast_core.proto.ReleaseReqDTO releaseReqDTO = 5;</code>
+       * <code>.com.alioth4j.corneast_core.proto.ReleaseReqDTO releaseReqDTO = 6;</code>
        */
       public com.alioth4j.corneast_core.proto.RequestProto.ReleaseReqDTO.Builder getReleaseReqDTOBuilder() {
         return getReleaseReqDTOFieldBuilder().getBuilder();
       }
       /**
-       * <code>.com.alioth4j.corneast_core.proto.ReleaseReqDTO releaseReqDTO = 5;</code>
+       * <code>.com.alioth4j.corneast_core.proto.ReleaseReqDTO releaseReqDTO = 6;</code>
        */
       @java.lang.Override
       public com.alioth4j.corneast_core.proto.RequestProto.ReleaseReqDTOOrBuilder getReleaseReqDTOOrBuilder() {
-        if ((requestCase_ == 5) && (releaseReqDTOBuilder_ != null)) {
+        if ((requestCase_ == 6) && (releaseReqDTOBuilder_ != null)) {
           return releaseReqDTOBuilder_.getMessageOrBuilder();
         } else {
-          if (requestCase_ == 5) {
+          if (requestCase_ == 6) {
             return (com.alioth4j.corneast_core.proto.RequestProto.ReleaseReqDTO) request_;
           }
           return com.alioth4j.corneast_core.proto.RequestProto.ReleaseReqDTO.getDefaultInstance();
         }
       }
       /**
-       * <code>.com.alioth4j.corneast_core.proto.ReleaseReqDTO releaseReqDTO = 5;</code>
+       * <code>.com.alioth4j.corneast_core.proto.ReleaseReqDTO releaseReqDTO = 6;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
           com.alioth4j.corneast_core.proto.RequestProto.ReleaseReqDTO, com.alioth4j.corneast_core.proto.RequestProto.ReleaseReqDTO.Builder, com.alioth4j.corneast_core.proto.RequestProto.ReleaseReqDTOOrBuilder> 
           getReleaseReqDTOFieldBuilder() {
         if (releaseReqDTOBuilder_ == null) {
-          if (!(requestCase_ == 5)) {
+          if (!(requestCase_ == 6)) {
             request_ = com.alioth4j.corneast_core.proto.RequestProto.ReleaseReqDTO.getDefaultInstance();
           }
           releaseReqDTOBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
@@ -1466,7 +1615,7 @@ public final class RequestProto {
                   isClean());
           request_ = null;
         }
-        requestCase_ = 5;
+        requestCase_ = 6;
         onChanged();;
         return releaseReqDTOBuilder_;
       }
@@ -3836,21 +3985,21 @@ public final class RequestProto {
   static {
     java.lang.String[] descriptorData = {
       "\n*corneast-core/src/main/proto/request.p" +
-      "roto\022 com.alioth4j.corneast_core.proto\"\311" +
-      "\002\n\nRequestDTO\022\014\n\004type\030\001 \001(\t\022J\n\016registerR" +
-      "eqDTO\030\002 \001(\01320.com.alioth4j.corneast_core" +
-      ".proto.RegisterReqDTOH\000\022F\n\014reduceReqDTO\030" +
-      "\003 \001(\0132..com.alioth4j.corneast_core.proto" +
-      ".ReduceReqDTOH\000\022D\n\013queryReqDTO\030\004 \001(\0132-.c" +
-      "om.alioth4j.corneast_core.proto.QueryReq" +
-      "DTOH\000\022H\n\rreleaseReqDTO\030\005 \001(\0132/.com.aliot" +
-      "h4j.corneast_core.proto.ReleaseReqDTOH\000B" +
-      "\t\n\007request\"1\n\016RegisterReqDTO\022\013\n\003key\030\001 \001(" +
-      "\t\022\022\n\ntokenCount\030\002 \001(\003\"\033\n\014ReduceReqDTO\022\013\n" +
-      "\003key\030\001 \001(\t\"\032\n\013QueryReqDTO\022\013\n\003key\030\001 \001(\t\"\034" +
-      "\n\rReleaseReqDTO\022\013\n\003key\030\001 \001(\tB0\n com.alio" +
-      "th4j.corneast_core.protoB\014RequestProtob\006" +
-      "proto3"
+      "roto\022 com.alioth4j.corneast_core.proto\"\325" +
+      "\002\n\nRequestDTO\022\014\n\004type\030\001 \001(\t\022\n\n\002id\030\002 \001(\t\022" +
+      "J\n\016registerReqDTO\030\003 \001(\01320.com.alioth4j.c" +
+      "orneast_core.proto.RegisterReqDTOH\000\022F\n\014r" +
+      "educeReqDTO\030\004 \001(\0132..com.alioth4j.corneas" +
+      "t_core.proto.ReduceReqDTOH\000\022D\n\013queryReqD" +
+      "TO\030\005 \001(\0132-.com.alioth4j.corneast_core.pr" +
+      "oto.QueryReqDTOH\000\022H\n\rreleaseReqDTO\030\006 \001(\013" +
+      "2/.com.alioth4j.corneast_core.proto.Rele" +
+      "aseReqDTOH\000B\t\n\007request\"1\n\016RegisterReqDTO" +
+      "\022\013\n\003key\030\001 \001(\t\022\022\n\ntokenCount\030\002 \001(\003\"\033\n\014Red" +
+      "uceReqDTO\022\013\n\003key\030\001 \001(\t\"\032\n\013QueryReqDTO\022\013\n" +
+      "\003key\030\001 \001(\t\"\034\n\rReleaseReqDTO\022\013\n\003key\030\001 \001(\t" +
+      "B0\n com.alioth4j.corneast_core.protoB\014Re" +
+      "questProtob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -3861,7 +4010,7 @@ public final class RequestProto {
     internal_static_com_alioth4j_corneast_core_proto_RequestDTO_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_com_alioth4j_corneast_core_proto_RequestDTO_descriptor,
-        new java.lang.String[] { "Type", "RegisterReqDTO", "ReduceReqDTO", "QueryReqDTO", "ReleaseReqDTO", "Request", });
+        new java.lang.String[] { "Type", "Id", "RegisterReqDTO", "ReduceReqDTO", "QueryReqDTO", "ReleaseReqDTO", "Request", });
     internal_static_com_alioth4j_corneast_core_proto_RegisterReqDTO_descriptor =
       getDescriptor().getMessageTypes().get(1);
     internal_static_com_alioth4j_corneast_core_proto_RegisterReqDTO_fieldAccessorTable = new

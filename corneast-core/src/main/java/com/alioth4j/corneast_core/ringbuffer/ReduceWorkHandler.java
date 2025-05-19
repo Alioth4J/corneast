@@ -6,6 +6,7 @@ import jakarta.annotation.PostConstruct;
 import org.redisson.api.RScript;
 import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -25,6 +26,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class ReduceWorkHandler implements WorkHandler<ReduceEvent>  {
 
     @Autowired
+    @Qualifier("redissonClients")
     private List<RedissonClient> redissonClients;
 
     private int nodeSize;

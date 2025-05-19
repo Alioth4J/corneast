@@ -27,6 +27,7 @@ public class QueryRequestHandlingStrategy implements RequestHandlingStrategy {
     private Executor queryExecutor;
 
     @Autowired
+    @Qualifier("redissonClients")
     private List<RedissonClient> redissonClients;
 
     private static final ResponseProto.ResponseDTO.Builder responseBuilder = ResponseProto.ResponseDTO.newBuilder().setType("query");
