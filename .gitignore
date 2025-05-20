@@ -34,3 +34,6 @@ build/
 
 ### corneast-test binary requests ###
 /corneast-test/request/
+
+### redis data
+/data/

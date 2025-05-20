@@ -21,25 +21,50 @@ import java.util.List;
 @EnableConfigurationProperties({RedisConfigProperties.class, IdempotentConfigProperties.class})
 public class RedissonConfig {
 
-    /**
-     * Redis nodes
-     */
     @Bean
     public List<RedissonClient> redissonClients(RedisConfigProperties redisConfigProperties) {
+        List<RedisSentinelConfigProperties> sentinels = redisConfigProperties.getSentinels();
+        int database = redisConfigProperties.getDatabase();
+        int timeout = redisConfigProperties.getTimeout();
+        int connectTimeout = redisConfigProperties.getConnectTimeout();
+        int connectionPoolSize = redisConfigProperties.getConnectionPoolSize();
         List<RedissonClient> redissonClients = new ArrayList<>();
-        for (RedisNodeProperties node : redisConfigProperties.getNodes()) {
+        for (RedisSentinelConfigProperties sentinel : sentinels) {
+            String master = sentinel.getMaster();
+            List<String> nodes = sentinel.getNodes();
             Config config = new Config();
-            config.useSingleServer()
-                  .setAddress(node.getAddress())
-                  .setDatabase(node.getDatabase())
-                  .setTimeout(node.getTimeout())
-                  .setConnectTimeout(node.getConnectTimeout())
-                  .setConnectionPoolSize(node.getConnectionPoolSize());
-            RedissonClient redissonClient = Redisson.create(config);
-            redissonClients.add(redissonClient);
+            config.useSentinelServers()
+                    .setMasterName(master)
+                    .addSentinelAddress(nodes.toArray(new String[0]))
+                    .setDatabase(database)
+                    .setTimeout(timeout)
+                    .setConnectTimeout(connectTimeout)
+                    .setMasterConnectionPoolSize(connectionPoolSize)
+                    .setCheckSentinelsList(false);
+            redissonClients.add(Redisson.create(config));
         }
         return redissonClients;
     }
+
+//    /**
+//     * Redis nodes
+//     */
+//    @Bean
+//    public List<RedissonClient> redissonClients(RedisConfigProperties redisConfigProperties) {
+//        List<RedissonClient> redissonClients = new ArrayList<>();
+//        for (RedisNodeProperties node : redisConfigProperties.getNodes()) {
+//            Config config = new Config();
+//            config.useSingleServer()
+//                  .setAddress(node.getAddress())
+//                  .setDatabase(node.getDatabase())
+//                  .setTimeout(node.getTimeout())
+//                  .setConnectTimeout(node.getConnectTimeout())
+//                  .setConnectionPoolSize(node.getConnectionPoolSize());
+//            RedissonClient redissonClient = Redisson.create(config);
+//            redissonClients.add(redissonClient);
+//        }
+//        return redissonClients;
+//    }
 
     /**
      * Idempotent redis node

@@ -1,0 +1,29 @@
+$ sudo docker network create corneast-redis-network
+
+$ sudo docker run -d \
+  --name corneast-redis-master-1 \
+  --network corneast-redis-network \
+  -p 7001:6379 \
+  -v /var/home/alioth4j/code/corneast/corneast-deploy/1/master-1.conf:/usr/local/etc/redis/redis.conf \
+  -v /var/home/alioth4j/code/corneast/data:/data \
+  redis:latest \
+  redis-server /usr/local/etc/redis/redis.conf
+
+$ sudo docker run -d \
+  --name corneast-redis-slave-1 \
+  --network corneast-redis-network \
+  -p 7002:6379 \
+  -v /var/home/alioth4j/code/corneast/corneast-deploy/1/slave-1.conf:/usr/local/etc/redis/redis.conf \
+  -v /var/home/alioth4j/code/corneast/data:/data \
+  redis:latest \
+  redis-server /usr/local/etc/redis/redis.conf
+
+$ sudo docker run -d \
+  --name corneast-redis-sentinel-1 \
+  --network corneast-redis-network \
+  -p 27001:26379 \
+  -v /var/home/alioth4j/code/corneast/corneast-deploy/1/sentinel-1.conf:/usr/local/etc/redis/sentinel.conf \
+  -v /var/home/alioth4j/code/corneast/data:/data \
+  redis:latest \
+  redis-sentinel /usr/local/etc/redis/sentinel.conf
+

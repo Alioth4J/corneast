@@ -4,6 +4,7 @@ import lombok.Data;
 
 /**
  * Configuration class of a Redis node, corresponding with application.yml
+ * Currently used for idempotence.
  *
  * @author Alioth Null
  */
