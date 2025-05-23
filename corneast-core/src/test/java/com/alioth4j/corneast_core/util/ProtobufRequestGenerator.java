@@ -10,7 +10,7 @@ import java.time.format.DateTimeFormatter;
 
 /**
  * Util class to generate binary request files:
- * register.bin, reduce.bin, query.bin.
+ * register.bin, reduce.bin, query.bin, release.bin.
  *
  * If the working class is the root directory of the project,
  * the files will be generated in corneast-test/request.
@@ -19,6 +19,7 @@ import java.time.format.DateTimeFormatter;
  */
 public class ProtobufRequestGenerator {
 
+    // TODO use CorneastRequestBuilder to generate
     public static void generate() {
         // params
         String key = DateTimeFormatter.ofPattern("yyyyMMdd").format(LocalDate.now());
@@ -91,7 +92,6 @@ public class ProtobufRequestGenerator {
      * @return length prefix
      */
     private static byte[] encodeVarint32(int value) {
-        // 最多需要5个字节（int32）
         byte[] buffer = new byte[5];
         int position = 0;
         while ((value & ~0x7F) != 0) {
@@ -99,7 +99,6 @@ public class ProtobufRequestGenerator {
             value >>>= 7;
         }
         buffer[position++] = (byte)(value);
-        // 创建一个长度合适的数组返回
         byte[] result = new byte[position];
         System.arraycopy(buffer, 0, result, 0, position);
         return result;
