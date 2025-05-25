@@ -67,19 +67,18 @@ public class RedissonConfig {
 //    }
 
     /**
-     * Idempotent redis node
+     * Idempotent redis nodes
      */
     @Bean
     public RedissonClient idempotentRedissonClient(IdempotentConfigProperties idempotentConfigProperties) {
-        RedisNodeProperties redisNodeProperties = idempotentConfigProperties.getRedis();
         Config config = new Config();
-        config.useSingleServer()
-                .setAddress(redisNodeProperties.getAddress())
-                .setDatabase(redisNodeProperties.getDatabase())
-                .setTimeout(redisNodeProperties.getTimeout())
-                .setConnectTimeout(redisNodeProperties.getConnectTimeout())
-                .setConnectionPoolSize(redisNodeProperties.getConnectionPoolSize());
+        config.useClusterServers()
+              .addNodeAddress(
+       "redis://127.0.0.1:6000",
+                  "redis://127.0.0.1:6001",
+                  "redis://127.0.0.1:6002");
         return Redisson.create(config);
     }
+
 
 }

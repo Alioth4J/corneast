@@ -27,3 +27,21 @@ $ sudo docker run -d \
   redis:latest \
   redis-sentinel /usr/local/etc/redis/sentinel.conf
 
+-----------------------------------------------------
+$ sudo docker network create corneast-idempotent-network
+
+$ sudo docker run -d \
+  --name corneast-idempotent-6000 \
+  --network corneast-idempotent-network \
+  -p 6000:6379 \
+  -v /var/home/alioth4j/code/corneast/corneast-deploy/idempotent/6000.conf:/usr/local/etc/redis/redis.conf \
+  -v /var/home/alioth4j/code/corneast/data:/data \
+  redis:latest \
+  redis-server /usr/local/etc/redis/redis.conf
+
+$ sudo docker exec -it corneast-idempotent-6000 \
+  redis-cli --cluster create \
+  corneast-idempotent-6000:6379 \
+  corneast-idempotent-6001:6379 \
+  corneast-idempotent-6002:6379 \
+  --cluster-replicas 0

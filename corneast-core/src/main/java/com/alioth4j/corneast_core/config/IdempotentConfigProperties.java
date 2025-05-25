@@ -1,23 +1,14 @@
 package com.alioth4j.corneast_core.config;
 
+import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
-/**
- * Configuration class of idempotence, corresponding with application.yml
- *
- * @author Alioth Null
- */
+import java.util.List;
+
 @ConfigurationProperties(prefix = "idempotent")
+@Data
 public class IdempotentConfigProperties {
 
-    private RedisNodeProperties redis;
-
-    public RedisNodeProperties getRedis() {
-        return redis;
-    }
-
-    public void setRedis(RedisNodeProperties redis) {
-        this.redis = redis;
-    }
+    private List<String> redisAddresses;
 
 }
