@@ -1,6 +1,7 @@
 package com.alioth4j.corneast_client.request;
 
 import com.alioth4j.corneast_client.exception.RequestBuildException;
+import com.alioth4j.corneast_core.common.Operation;
 import com.alioth4j.corneast_core.proto.RequestProto;
 import org.springframework.util.StringUtils;
 
@@ -22,6 +23,17 @@ public class CorneastRequestBuilder {
     // for register request only
     private boolean hasSetTokenCount = false;
 
+    private static final String TYPE_NULL_MSG = "Request type must not be null or empty.";
+    private static final String TYPE_NOT_EXISTS_MSG = "Request type does not exist: ";
+    private static final String TYPE_NOT_SET_MSG = "Request type has not been set.";
+    private static final String TYPE_OF_REGISTER_NOT_SET_BEFORE_TOKENCOUNT_SET_MSG = "Request type has not been set to register.";
+    private static final String KEY_NULL_MSG = "Request key must not be null or empty.";
+    private static final String KEY_NOT_SET_MSG = "Request key has not been set.";
+    private static final String ID_NOT_SET_MSG = "Request id has not been set.";
+    private static final String TOKENCOUNT_NOT_SET_MSG = "Request tokenCount has not been set.";
+    private static final String TOKENCOUNT_LESS_THAN_ZERO_MSG = "Request tokenCount must not be less than 0.";
+    private static final String TOKENCOUNT_FOR_REGISTER_ONLY_MSG = "Only register request can set tokenCount, current request type: ";
+
     private CorneastRequestBuilder() {
     }
 
@@ -30,18 +42,30 @@ public class CorneastRequestBuilder {
     }
 
     public CorneastRequestBuilder setType(String type) {
-        if ("register".equals(type)) {
-            registerReqBuilder = RequestProto.RegisterReqDTO.newBuilder();
-        } else if ("reduce".equals(type)) {
-            reduceReqBuilder = RequestProto.ReduceReqDTO.newBuilder();
-        } else if ("release".equals(type)) {
-            releaseReqBuilder = RequestProto.ReleaseReqDTO.newBuilder();
-        } else if ("query".equals(type)) {
-            queryReqBuilder = RequestProto.QueryReqDTO.newBuilder();
-        } else {
-            throw new RequestBuildException("Request type does not exist: " + type);
+        if (!StringUtils.hasLength(type)) {
+            throw new RequestBuildException(TYPE_NULL_MSG);
         }
-        protoBuilder.setType(type);
+        switch (type) {
+            case Operation.REGISTER: {
+                registerReqBuilder = RequestProto.RegisterReqDTO.newBuilder();
+                break;
+            }
+            case Operation.REDUCE: {
+                reduceReqBuilder = RequestProto.ReduceReqDTO.newBuilder();
+                break;
+            }
+            case Operation.RELEASE: {
+                releaseReqBuilder = RequestProto.ReleaseReqDTO.newBuilder();
+                break;
+            }
+            case Operation.QUERY: {
+                queryReqBuilder = RequestProto.QueryReqDTO.newBuilder();
+                break;
+            }
+            default: {
+                throw new RequestBuildException(TYPE_NOT_EXISTS_MSG + type);
+            }
+        }
         return this;
     }
 
@@ -52,34 +76,46 @@ public class CorneastRequestBuilder {
 
     public CorneastRequestBuilder setKey(String key) {
         if (!StringUtils.hasLength(key)) {
-            throw new RequestBuildException("Request key must not be null or empty.");
+            throw new RequestBuildException(KEY_NULL_MSG);
         }
         String type = protoBuilder.getType();
         if (!StringUtils.hasLength(type)) {
-            throw new RequestBuildException("Request type has not been set.");
+            throw new RequestBuildException(KEY_NOT_SET_MSG);
         }
-        if ("register".equals(type)) {
-            registerReqBuilder.setKey(key);
-        } else if ("reduce".equals(type)) {
-            reduceReqBuilder.setKey(key);
-        } else if ("release".equals(type)) {
-            releaseReqBuilder.setKey(key);
-        } else if ("query".equals(type)) {
-            queryReqBuilder.setKey(key);
+        switch (type) {
+            case Operation.REGISTER: {
+                registerReqBuilder.setKey(key);
+                break;
+            }
+            case Operation.REDUCE: {
+                reduceReqBuilder.setKey(key);
+                break;
+            }
+            case Operation.RELEASE: {
+                releaseReqBuilder.setKey(key);
+                break;
+            }
+            case Operation.QUERY: {
+                queryReqBuilder.setKey(key);
+                break;
+            }
+            default: {
+                throw new RequestBuildException(TYPE_NOT_EXISTS_MSG + type);
+            }
         }
         return this;
     }
 
     public CorneastRequestBuilder setTokenCount(long tokenCount) {
         if (tokenCount < 0) {
-            throw new RequestBuildException("Request tokenCount must not be less than 0.");
+            throw new RequestBuildException(TOKENCOUNT_LESS_THAN_ZERO_MSG);
         }
         String type = protoBuilder.getType();
         if (!StringUtils.hasLength(type)) {
-            throw new RequestBuildException("Request type has not been set to register.");
+            throw new RequestBuildException(TYPE_OF_REGISTER_NOT_SET_BEFORE_TOKENCOUNT_SET_MSG);
         }
-        if (!"register".equals(type)) {
-            throw new RequestBuildException("Only register request can set tokenCount, current request type: " + type);
+        if (!Operation.REGISTER.equals(type)) {
+            throw new RequestBuildException(TOKENCOUNT_FOR_REGISTER_ONLY_MSG + type);
         }
         registerReqBuilder.setTokenCount(tokenCount);
         hasSetTokenCount = true;
@@ -89,34 +125,46 @@ public class CorneastRequestBuilder {
     public RequestProto.RequestDTO build() {
         String type = protoBuilder.getType();
         if (!StringUtils.hasLength(type)) {
-            throw new RequestBuildException("Request type has not been set.");
+            throw new RequestBuildException(TYPE_NOT_SET_MSG);
         }
         if (!StringUtils.hasLength(protoBuilder.getId())) {
-            throw new RequestBuildException("Request id has not been set.");
+            throw new RequestBuildException(ID_NOT_SET_MSG);
         }
-        if ("register".equals(type)) {
-            if (registerReqBuilder.getKey() == null) {
-                throw new RequestBuildException("Request key has not been set.");
+        switch (type) {
+            case Operation.REGISTER: {
+                if (registerReqBuilder.getKey() == null) {
+                    throw new RequestBuildException(KEY_NOT_SET_MSG);
+                }
+                if (!hasSetTokenCount) {
+                    throw new RequestBuildException(TOKENCOUNT_NOT_SET_MSG);
+                }
+                protoBuilder.setRegisterReqDTO(registerReqBuilder.build());
+                break;
             }
-            if (!hasSetTokenCount) {
-                throw new RequestBuildException("Request tokenCount has not been set.");
+            case Operation.REDUCE: {
+                if (reduceReqBuilder.getKey() == null) {
+                    throw new RequestBuildException(KEY_NOT_SET_MSG);
+                }
+                protoBuilder.setReduceReqDTO(reduceReqBuilder.build());
+                break;
             }
-            protoBuilder.setRegisterReqDTO(registerReqBuilder.build());
-        } else if ("reduce".equals(type)) {
-            if (reduceReqBuilder.getKey() == null) {
-                throw new RequestBuildException("Request key has not been set.");
+            case Operation.RELEASE: {
+                if (releaseReqBuilder.getKey() == null) {
+                    throw new RequestBuildException(KEY_NOT_SET_MSG);
+                }
+                protoBuilder.setReleaseReqDTO(releaseReqBuilder.build());
+                break;
             }
-            protoBuilder.setReduceReqDTO(reduceReqBuilder.build());
-        } else if ("release".equals(type)) {
-            if (releaseReqBuilder.getKey() == null) {
-                throw new RequestBuildException("Request key has not been set.");
+            case Operation.QUERY: {
+                if (queryReqBuilder.getKey() == null) {
+                    throw new RequestBuildException(KEY_NOT_SET_MSG);
+                }
+                protoBuilder.setQueryReqDTO(queryReqBuilder.build());
+                break;
             }
-            protoBuilder.setReleaseReqDTO(releaseReqBuilder.build());
-        } else if ("query".equals(type)) {
-            if (queryReqBuilder.getKey() == null) {
-                throw new RequestBuildException("Request key has not been set.");
+            default: {
+                throw new RequestBuildException(TYPE_NOT_SET_MSG + type);
             }
-            protoBuilder.setQueryReqDTO(queryReqBuilder.build());
         }
         return protoBuilder.build();
     }
