@@ -1,5 +1,6 @@
 package com.alioth4j.corneast_core.util;
 
+import com.alioth4j.corneast_core.common.Operation;
 import com.alioth4j.corneast_core.proto.RequestProto;
 
 import java.io.File;
@@ -35,44 +36,46 @@ public class ProtobufRequestGenerator {
             }
         }
 
+        final String suffix = ".bin";
+
         // register request
         RequestProto.RequestDTO registerRequestDTO = RequestProto.RequestDTO.newBuilder()
-                .setType("register")
+                .setType(Operation.REGISTER)
                 .setId("123456")
                 .setRegisterReqDTO(RequestProto.RegisterReqDTO.newBuilder().setKey(key).setTokenCount(tokenCount).build())
                 .build();
         byte[] registerReqByteArray = registerRequestDTO.toByteArray();
-        File registerReqFile = new File(dir, "register.bin");
+        File registerReqFile = new File(dir, Operation.REGISTER + suffix);
         writeWithLengthPrefix(registerReqFile, registerReqByteArray);
 
         // reduce request
         RequestProto.RequestDTO reduceRequestDTO = RequestProto.RequestDTO.newBuilder()
-                .setType("reduce")
+                .setType(Operation.REDUCE)
                 .setId("123456")
                 .setReduceReqDTO(RequestProto.ReduceReqDTO.newBuilder().setKey(key).build())
                 .build();
         byte[] reduceReqByteArray = reduceRequestDTO.toByteArray();
-        File reduceReqFile = new File(dir, "reduce.bin");
+        File reduceReqFile = new File(dir, Operation.REDUCE + suffix);
         writeWithLengthPrefix(reduceReqFile, reduceReqByteArray);
 
         // query request
         RequestProto.RequestDTO queryRequestDTO = RequestProto.RequestDTO.newBuilder()
-                .setType("query")
+                .setType(Operation.QUERY)
                 .setId("123456")
                 .setQueryReqDTO(RequestProto.QueryReqDTO.newBuilder().setKey(key))
                 .build();
         byte[] queryReqByteArray = queryRequestDTO.toByteArray();
-        File queryReqFile = new File(dir, "query.bin");
+        File queryReqFile = new File(dir, Operation.QUERY + suffix);
         writeWithLengthPrefix(queryReqFile, queryReqByteArray);
 
         // release request
         RequestProto.RequestDTO releaseRequestDTO = RequestProto.RequestDTO.newBuilder()
-                .setType("release")
+                .setType(Operation.RELEASE)
                 .setId("123456")
                 .setReleaseReqDTO(RequestProto.ReleaseReqDTO.newBuilder().setKey(key).build())
                 .build();
         byte[] releaseReqByteArray = releaseRequestDTO.toByteArray();
-        File releaseReqFile = new File(dir, "release.bin");
+        File releaseReqFile = new File(dir, Operation.RELEASE + suffix);
         writeWithLengthPrefix(releaseReqFile, releaseReqByteArray);
     }
 

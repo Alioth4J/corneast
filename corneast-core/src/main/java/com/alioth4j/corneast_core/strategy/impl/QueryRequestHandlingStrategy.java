@@ -1,5 +1,6 @@
 package com.alioth4j.corneast_core.strategy.impl;
 
+import com.alioth4j.corneast_core.common.Operation;
 import com.alioth4j.corneast_core.proto.RequestProto;
 import com.alioth4j.corneast_core.proto.ResponseProto;
 import com.alioth4j.corneast_core.strategy.RequestHandlingStrategy;
@@ -19,7 +20,7 @@ import java.util.concurrent.Executor;
  *
  * @author Alioth Null
  */
-@Component("query")
+@Component(Operation.QUERY)
 public class QueryRequestHandlingStrategy implements RequestHandlingStrategy {
 
     @Autowired
@@ -30,7 +31,7 @@ public class QueryRequestHandlingStrategy implements RequestHandlingStrategy {
     @Qualifier("redissonClients")
     private List<RedissonClient> redissonClients;
 
-    private static final ResponseProto.ResponseDTO.Builder responseBuilder = ResponseProto.ResponseDTO.newBuilder().setType("query");
+    private static final ResponseProto.ResponseDTO.Builder responseBuilder = ResponseProto.ResponseDTO.newBuilder().setType(Operation.QUERY);
     private static final ResponseProto.QueryRespDTO.Builder queryResponseBuilder = ResponseProto.QueryRespDTO.newBuilder();
 
     private static final String luaScript = """

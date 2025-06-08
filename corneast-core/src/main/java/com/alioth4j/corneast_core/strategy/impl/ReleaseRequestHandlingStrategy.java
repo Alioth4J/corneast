@@ -1,5 +1,6 @@
 package com.alioth4j.corneast_core.strategy.impl;
 
+import com.alioth4j.corneast_core.common.Operation;
 import com.alioth4j.corneast_core.proto.RequestProto;
 import com.alioth4j.corneast_core.proto.ResponseProto;
 import com.alioth4j.corneast_core.strategy.RequestHandlingStrategy;
@@ -17,7 +18,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executor;
 
-@Component("release")
+@Component(Operation.RELEASE)
 public class ReleaseRequestHandlingStrategy implements RequestHandlingStrategy {
 
     @Autowired
@@ -47,7 +48,7 @@ public class ReleaseRequestHandlingStrategy implements RequestHandlingStrategy {
                                             redis.call('SET', KEYS[1], oldValue + 1)
                                             """;
 
-    private static final ResponseProto.ResponseDTO.Builder responseBuilder = ResponseProto.ResponseDTO.newBuilder().setType("release");
+    private static final ResponseProto.ResponseDTO.Builder responseBuilder = ResponseProto.ResponseDTO.newBuilder().setType(Operation.RELEASE);
     private static final ResponseProto.ReleaseRespDTO.Builder successRespBuilder = ResponseProto.ReleaseRespDTO.newBuilder().setSuccess(true);
 //    private static final ResponseProto.ReleaseRespDTO.Builder failRespBuilder = ResponseProto.ReleaseRespDTO.newBuilder().setSuccess(false);
 

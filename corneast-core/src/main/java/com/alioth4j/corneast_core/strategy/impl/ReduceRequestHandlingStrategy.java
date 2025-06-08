@@ -1,5 +1,6 @@
 package com.alioth4j.corneast_core.strategy.impl;
 
+import com.alioth4j.corneast_core.common.Operation;
 import com.alioth4j.corneast_core.proto.RequestProto;
 import com.alioth4j.corneast_core.proto.ResponseProto;
 import com.alioth4j.corneast_core.ringbuffer.ReduceDisruptor;
@@ -15,7 +16,7 @@ import java.util.concurrent.CompletableFuture;
  *
  * @author Alioth Null
  */
-@Component("reduce")
+@Component(Operation.REDUCE)
 public class ReduceRequestHandlingStrategy implements RequestHandlingStrategy {
 
     @Autowired
