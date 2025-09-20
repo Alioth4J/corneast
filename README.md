@@ -1,5 +1,5 @@
 # Corneast
-Corneast is a distributed token middleware.
+Corneast is a distributed token middleware.  
 
 ## Features
 - **Decoupling with Business**
@@ -10,8 +10,17 @@ Corneast is a distributed token middleware.
 Run `mvn clean package` from the root directory of the project. The built jar files will be located in the `target` directory of each module.  
 
 ## Running
-Graal VM is recommended.
+GraalVM is recommended.  
 
 ```java
 java -jar corneast-<module>-<version>.jar
 ```
+
+## Usage
+Use `CorneastRequestBuilder` in `corneast-client` to construct request objects.  
+
+## Reporting Issues
+Use Github issues.  
+
+## Contributing
+Contributions to Corneast are welcome!  
