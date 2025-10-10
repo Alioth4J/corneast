@@ -5,7 +5,7 @@ import com.alioth4j.corneast_core.proto.RequestProto;
 /**
  * Construct a request object with `new` keyword.
  *
- * Usage: `new CorneastRequest(<args>).getInstance()`
+ * Usage: `new CorneastRequest(<args>).get()` or `new CorneastRequest(<args>).getInstance()`
  *
  * @author Alioth Null
  */
@@ -33,8 +33,21 @@ public class CorneastRequest {
                 .build();
     }
 
+    /**
+     * Get the constructed request instance.
+     * @return constructed request instance
+     */
     public RequestProto.RequestDTO getInstance() {
         return this.instance;
+    }
+
+    /**
+     * Get the constructed request instance.
+     * This method is the alias of `getInstance()`.
+     * @return constructed request instance
+     */
+    public RequestProto.RequestDTO get() {
+        return getInstance();
     }
 
 }
