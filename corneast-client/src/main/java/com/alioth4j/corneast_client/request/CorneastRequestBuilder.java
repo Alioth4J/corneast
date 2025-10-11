@@ -133,7 +133,8 @@ public class CorneastRequestBuilder {
         if (!StringUtils.hasLength(type)) {
             throw new RequestBuildException(TYPE_NOT_SET_MSG);
         }
-        if (!StringUtils.hasLength(protoBuilder.getId())) {
+        String id = protoBuilder.getId();
+        if (!StringUtils.hasLength(id)) {
             throw new RequestBuildException(ID_NOT_SET_MSG);
         }
         switch (type) {
