@@ -20,8 +20,10 @@ public class CorneastRequestBuilder {
     private RequestProto.ReleaseReqDTO.Builder releaseReqBuilder;
     private RequestProto.QueryReqDTO.Builder queryReqBuilder;
 
-    // for register request only
-    private boolean hasSetTokenCount = false;
+    private boolean hasTypeSet = false;
+    private boolean hasIdSet = false;
+    private boolean hasKeySet = false;
+    private boolean hasTokenCountSet = false;
 
     private static final String TYPE_NULL_MSG = "Request type must not be null or empty.";
     private static final String TYPE_NOT_EXISTS_MSG = "Request type does not exist: ";
@@ -67,6 +69,7 @@ public class CorneastRequestBuilder {
                 throw new RequestBuildException(TYPE_NOT_EXISTS_MSG + type);
             }
         }
+        hasTypeSet = true;
         return this;
     }
 
@@ -77,6 +80,7 @@ public class CorneastRequestBuilder {
             throw new RequestBuildException(ID_NULL_MSG);
         }
         protoBuilder.setId(id);
+        hasIdSet = true;
         return this;
     }
 
@@ -109,6 +113,7 @@ public class CorneastRequestBuilder {
                 throw new RequestBuildException(TYPE_NOT_EXISTS_MSG + type);
             }
         }
+        hasKeySet = true;
         return this;
     }
 
@@ -124,56 +129,50 @@ public class CorneastRequestBuilder {
             throw new RequestBuildException(TOKENCOUNT_FOR_REGISTER_ONLY_MSG + type);
         }
         registerReqBuilder.setTokenCount(tokenCount);
-        hasSetTokenCount = true;
+        hasTokenCountSet = true;
         return this;
     }
 
     public RequestProto.RequestDTO build() {
-        String type = protoBuilder.getType();
-        if (!StringUtils.hasLength(type)) {
-            throw new RequestBuildException(TYPE_NOT_SET_MSG);
-        }
-        String id = protoBuilder.getId();
-        if (!StringUtils.hasLength(id)) {
-            throw new RequestBuildException(ID_NOT_SET_MSG);
-        }
-        switch (type) {
+        checkBasicFields();
+
+        switch (protoBuilder.getType()) {
             case Operation.REGISTER: {
-                if (registerReqBuilder.getKey() == null) {
-                    throw new RequestBuildException(KEY_NOT_SET_MSG);
-                }
-                if (!hasSetTokenCount) {
+                if (!hasTokenCountSet) {
                     throw new RequestBuildException(TOKENCOUNT_NOT_SET_MSG);
                 }
                 protoBuilder.setRegisterReqDTO(registerReqBuilder.build());
                 break;
             }
             case Operation.REDUCE: {
-                if (reduceReqBuilder.getKey() == null) {
-                    throw new RequestBuildException(KEY_NOT_SET_MSG);
-                }
                 protoBuilder.setReduceReqDTO(reduceReqBuilder.build());
                 break;
             }
             case Operation.RELEASE: {
-                if (releaseReqBuilder.getKey() == null) {
-                    throw new RequestBuildException(KEY_NOT_SET_MSG);
-                }
                 protoBuilder.setReleaseReqDTO(releaseReqBuilder.build());
                 break;
             }
             case Operation.QUERY: {
-                if (queryReqBuilder.getKey() == null) {
-                    throw new RequestBuildException(KEY_NOT_SET_MSG);
-                }
                 protoBuilder.setQueryReqDTO(queryReqBuilder.build());
                 break;
             }
             default: {
-                throw new RequestBuildException(TYPE_NOT_SET_MSG + type);
+                // unreachable
             }
         }
         return protoBuilder.build();
+    }
+
+    private void checkBasicFields() {
+        if (!hasTypeSet) {
+            throw new RequestBuildException(TYPE_NOT_SET_MSG);
+        }
+        if (!hasIdSet) {
+            throw new RequestBuildException(ID_NOT_SET_MSG);
+        }
+        if (!hasKeySet) {
+            throw new RequestBuildException(KEY_NOT_SET_MSG);
+        }
     }
 
 }
