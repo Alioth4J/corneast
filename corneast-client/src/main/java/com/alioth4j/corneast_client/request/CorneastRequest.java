@@ -17,6 +17,12 @@ public class CorneastRequest {
     // The real instance this class constructs.
     public final RequestProto.RequestDTO instance;
 
+    /**
+     * Constructor for requests of all types.
+     * @param type request type
+     * @param id request id
+     * @param key request key
+     */
     public CorneastRequest(String type, String id, String key) {
         this.instance = CorneastRequestBuilder.newBuilder()
                 .setType(type)
