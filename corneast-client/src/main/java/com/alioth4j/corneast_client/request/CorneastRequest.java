@@ -5,13 +5,17 @@ import com.alioth4j.corneast_core.proto.RequestProto;
 /**
  * Construct a request object with `new` keyword.
  *
- * Usage: `new CorneastRequest(<args>).get()` or `new CorneastRequest(<args>).getInstance()`
+ * Usages:
+ * - `new CorneastRequest(<args>).instance`
+ * - `new CorneastRequest(<args>).get()`
+ * - `new CorneastRequest(<args>).getInstance()`
  *
  * @author Alioth Null
  */
 public class CorneastRequest {
 
-    private final RequestProto.RequestDTO instance;
+    // The real instance this class constructs.
+    public final RequestProto.RequestDTO instance;
 
     public CorneastRequest(String type, String id, String key) {
         this.instance = CorneastRequestBuilder.newBuilder()
