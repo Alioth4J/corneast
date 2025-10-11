@@ -24,7 +24,7 @@ public class CorneastRequest {
     /**
      * For register requests only.
      */
-    public CorneastRequest(String type, String id, String key, Long tokenCount) {
+    public CorneastRequest(String type, String id, String key, long tokenCount) {
         this.instance = CorneastRequestBuilder.newBuilder()
                 .setType(type)
                 .setId(id)
