@@ -50,18 +50,22 @@ public class CorneastRequestBuilder {
         }
         switch (type) {
             case Operation.REGISTER: {
+                protoBuilder.setType(Operation.REGISTER);
                 registerReqBuilder = RequestProto.RegisterReqDTO.newBuilder();
                 break;
             }
             case Operation.REDUCE: {
+                protoBuilder.setType(Operation.REDUCE);
                 reduceReqBuilder = RequestProto.ReduceReqDTO.newBuilder();
                 break;
             }
             case Operation.RELEASE: {
+                protoBuilder.setType(Operation.RELEASE);
                 releaseReqBuilder = RequestProto.ReleaseReqDTO.newBuilder();
                 break;
             }
             case Operation.QUERY: {
+                protoBuilder.setType(Operation.QUERY);
                 queryReqBuilder = RequestProto.QueryReqDTO.newBuilder();
                 break;
             }
