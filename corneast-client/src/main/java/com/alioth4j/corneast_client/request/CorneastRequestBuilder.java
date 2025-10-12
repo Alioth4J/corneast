@@ -90,7 +90,7 @@ public class CorneastRequestBuilder {
         }
         String type = protoBuilder.getType();
         if (!StringUtils.hasLength(type)) {
-            throw new RequestBuildException(KEY_NOT_SET_MSG);
+            throw new RequestBuildException(TYPE_NOT_SET_MSG);
         }
         switch (type) {
             case Operation.REGISTER: {
