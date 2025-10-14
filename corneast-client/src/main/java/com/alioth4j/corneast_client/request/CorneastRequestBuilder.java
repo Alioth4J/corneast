@@ -36,6 +36,7 @@ public class CorneastRequestBuilder {
     private static final String TOKENCOUNT_NOT_SET_MSG = "Request tokenCount has not been set.";
     private static final String TOKENCOUNT_LESS_THAN_ZERO_MSG = "Request tokenCount must not be less than 0.";
     private static final String TOKENCOUNT_FOR_REGISTER_ONLY_MSG = "Only register request can set tokenCount, current request type: ";
+    private static final String UNREACHABLE_MSG = "Reach unreachable code.";
 
     private CorneastRequestBuilder() {
     }
@@ -159,7 +160,7 @@ public class CorneastRequestBuilder {
                 break;
             }
             default: {
-                // unreachable
+                throw new RequestBuildException(UNREACHABLE_MSG);
             }
         }
         return protoBuilder.build();
