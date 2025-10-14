@@ -142,9 +142,7 @@ public class CorneastRequestBuilder {
 
         switch (protoBuilder.getType()) {
             case Operation.REGISTER: {
-                if (!hasTokenCountSet) {
-                    throw new RequestBuildException(TOKENCOUNT_NOT_SET_MSG);
-                }
+                checkHasTokenCountSet();
                 protoBuilder.setRegisterReqDTO(registerReqBuilder.build());
                 break;
             }
@@ -165,6 +163,12 @@ public class CorneastRequestBuilder {
             }
         }
         return protoBuilder.build();
+    }
+
+    private void checkHasTokenCountSet() {
+        if (!hasTokenCountSet) {
+            throw new RequestBuildException(TOKENCOUNT_NOT_SET_MSG);
+        }
     }
 
     private void checkBasicFields() {
