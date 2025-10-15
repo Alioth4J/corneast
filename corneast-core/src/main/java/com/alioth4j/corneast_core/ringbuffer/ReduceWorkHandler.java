@@ -1,6 +1,6 @@
 package com.alioth4j.corneast_core.ringbuffer;
 
-import com.alioth4j.corneast_core.common.Operation;
+import com.alioth4j.corneast_core.common.CorneastOperation;
 import com.alioth4j.corneast_core.proto.ResponseProto;
 import com.lmax.disruptor.WorkHandler;
 import jakarta.annotation.PostConstruct;
@@ -43,7 +43,7 @@ public class ReduceWorkHandler implements WorkHandler<ReduceEvent>  {
     private static final Random random = new Random();
 
     // reused objects
-    private static final ResponseProto.ResponseDTO.Builder responseBuilder = ResponseProto.ResponseDTO.newBuilder().setType(Operation.REDUCE);
+    private static final ResponseProto.ResponseDTO.Builder responseBuilder = ResponseProto.ResponseDTO.newBuilder().setType(CorneastOperation.REDUCE);
     private static final ResponseProto.ReduceRespDTO.Builder successReduceRespBuilder = ResponseProto.ReduceRespDTO.newBuilder().setSuccess(true);
     private static final ResponseProto.ReduceRespDTO.Builder failReduceRespBuilder = ResponseProto.ReduceRespDTO.newBuilder().setSuccess(false);
 

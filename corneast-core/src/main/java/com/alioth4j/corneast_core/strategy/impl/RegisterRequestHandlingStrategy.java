@@ -1,6 +1,6 @@
 package com.alioth4j.corneast_core.strategy.impl;
 
-import com.alioth4j.corneast_core.common.Operation;
+import com.alioth4j.corneast_core.common.CorneastOperation;
 import com.alioth4j.corneast_core.proto.RequestProto;
 import com.alioth4j.corneast_core.proto.ResponseProto;
 import com.alioth4j.corneast_core.strategy.RequestHandlingStrategy;
@@ -21,7 +21,7 @@ import java.util.concurrent.Executor;
  *
  * @author Alioth Null
  */
-@Component(Operation.REGISTER)
+@Component(CorneastOperation.REGISTER)
 public class RegisterRequestHandlingStrategy implements RequestHandlingStrategy {
 
     @Autowired
@@ -39,7 +39,7 @@ public class RegisterRequestHandlingStrategy implements RequestHandlingStrategy 
         this.nodeSize = redissonClients.size();
     }
 
-    private static final ResponseProto.ResponseDTO.Builder responseBuilder = ResponseProto.ResponseDTO.newBuilder().setType(Operation.REGISTER);
+    private static final ResponseProto.ResponseDTO.Builder responseBuilder = ResponseProto.ResponseDTO.newBuilder().setType(CorneastOperation.REGISTER);
     private static final ResponseProto.RegisterRespDTO.Builder successRespBuilder = ResponseProto.RegisterRespDTO.newBuilder().setSuccess(true);
     private static final ResponseProto.RegisterRespDTO.Builder failRespBuilder = ResponseProto.RegisterRespDTO.newBuilder().setSuccess(false);
 

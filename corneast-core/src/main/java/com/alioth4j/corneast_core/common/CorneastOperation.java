@@ -1,11 +1,16 @@
 package com.alioth4j.corneast_core.common;
 
 /**
- * Constants of operation types
+ * Constants of operation types.
+ *
+ * - register
+ * - reduce
+ * - release
+ * - query
  *
  * @author Alioth Null
  */
-public class Operation {
+public class CorneastOperation {
 
     public static final String REGISTER = "register";
     public static final String REDUCE = "reduce";

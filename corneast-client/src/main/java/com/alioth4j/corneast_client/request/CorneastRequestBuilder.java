@@ -1,7 +1,7 @@
 package com.alioth4j.corneast_client.request;
 
 import com.alioth4j.corneast_client.exception.RequestBuildException;
-import com.alioth4j.corneast_core.common.Operation;
+import com.alioth4j.corneast_core.common.CorneastOperation;
 import com.alioth4j.corneast_core.proto.RequestProto;
 import org.springframework.util.StringUtils;
 
@@ -50,23 +50,23 @@ public class CorneastRequestBuilder {
             throw new RequestBuildException(TYPE_NULL_MSG);
         }
         switch (type) {
-            case Operation.REGISTER: {
-                protoBuilder.setType(Operation.REGISTER);
+            case CorneastOperation.REGISTER: {
+                protoBuilder.setType(CorneastOperation.REGISTER);
                 registerReqBuilder = RequestProto.RegisterReqDTO.newBuilder();
                 break;
             }
-            case Operation.REDUCE: {
-                protoBuilder.setType(Operation.REDUCE);
+            case CorneastOperation.REDUCE: {
+                protoBuilder.setType(CorneastOperation.REDUCE);
                 reduceReqBuilder = RequestProto.ReduceReqDTO.newBuilder();
                 break;
             }
-            case Operation.RELEASE: {
-                protoBuilder.setType(Operation.RELEASE);
+            case CorneastOperation.RELEASE: {
+                protoBuilder.setType(CorneastOperation.RELEASE);
                 releaseReqBuilder = RequestProto.ReleaseReqDTO.newBuilder();
                 break;
             }
-            case Operation.QUERY: {
-                protoBuilder.setType(Operation.QUERY);
+            case CorneastOperation.QUERY: {
+                protoBuilder.setType(CorneastOperation.QUERY);
                 queryReqBuilder = RequestProto.QueryReqDTO.newBuilder();
                 break;
             }
@@ -98,19 +98,19 @@ public class CorneastRequestBuilder {
             throw new RequestBuildException(TYPE_NOT_SET_MSG);
         }
         switch (type) {
-            case Operation.REGISTER: {
+            case CorneastOperation.REGISTER: {
                 registerReqBuilder.setKey(key);
                 break;
             }
-            case Operation.REDUCE: {
+            case CorneastOperation.REDUCE: {
                 reduceReqBuilder.setKey(key);
                 break;
             }
-            case Operation.RELEASE: {
+            case CorneastOperation.RELEASE: {
                 releaseReqBuilder.setKey(key);
                 break;
             }
-            case Operation.QUERY: {
+            case CorneastOperation.QUERY: {
                 queryReqBuilder.setKey(key);
                 break;
             }
@@ -130,7 +130,7 @@ public class CorneastRequestBuilder {
         if (!StringUtils.hasLength(type)) {
             throw new RequestBuildException(TYPE_OF_REGISTER_NOT_SET_BEFORE_TOKENCOUNT_SET_MSG);
         }
-        if (!Operation.REGISTER.equals(type)) {
+        if (!CorneastOperation.REGISTER.equals(type)) {
             throw new RequestBuildException(TOKENCOUNT_FOR_REGISTER_ONLY_MSG + type);
         }
         registerReqBuilder.setTokenCount(tokenCount);
@@ -142,20 +142,20 @@ public class CorneastRequestBuilder {
         checkBasicFields();
 
         switch (protoBuilder.getType()) {
-            case Operation.REGISTER: {
+            case CorneastOperation.REGISTER: {
                 checkHasTokenCountSet();
                 protoBuilder.setRegisterReqDTO(registerReqBuilder.build());
                 break;
             }
-            case Operation.REDUCE: {
+            case CorneastOperation.REDUCE: {
                 protoBuilder.setReduceReqDTO(reduceReqBuilder.build());
                 break;
             }
-            case Operation.RELEASE: {
+            case CorneastOperation.RELEASE: {
                 protoBuilder.setReleaseReqDTO(releaseReqBuilder.build());
                 break;
             }
-            case Operation.QUERY: {
+            case CorneastOperation.QUERY: {
                 protoBuilder.setQueryReqDTO(queryReqBuilder.build());
                 break;
             }

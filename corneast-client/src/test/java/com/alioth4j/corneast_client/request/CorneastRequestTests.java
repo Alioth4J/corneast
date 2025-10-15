@@ -1,6 +1,7 @@
 package com.alioth4j.corneast_client.request;
 
 import com.alioth4j.corneast_client.exception.RequestBuildException;
+import com.alioth4j.corneast_core.common.CorneastOperation;
 import com.alioth4j.corneast_core.proto.RequestProto;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -14,24 +15,24 @@ public class CorneastRequestTests {
 
     @Test
     void testCommonConstructorAndInstance() {
-        RequestProto.RequestDTO request = new CorneastRequest("reduce", "id", "key").instance;
-        Assertions.assertEquals("reduce", request.getType());
+        RequestProto.RequestDTO request = new CorneastRequest(CorneastOperation.REDUCE, "id", "key").instance;
+        Assertions.assertEquals(CorneastOperation.REDUCE, request.getType());
         Assertions.assertEquals("id", request.getId());
         Assertions.assertEquals("key", request.getReduceReqDTO().getKey());
     }
 
     @Test
     void testCommonConstructorAndGetInstanceMethod() {
-        RequestProto.RequestDTO request = new CorneastRequest("reduce", "id", "key").getInstance();
-        Assertions.assertEquals("reduce", request.getType());
+        RequestProto.RequestDTO request = new CorneastRequest(CorneastOperation.REDUCE, "id", "key").getInstance();
+        Assertions.assertEquals(CorneastOperation.REDUCE, request.getType());
         Assertions.assertEquals("id", request.getId());
         Assertions.assertEquals("key", request.getReduceReqDTO().getKey());
     }
 
     @Test
     void testCommonConstructorAndGetMethod() {
-        RequestProto.RequestDTO request = new CorneastRequest("reduce", "id", "key").get();
-        Assertions.assertEquals("reduce", request.getType());
+        RequestProto.RequestDTO request = new CorneastRequest(CorneastOperation.REDUCE, "id", "key").get();
+        Assertions.assertEquals(CorneastOperation.REDUCE, request.getType());
         Assertions.assertEquals("id", request.getId());
         Assertions.assertEquals("key", request.getReduceReqDTO().getKey());
     }
@@ -53,36 +54,36 @@ public class CorneastRequestTests {
     @Test
     void testCommonConstructorWithNullId() {
         Assertions.assertThrows(RequestBuildException.class, () -> {
-            new CorneastRequest("reduce", null, "key");
+            new CorneastRequest(CorneastOperation.REDUCE, null, "key");
         });
     }
 
     @Test
     void testCommonConstructorWithEmptyId() {
         Assertions.assertThrows(RequestBuildException.class, () -> {
-            new CorneastRequest("reduce", "", "key");
+            new CorneastRequest(CorneastOperation.REDUCE, "", "key");
         });
     }
 
     @Test
     void testCommonConstructorWithNullKey() {
         Assertions.assertThrows(RequestBuildException.class, () -> {
-            new CorneastRequest("reduce", "id", null);
+            new CorneastRequest(CorneastOperation.REDUCE, "id", null);
         });
     }
 
     @Test
     void testCommonConstructorWithEmptyKey() {
         Assertions.assertThrows(RequestBuildException.class, () -> {
-            new CorneastRequest("reduce", "id", "");
+            new CorneastRequest(CorneastOperation.REDUCE, "id", "");
         });
     }
 
 
     @Test
     void testRegisterConstructorAndInstance() {
-        RequestProto.RequestDTO request = new CorneastRequest("register", "id", "key", 1000).instance;
-        Assertions.assertEquals("register", request.getType());
+        RequestProto.RequestDTO request = new CorneastRequest(CorneastOperation.REGISTER, "id", "key", 1000).instance;
+        Assertions.assertEquals(CorneastOperation.REGISTER, request.getType());
         Assertions.assertEquals("id", request.getId());
         Assertions.assertEquals("key", request.getRegisterReqDTO().getKey());
         Assertions.assertEquals(1000, request.getRegisterReqDTO().getTokenCount());
@@ -90,8 +91,8 @@ public class CorneastRequestTests {
 
     @Test
     void testRegisterConstructorAndGetInstanceMethod() {
-        RequestProto.RequestDTO request = new CorneastRequest("register", "id", "key", 1000).getInstance();
-        Assertions.assertEquals("register", request.getType());
+        RequestProto.RequestDTO request = new CorneastRequest(CorneastOperation.REGISTER, "id", "key", 1000).getInstance();
+        Assertions.assertEquals(CorneastOperation.REGISTER, request.getType());
         Assertions.assertEquals("id", request.getId());
         Assertions.assertEquals("key", request.getRegisterReqDTO().getKey());
         Assertions.assertEquals(1000, request.getRegisterReqDTO().getTokenCount());
@@ -99,8 +100,8 @@ public class CorneastRequestTests {
 
     @Test
     void testRegisterConstructorAndGetMethod() {
-        RequestProto.RequestDTO request = new CorneastRequest("register", "id", "key", 1000).get();
-        Assertions.assertEquals("register", request.getType());
+        RequestProto.RequestDTO request = new CorneastRequest(CorneastOperation.REGISTER, "id", "key", 1000).get();
+        Assertions.assertEquals(CorneastOperation.REGISTER, request.getType());
         Assertions.assertEquals("id", request.getId());
         Assertions.assertEquals("key", request.getRegisterReqDTO().getKey());
         Assertions.assertEquals(1000, request.getRegisterReqDTO().getTokenCount());
@@ -109,7 +110,7 @@ public class CorneastRequestTests {
     @Test
     void testRegisterConstructorWithNonRegisterType() {
         Assertions.assertThrows(RequestBuildException.class, () -> {
-            RequestProto.RequestDTO request = new CorneastRequest("reduce", "id", "key", 1000).instance;
+            RequestProto.RequestDTO request = new CorneastRequest(CorneastOperation.REDUCE, "id", "key", 1000).instance;
         });
     }
 
@@ -130,41 +131,41 @@ public class CorneastRequestTests {
     @Test
     void testRegisterConstructorWithNullId() {
         Assertions.assertThrows(RequestBuildException.class, () -> {
-            new CorneastRequest("register", null, "key", 1000);
+            new CorneastRequest(CorneastOperation.REGISTER, null, "key", 1000);
         });
     }
 
     @Test
     void testRegisterConstructorWithEmptyId() {
         Assertions.assertThrows(RequestBuildException.class, () -> {
-            new CorneastRequest("register", "", "key", 1000);
+            new CorneastRequest(CorneastOperation.REGISTER, "", "key", 1000);
         });
     }
 
     @Test
     void testRegisterConstructorWithNullKey() {
         Assertions.assertThrows(RequestBuildException.class, () -> {
-            new CorneastRequest("register", "id", null, 1000);
+            new CorneastRequest(CorneastOperation.REGISTER, "id", null, 1000);
         });
     }
 
     @Test
     void testRegisterConstructorWithEmptyKey() {
         Assertions.assertThrows(RequestBuildException.class, () -> {
-            new CorneastRequest("register", "id", "", 1000);
+            new CorneastRequest(CorneastOperation.REGISTER, "id", "", 1000);
         });
     }
 
     @Test
     void testRegisterConstructorWithZeroTokenCount() {
-        RequestProto.RequestDTO request = new CorneastRequest("register", "id", "key", 0).instance;
+        RequestProto.RequestDTO request = new CorneastRequest(CorneastOperation.REGISTER, "id", "key", 0).instance;
         Assertions.assertEquals(0, request.getRegisterReqDTO().getTokenCount());
     }
 
     @Test
     void testRegisterConstructorWithNegativeTokenCount() {
         Assertions.assertThrows(RequestBuildException.class, () -> {
-            new CorneastRequest("register", "id", "key", -1);
+            new CorneastRequest(CorneastOperation.REGISTER, "id", "key", -1);
         });
     }
 

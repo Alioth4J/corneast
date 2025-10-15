@@ -1,6 +1,7 @@
 package com.alioth4j.corneast_client.request;
 
 import com.alioth4j.corneast_client.exception.RequestBuildException;
+import com.alioth4j.corneast_core.common.CorneastOperation;
 import com.alioth4j.corneast_core.proto.RequestProto;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -18,12 +19,12 @@ public class CorneastRequestBuilderTests {
     @Test
     void testCorrectBuilder() {
         RequestProto.RequestDTO requestDTO = CorneastRequestBuilder.newBuilder()
-                .setType("register")
+                .setType(CorneastOperation.REGISTER)
                 .setId("12345")
                 .setKey("key-67890")
                 .setTokenCount(1000)
                 .build();
-        assertEquals("register", requestDTO.getType());
+        assertEquals(CorneastOperation.REGISTER, requestDTO.getType());
         assertEquals("12345", requestDTO.getId());
         assertEquals("key-67890", requestDTO.getRegisterReqDTO().getKey());
         assertEquals(1000, requestDTO.getRegisterReqDTO().getTokenCount());
@@ -73,7 +74,7 @@ public class CorneastRequestBuilderTests {
     void testNullId() {
         Assertions.assertThrows(RequestBuildException.class, () -> {
             CorneastRequestBuilder.newBuilder()
-                    .setType("reduce")
+                    .setType(CorneastOperation.REDUCE)
                     .setId(null)
                     .setKey("key")
                     .build();
@@ -84,7 +85,7 @@ public class CorneastRequestBuilderTests {
     void testEmptyId() {
         Assertions.assertThrows(RequestBuildException.class, () -> {
             CorneastRequestBuilder.newBuilder()
-                    .setType("reduce")
+                    .setType(CorneastOperation.REDUCE)
                     .setId("")
                     .setKey("key")
                     .build();
@@ -95,7 +96,7 @@ public class CorneastRequestBuilderTests {
     void testNotSetId() {
         Assertions.assertThrows(RequestBuildException.class, () -> {
             CorneastRequestBuilder.newBuilder()
-                    .setType("reduce")
+                    .setType(CorneastOperation.REDUCE)
                     .setKey("key")
                     .build();
         });
@@ -105,7 +106,7 @@ public class CorneastRequestBuilderTests {
     void testNullKey() {
         Assertions.assertThrows(RequestBuildException.class, () -> {
             CorneastRequestBuilder.newBuilder()
-                    .setType("reduce")
+                    .setType(CorneastOperation.REDUCE)
                     .setId("id")
                     .setKey(null)
                     .build();
@@ -116,7 +117,7 @@ public class CorneastRequestBuilderTests {
     void testEmptyKey() {
         Assertions.assertThrows(RequestBuildException.class, () -> {
             CorneastRequestBuilder.newBuilder()
-                    .setType("reduce")
+                    .setType(CorneastOperation.REDUCE)
                     .setId("id")
                     .setKey("")
                     .build();
@@ -127,7 +128,7 @@ public class CorneastRequestBuilderTests {
     void testNotSetKey() {
         Assertions.assertThrows(RequestBuildException.class, () -> {
             CorneastRequestBuilder.newBuilder()
-                    .setType("reduce")
+                    .setType(CorneastOperation.REDUCE)
                     .setId("id")
                     .build();
         });
@@ -136,12 +137,12 @@ public class CorneastRequestBuilderTests {
     @Test
     void testZeroTokenCount() {
         RequestProto.RequestDTO request = CorneastRequestBuilder.newBuilder()
-                .setType("register")
+                .setType(CorneastOperation.REGISTER)
                 .setId("id")
                 .setKey("key")
                 .setTokenCount(1000)
                 .build();
-        Assertions.assertEquals("register", request.getType());
+        Assertions.assertEquals(CorneastOperation.REGISTER, request.getType());
         Assertions.assertEquals("id", request.getId());
         Assertions.assertEquals("key", request.getRegisterReqDTO().getKey());
         Assertions.assertEquals(1000, request.getRegisterReqDTO().getTokenCount());
@@ -151,7 +152,7 @@ public class CorneastRequestBuilderTests {
     void testNegativeTokenCount() {
         Assertions.assertThrows(RequestBuildException.class, () -> {
             CorneastRequestBuilder.newBuilder()
-                    .setType("register")
+                    .setType(CorneastOperation.REGISTER)
                     .setId("id")
                     .setKey("key")
                     .setTokenCount(-1)
@@ -163,7 +164,7 @@ public class CorneastRequestBuilderTests {
     void testNotSetTokenCount() {
         Assertions.assertThrows(RequestBuildException.class, () -> {
             CorneastRequestBuilder.newBuilder()
-                    .setType("register")
+                    .setType(CorneastOperation.REGISTER)
                     .setId("id")
                     .setKey("key")
                     .build();
