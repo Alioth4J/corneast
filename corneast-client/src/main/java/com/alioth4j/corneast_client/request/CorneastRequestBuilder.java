@@ -1,9 +1,9 @@
 package com.alioth4j.corneast_client.request;
 
 import com.alioth4j.corneast_client.exception.RequestBuildException;
+import com.alioth4j.corneast_client.utils.StringUtils;
 import com.alioth4j.corneast_core.common.CorneastOperation;
 import com.alioth4j.corneast_core.proto.RequestProto;
-import org.springframework.util.StringUtils;
 
 /**
  * Protobuf request builder for client to use.
