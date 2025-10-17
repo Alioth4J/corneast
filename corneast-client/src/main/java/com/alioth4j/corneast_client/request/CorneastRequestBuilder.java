@@ -12,19 +12,23 @@ import com.alioth4j.corneast_core.proto.RequestProto;
  */
 public class CorneastRequestBuilder {
 
+    // Outer builder object of the request.
     private RequestProto.RequestDTO.Builder protoBuilder = RequestProto.RequestDTO.newBuilder();
 
-    // Choose one of the following four.
+    // Inner builder object of the request.
+    // Choose one of the following.
     private RequestProto.RegisterReqDTO.Builder registerReqBuilder;
     private RequestProto.ReduceReqDTO.Builder reduceReqBuilder;
     private RequestProto.ReleaseReqDTO.Builder releaseReqBuilder;
     private RequestProto.QueryReqDTO.Builder queryReqBuilder;
 
+    // Record whether a filed is correctly set.
     private boolean hasTypeSet = false;
     private boolean hasIdSet = false;
     private boolean hasKeySet = false;
     private boolean hasTokenCountSet = false;
 
+    // Message Strings.
     private static final String TYPE_NULL_MSG = "Request type must not be null or empty.";
     private static final String TYPE_NOT_EXISTS_MSG = "Request type does not exist: ";
     private static final String TYPE_NOT_SET_MSG = "Request type has not been set.";
@@ -38,9 +42,16 @@ public class CorneastRequestBuilder {
     private static final String TOKENCOUNT_FOR_REGISTER_ONLY_MSG = "Only register request can set tokenCount, current request type: ";
     private static final String UNREACHABLE_MSG = "Reach unreachable code.";
 
+    /**
+     * Private constructor, invoked by `newBuilder()`.
+     */
     private CorneastRequestBuilder() {
     }
 
+    /**
+     * Construct the builder instance.
+     * @return instance of `CorneastRequestBuilder`
+     */
     public static CorneastRequestBuilder newBuilder() {
         return new CorneastRequestBuilder();
     }
@@ -138,6 +149,10 @@ public class CorneastRequestBuilder {
         return this;
     }
 
+    /**
+     * Build the complete request.
+     * @return proto request object
+     */
     public RequestProto.RequestDTO build() {
         checkBasicFields();
 
@@ -166,12 +181,18 @@ public class CorneastRequestBuilder {
         return protoBuilder.build();
     }
 
+    /**
+     * TokenCount check for register request in `build()`.
+     */
     private void checkHasTokenCountSet() {
         if (!hasTokenCountSet) {
             throw new RequestBuildException(TOKENCOUNT_NOT_SET_MSG);
         }
     }
 
+    /**
+     * Fields setting check in `build()`.
+     */
     private void checkBasicFields() {
         if (!hasTypeSet) {
             throw new RequestBuildException(TYPE_NOT_SET_MSG);
