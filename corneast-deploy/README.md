@@ -3,6 +3,14 @@
 - Redis for storage
 - Redis for idempotence
 
+### Notice
+SELinux may cause docker startup failure.  
+
+Disable SELinux temporarily:  
+```bash
+sudo setenforce 0
+```
+
 ### Redis For Storage
 #### Create Docker Network
 ```bash
