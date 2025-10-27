@@ -37,3 +37,6 @@ build/
 
 ### redis data
 /data/
+
+### generated request files
+/corneast-client/request/

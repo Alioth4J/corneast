@@ -1,7 +1,8 @@
-package com.alioth4j.corneast_core.util;
+package com.alioth4j.corneast_client.generate;
 
 import com.alioth4j.corneast_core.common.CorneastOperation;
 import com.alioth4j.corneast_core.proto.RequestProto;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -14,20 +15,22 @@ import java.time.format.DateTimeFormatter;
  * register.bin, reduce.bin, query.bin, release.bin.
  *
  * If the working class is the root directory of the project,
- * the files will be generated in corneast-test/request.
+ * the files will be generated in corneast-client/request.
  *
  * @author Alioth Null
  */
 public class ProtobufRequestGenerator {
 
     // TODO use CorneastRequestBuilder to generate
-    public static void generate() {
+    @Test
+    public void generate() {
         // params
         String key = DateTimeFormatter.ofPattern("yyyyMMdd").format(LocalDate.now());
         Long tokenCount = 1000L;
 
         // create dir
-        File dir = new File("../", "corneast-test/request");
+//        File dir = new File("../", "corneast-test/request");
+        File dir = new File(System.getProperty("user.dir"), "request");
         if (!dir.exists()) {
             boolean success = dir.mkdirs();
             if (!success) {
@@ -79,7 +82,7 @@ public class ProtobufRequestGenerator {
         writeWithLengthPrefix(releaseReqFile, releaseReqByteArray);
     }
 
-    private static void writeWithLengthPrefix(File file, byte[] data) {
+    private void writeWithLengthPrefix(File file, byte[] data) {
         try (FileOutputStream fos = new FileOutputStream(file)) {
             fos.write(encodeVarint32(data.length));
             fos.write(data);
@@ -94,7 +97,7 @@ public class ProtobufRequestGenerator {
      * @param value int to encode
      * @return length prefix
      */
-    private static byte[] encodeVarint32(int value) {
+    private byte[] encodeVarint32(int value) {
         byte[] buffer = new byte[5];
         int position = 0;
         while ((value & ~0x7F) != 0) {
@@ -107,7 +110,7 @@ public class ProtobufRequestGenerator {
         return result;
     }
 
-    private static void handleIOException(IOException e) {
+    private void handleIOException(IOException e) {
         System.err.println("Something went wrong when writing request to the file: " + e.getMessage());
         e.printStackTrace();
     }
