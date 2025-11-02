@@ -13,7 +13,7 @@
     <groupId>com.alioth4j</groupId>
     <artifactId>corneast-client</artifactId>
     <version>2.2.0</version>
-    <name>corneast-core</name>
+    <name>corneast-client</name>
     <description>corneast client module</description>
     <packaging>jar</packaging>
 
