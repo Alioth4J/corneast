@@ -19,7 +19,7 @@ import java.time.format.DateTimeFormatter;
  *
  * @author Alioth Null
  */
-public class ProtobufRequestGenerator {
+public class ProtobufRequestGeneratorTests {
 
     // TODO use CorneastRequestBuilder to generate
     @Test
@@ -44,7 +44,7 @@ public class ProtobufRequestGenerator {
         // register request
         RequestProto.RequestDTO registerRequestDTO = RequestProto.RequestDTO.newBuilder()
                 .setType(CorneastOperation.REGISTER)
-                .setId("123456")
+                .setId("id1")
                 .setRegisterReqDTO(RequestProto.RegisterReqDTO.newBuilder().setKey(key).setTokenCount(tokenCount).build())
                 .build();
         byte[] registerReqByteArray = registerRequestDTO.toByteArray();
@@ -54,7 +54,7 @@ public class ProtobufRequestGenerator {
         // reduce request
         RequestProto.RequestDTO reduceRequestDTO = RequestProto.RequestDTO.newBuilder()
                 .setType(CorneastOperation.REDUCE)
-                .setId("123456")
+                .setId("id2")
                 .setReduceReqDTO(RequestProto.ReduceReqDTO.newBuilder().setKey(key).build())
                 .build();
         byte[] reduceReqByteArray = reduceRequestDTO.toByteArray();
@@ -64,7 +64,7 @@ public class ProtobufRequestGenerator {
         // query request
         RequestProto.RequestDTO queryRequestDTO = RequestProto.RequestDTO.newBuilder()
                 .setType(CorneastOperation.QUERY)
-                .setId("123456")
+                .setId("id3")
                 .setQueryReqDTO(RequestProto.QueryReqDTO.newBuilder().setKey(key))
                 .build();
         byte[] queryReqByteArray = queryRequestDTO.toByteArray();
@@ -74,7 +74,7 @@ public class ProtobufRequestGenerator {
         // release request
         RequestProto.RequestDTO releaseRequestDTO = RequestProto.RequestDTO.newBuilder()
                 .setType(CorneastOperation.RELEASE)
-                .setId("123456")
+                .setId("id4")
                 .setReleaseReqDTO(RequestProto.ReleaseReqDTO.newBuilder().setKey(key).build())
                 .build();
         byte[] releaseReqByteArray = releaseRequestDTO.toByteArray();
