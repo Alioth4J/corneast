@@ -4,12 +4,16 @@
 - Redis for idempotence
 
 ### Notice
+#### SELinux
 SELinux may cause docker startup failure.  
 
 Disable SELinux temporarily:  
 ```bash
 sudo setenforce 0
 ```
+
+#### Dir Isolation
+The directories of redis logs are supposed to be isolated, else one container does not have the permission to read or write.  
 
 ### Redis For Storage
 #### Create Docker Network
@@ -59,6 +63,38 @@ sudo docker run -d \
   redis-sentinel /usr/local/etc/redis/sentinel.conf
 ```
 
+```bash
+# deploy master
+sudo docker run -d \
+  --name corneast-redis-master-2 \
+  --network corneast-redis-network \
+  -p 7003:6379 \
+  -v /var/home/alioth4j/code/corneast/corneast-deploy/2/master-2.conf:/usr/local/etc/redis/redis.conf \
+  -v /var/home/alioth4j/code/corneast/data:/data \
+  redis:latest \
+  redis-server /usr/local/etc/redis/redis.conf
+
+# deploy slave
+sudo docker run -d \
+  --name corneast-redis-slave-2 \
+  --network corneast-redis-network \
+  -p 7004:6379 \
+  -v /var/home/alioth4j/code/corneast/corneast-deploy/2/slave-2.conf:/usr/local/etc/redis/redis.conf \
+  -v /var/home/alioth4j/code/corneast/data:/data \
+  redis:latest \
+  redis-server /usr/local/etc/redis/redis.conf
+
+# deploy sentinel
+sudo docker run -d \
+  --name corneast-redis-sentinel-2 \
+  --network corneast-redis-network \
+  -p 27002:26379 \
+  -v /var/home/alioth4j/code/corneast/corneast-deploy/2/sentinel-2.conf:/usr/local/etc/redis/sentinel.conf \
+  -v /var/home/alioth4j/code/corneast/data:/data \
+  redis:latest \
+  redis-sentinel /usr/local/etc/redis/sentinel.conf
+```
+
 ### Redis For Idempotence
 #### Create Docker Network
 ```bash
@@ -87,4 +123,18 @@ sudo docker exec -it corneast-idempotent-6000 \
   corneast-idempotent-6001:6379 \
   corneast-idempotent-6002:6379 \
   --cluster-replicas 0
+```
+
+### Start/Stop/Remove Commands
+```bash
+$ sudo rm -rf data/*
+
+$ sudo docker start corneast-redis-{master,slave,sentinel}-{1,2}
+$ sudo docker start corneast-idempotent-{6000,6001,6002}
+
+$ sudo docker stop corneast-redis-{master,slave,sentinel}-{1,2}
+$ sudo docker stop corneast-idempotent-{6000,6001,6002}
+
+$ sudo docker rm corneast-redis-{master,slave,sentinel}-{1,2}
+$ sudo docker rm corneast-idempotent-{6000,6001,6002}
 ```
