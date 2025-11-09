@@ -43,7 +43,6 @@ public class IdempotentHandler extends SimpleChannelInboundHandler<RequestProto.
     protected void channelRead0(ChannelHandlerContext ctx, RequestProto.RequestDTO requestDTO) throws Exception {
         String id = requestDTO.getId();
         String exists = idempotentRedissonClient.getScript(StringCodec.INSTANCE).eval(RScript.Mode.READ_ONLY, readLuaScript, RScript.ReturnType.VALUE, List.of(id));
-        System.err.println("exists == " + exists);
         if (exists == null) {
             idempotentRedissonClient.getScript(StringCodec.INSTANCE).eval(RScript.Mode.READ_WRITE, writeLuaScript, RScript.ReturnType.VALUE, List.of(id));
             ctx.fireChannelRead(requestDTO);
