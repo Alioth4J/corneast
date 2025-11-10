@@ -18,7 +18,7 @@ public class CorneastRequest {
     public final RequestProto.RequestDTO instance;
 
     /**
-     * Constructor for requests of all types.
+     * Constructor for requests of types excepts register.
      * @param type request type
      * @param id request id
      * @param key request key
@@ -41,6 +41,25 @@ public class CorneastRequest {
                 .setKey(key)
                 .setTokenCount(tokenCount)
                 .build();
+    }
+
+    /**
+     * Constructor for requests of types excepts register, disabling idempotence.
+     * @param type request type
+     * @param key request key
+     */
+    public CorneastRequest(String type, String key) {
+        this(type, "", key);
+    }
+
+    /**
+     * Constructor for register requests only, disabling idempotence.
+     * @param type
+     * @param key
+     * @param tokenCount
+     */
+    public CorneastRequest(String type, String key, long tokenCount) {
+        this(type, "", key, tokenCount);
     }
 
     /**

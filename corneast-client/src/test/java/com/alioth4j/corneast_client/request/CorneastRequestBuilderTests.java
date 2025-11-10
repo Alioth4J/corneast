@@ -72,34 +72,37 @@ public class CorneastRequestBuilderTests {
 
     @Test
     void testNullId() {
-        Assertions.assertThrows(RequestBuildException.class, () -> {
-            CorneastRequestBuilder.newBuilder()
-                    .setType(CorneastOperation.REDUCE)
-                    .setId(null)
-                    .setKey("key")
-                    .build();
-        });
+        RequestProto.RequestDTO requestDTO = CorneastRequestBuilder.newBuilder()
+                .setType(CorneastOperation.REDUCE)
+                .setId(null)
+                .setKey("key")
+                .build();
+        Assertions.assertEquals(CorneastOperation.REDUCE, requestDTO.getType());
+        Assertions.assertEquals("", requestDTO.getId());
+        Assertions.assertEquals("key", requestDTO.getReduceReqDTO().getKey());
     }
 
     @Test
     void testEmptyId() {
-        Assertions.assertThrows(RequestBuildException.class, () -> {
-            CorneastRequestBuilder.newBuilder()
-                    .setType(CorneastOperation.REDUCE)
-                    .setId("")
-                    .setKey("key")
-                    .build();
-        });
+        RequestProto.RequestDTO requestDTO = CorneastRequestBuilder.newBuilder()
+                .setType(CorneastOperation.REDUCE)
+                .setId("")
+                .setKey("key")
+                .build();
+        Assertions.assertEquals(CorneastOperation.REDUCE, requestDTO.getType());
+        Assertions.assertEquals("", requestDTO.getId());
+        Assertions.assertEquals("key", requestDTO.getReduceReqDTO().getKey());
     }
 
     @Test
     void testNotSetId() {
-        Assertions.assertThrows(RequestBuildException.class, () -> {
-            CorneastRequestBuilder.newBuilder()
-                    .setType(CorneastOperation.REDUCE)
-                    .setKey("key")
-                    .build();
-        });
+        RequestProto.RequestDTO requestDTO = CorneastRequestBuilder.newBuilder()
+                .setType(CorneastOperation.REDUCE)
+                .setKey("key")
+                .build();
+        Assertions.assertEquals(CorneastOperation.REDUCE, requestDTO.getType());
+        Assertions.assertEquals("", requestDTO.getId());
+        Assertions.assertEquals("key", requestDTO.getReduceReqDTO().getKey());
     }
 
     @Test

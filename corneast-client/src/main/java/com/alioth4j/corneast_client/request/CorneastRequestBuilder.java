@@ -35,8 +35,6 @@ public class CorneastRequestBuilder {
     private static final String TYPE_OF_REGISTER_NOT_SET_BEFORE_TOKENCOUNT_SET_MSG = "Request type has not been set to register.";
     private static final String KEY_NULL_MSG = "Request key must not be null or empty.";
     private static final String KEY_NOT_SET_MSG = "Request key has not been set.";
-    private static final String ID_NULL_MSG = "Id must not be null or empty.";
-    private static final String ID_NOT_SET_MSG = "Request id has not been set.";
     private static final String TOKENCOUNT_NOT_SET_MSG = "Request tokenCount has not been set.";
     private static final String TOKENCOUNT_LESS_THAN_ZERO_MSG = "Request tokenCount must not be less than 0.";
     private static final String TOKENCOUNT_FOR_REGISTER_ONLY_MSG = "Only register request can set tokenCount, current request type: ";
@@ -90,12 +88,11 @@ public class CorneastRequestBuilder {
     }
 
     public CorneastRequestBuilder setId(String id) {
-        // Currently id must not be null or empty. This will be changed.
-        // See `build()`.
-        if (!StringUtils.hasLength(id)) {
-            throw new RequestBuildException(ID_NULL_MSG);
+        if (id == null) {
+            protoBuilder.setId("");
+        } else {
+            protoBuilder.setId(id);
         }
-        protoBuilder.setId(id);
         hasIdSet = true;
         return this;
     }
@@ -198,7 +195,7 @@ public class CorneastRequestBuilder {
             throw new RequestBuildException(TYPE_NOT_SET_MSG);
         }
         if (!hasIdSet) {
-            throw new RequestBuildException(ID_NOT_SET_MSG);
+            protoBuilder.setId("");
         }
         if (!hasKeySet) {
             throw new RequestBuildException(KEY_NOT_SET_MSG);
