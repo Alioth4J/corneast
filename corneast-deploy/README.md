@@ -12,8 +12,10 @@ Disable SELinux temporarily:
 sudo setenforce 0
 ```
 
-#### Dir Isolation
-The directories of redis logs are supposed to be isolated, else one container does not have the permission to read or write.  
+#### docker run -v
+In this example we only use `-v` to mount config files, we don't mount log files to avoid permission issues.  
+
+You can go into containers to inspect log files.  
 
 ### Redis For Storage
 #### Create Docker Network
@@ -38,7 +40,6 @@ sudo docker run -d \
   --network corneast-redis-network \
   -p 7001:6379 \
   -v /var/home/alioth4j/code/corneast/corneast-deploy/1/master-1.conf:/usr/local/etc/redis/redis.conf \
-  -v /var/home/alioth4j/code/corneast/data:/data \
   redis:latest \
   redis-server /usr/local/etc/redis/redis.conf
 
@@ -48,7 +49,6 @@ sudo docker run -d \
   --network corneast-redis-network \
   -p 7002:6379 \
   -v /var/home/alioth4j/code/corneast/corneast-deploy/1/slave-1.conf:/usr/local/etc/redis/redis.conf \
-  -v /var/home/alioth4j/code/corneast/data:/data \
   redis:latest \
   redis-server /usr/local/etc/redis/redis.conf
 
@@ -58,7 +58,6 @@ sudo docker run -d \
   --network corneast-redis-network \
   -p 27001:26379 \
   -v /var/home/alioth4j/code/corneast/corneast-deploy/1/sentinel-1.conf:/usr/local/etc/redis/sentinel.conf \
-  -v /var/home/alioth4j/code/corneast/data:/data \
   redis:latest \
   redis-sentinel /usr/local/etc/redis/sentinel.conf
 ```
@@ -70,7 +69,6 @@ sudo docker run -d \
   --network corneast-redis-network \
   -p 7003:6379 \
   -v /var/home/alioth4j/code/corneast/corneast-deploy/2/master-2.conf:/usr/local/etc/redis/redis.conf \
-  -v /var/home/alioth4j/code/corneast/data:/data \
   redis:latest \
   redis-server /usr/local/etc/redis/redis.conf
 
@@ -80,7 +78,6 @@ sudo docker run -d \
   --network corneast-redis-network \
   -p 7004:6379 \
   -v /var/home/alioth4j/code/corneast/corneast-deploy/2/slave-2.conf:/usr/local/etc/redis/redis.conf \
-  -v /var/home/alioth4j/code/corneast/data:/data \
   redis:latest \
   redis-server /usr/local/etc/redis/redis.conf
 
@@ -90,7 +87,6 @@ sudo docker run -d \
   --network corneast-redis-network \
   -p 27002:26379 \
   -v /var/home/alioth4j/code/corneast/corneast-deploy/2/sentinel-2.conf:/usr/local/etc/redis/sentinel.conf \
-  -v /var/home/alioth4j/code/corneast/data:/data \
   redis:latest \
   redis-sentinel /usr/local/etc/redis/sentinel.conf
 ```
@@ -110,7 +106,6 @@ sudo docker run -d \
   --network corneast-idempotent-network \
   -p 6000:6379 \
   -v /var/home/alioth4j/code/corneast/corneast-deploy/idempotent/6000.conf:/usr/local/etc/redis/redis.conf \
-  -v /var/home/alioth4j/code/corneast/data:/data \
   redis:latest \
   redis-server /usr/local/etc/redis/redis.conf
 ```
@@ -127,14 +122,12 @@ sudo docker exec -it corneast-idempotent-6000 \
 
 ### Start/Stop/Remove Commands
 ```bash
-$ sudo rm -rf data/*
+sudo docker start corneast-redis-{master,slave,sentinel}-{1,2}
+sudo docker start corneast-idempotent-{6000,6001,6002}
 
-$ sudo docker start corneast-redis-{master,slave,sentinel}-{1,2}
-$ sudo docker start corneast-idempotent-{6000,6001,6002}
+sudo docker stop corneast-redis-{master,slave,sentinel}-{1,2}
+sudo docker stop corneast-idempotent-{6000,6001,6002}
 
-$ sudo docker stop corneast-redis-{master,slave,sentinel}-{1,2}
-$ sudo docker stop corneast-idempotent-{6000,6001,6002}
-
-$ sudo docker rm corneast-redis-{master,slave,sentinel}-{1,2}
-$ sudo docker rm corneast-idempotent-{6000,6001,6002}
+sudo docker rm corneast-redis-{master,slave,sentinel}-{1,2}
+sudo docker rm corneast-idempotent-{6000,6001,6002}
 ```

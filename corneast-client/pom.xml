@@ -6,13 +6,13 @@
     <parent>
         <groupId>com.alioth4j</groupId>
         <artifactId>corneast</artifactId>
-        <version>3.0.0</version>
+        <version>3.0.1</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
     <groupId>com.alioth4j</groupId>
     <artifactId>corneast-client</artifactId>
-    <version>3.0.0</version>
+    <version>3.0.1</version>
     <name>corneast-client</name>
     <description>corneast client module</description>
     <packaging>jar</packaging>
@@ -27,7 +27,7 @@
         <dependency>
             <artifactId>corneast-core</artifactId>
             <groupId>com.alioth4j</groupId>
-            <version>3.0.0</version>
+            <version>3.0.1</version>
         </dependency>
         <dependency>
             <artifactId>junit-jupiter-api</artifactId>
