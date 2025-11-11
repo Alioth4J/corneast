@@ -1,5 +1,6 @@
 package com.alioth4j.corneast_client.generate;
 
+import com.alioth4j.corneast_client.request.CorneastRequest;
 import com.alioth4j.corneast_core.common.CorneastOperation;
 import com.alioth4j.corneast_core.proto.RequestProto;
 import org.junit.jupiter.api.Test;
@@ -21,7 +22,6 @@ import java.time.format.DateTimeFormatter;
  */
 public class ProtobufRequestGeneratorTests {
 
-    // TODO use CorneastRequestBuilder to generate
     @Test
     public void generate() {
         // params
@@ -29,7 +29,6 @@ public class ProtobufRequestGeneratorTests {
         Long tokenCount = 1000L;
 
         // create dir
-//        File dir = new File("../", "corneast-test/request");
         File dir = new File(System.getProperty("user.dir"), "request");
         if (!dir.exists()) {
             boolean success = dir.mkdirs();
@@ -42,41 +41,25 @@ public class ProtobufRequestGeneratorTests {
         final String suffix = ".bin";
 
         // register request
-        RequestProto.RequestDTO registerRequestDTO = RequestProto.RequestDTO.newBuilder()
-                .setType(CorneastOperation.REGISTER)
-                .setId("id1")
-                .setRegisterReqDTO(RequestProto.RegisterReqDTO.newBuilder().setKey(key).setTokenCount(tokenCount).build())
-                .build();
+        RequestProto.RequestDTO registerRequestDTO = new CorneastRequest(CorneastOperation.REGISTER, "", key, tokenCount).instance;
         byte[] registerReqByteArray = registerRequestDTO.toByteArray();
         File registerReqFile = new File(dir, CorneastOperation.REGISTER + suffix);
         writeWithLengthPrefix(registerReqFile, registerReqByteArray);
 
         // reduce request
-        RequestProto.RequestDTO reduceRequestDTO = RequestProto.RequestDTO.newBuilder()
-                .setType(CorneastOperation.REDUCE)
-                .setId("id2")
-                .setReduceReqDTO(RequestProto.ReduceReqDTO.newBuilder().setKey(key).build())
-                .build();
+        RequestProto.RequestDTO reduceRequestDTO = new CorneastRequest(CorneastOperation.REDUCE, "", key).instance;
         byte[] reduceReqByteArray = reduceRequestDTO.toByteArray();
         File reduceReqFile = new File(dir, CorneastOperation.REDUCE + suffix);
         writeWithLengthPrefix(reduceReqFile, reduceReqByteArray);
 
         // query request
-        RequestProto.RequestDTO queryRequestDTO = RequestProto.RequestDTO.newBuilder()
-                .setType(CorneastOperation.QUERY)
-                .setId("id3")
-                .setQueryReqDTO(RequestProto.QueryReqDTO.newBuilder().setKey(key))
-                .build();
+        RequestProto.RequestDTO queryRequestDTO = new CorneastRequest(CorneastOperation.QUERY, "", key).instance;
         byte[] queryReqByteArray = queryRequestDTO.toByteArray();
         File queryReqFile = new File(dir, CorneastOperation.QUERY + suffix);
         writeWithLengthPrefix(queryReqFile, queryReqByteArray);
 
         // release request
-        RequestProto.RequestDTO releaseRequestDTO = RequestProto.RequestDTO.newBuilder()
-                .setType(CorneastOperation.RELEASE)
-                .setId("id4")
-                .setReleaseReqDTO(RequestProto.ReleaseReqDTO.newBuilder().setKey(key).build())
-                .build();
+        RequestProto.RequestDTO releaseRequestDTO = new CorneastRequest(CorneastOperation.RELEASE, "", key).instance;
         byte[] releaseReqByteArray = releaseRequestDTO.toByteArray();
         File releaseReqFile = new File(dir, CorneastOperation.RELEASE + suffix);
         writeWithLengthPrefix(releaseReqFile, releaseReqByteArray);
