@@ -65,6 +65,7 @@ public class RegisterRequestHandlingStrategy implements RequestHandlingStrategy 
                 redissonClient.getScript(StringCodec.INSTANCE).eval(RScript.Mode.READ_WRITE, luaScript, RScript.ReturnType.VALUE, List.of(key), curTokenCount);
             }
             return responseBuilder
+                   .setId(requestDTO.getId())
                    .setRegisterRespDTO(successRespBuilder
                                        .setKey(key)
                                        .build())

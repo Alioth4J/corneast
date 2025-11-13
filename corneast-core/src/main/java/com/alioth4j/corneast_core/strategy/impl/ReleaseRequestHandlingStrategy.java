@@ -52,7 +52,8 @@ public class ReleaseRequestHandlingStrategy implements RequestHandlingStrategy {
     private static final ResponseProto.ReleaseRespDTO.Builder successRespBuilder = ResponseProto.ReleaseRespDTO.newBuilder().setSuccess(true);
 //    private static final ResponseProto.ReleaseRespDTO.Builder failRespBuilder = ResponseProto.ReleaseRespDTO.newBuilder().setSuccess(false);
 
-    private static final Map<String, ResponseProto.ResponseDTO> cachedSuccessResponses = new ConcurrentHashMap<>();
+    private static final Map<String, ResponseProto.ResponseDTO.Builder> cachedSuccessResponses = new ConcurrentHashMap<>();
+
 //    private static final Map<String, ResponseProto.ResponseDTO> cachedFailResponses = new ConcurrentHashMap<>();
 
     @Override
@@ -61,9 +62,10 @@ public class ReleaseRequestHandlingStrategy implements RequestHandlingStrategy {
             String key = requestDTO.getReleaseReqDTO().getKey();
             redissonClients.get(random.nextInt(nodeSize)).getScript().eval(RScript.Mode.READ_WRITE, luaScript, RScript.ReturnType.VALUE, List.of(key));
             if (!cachedSuccessResponses.containsKey(key)) {
-                cachedSuccessResponses.put(key, responseBuilder.setReleaseRespDTO(successRespBuilder.setKey(key).build()).build());
+                cachedSuccessResponses.put(key, responseBuilder.setReleaseRespDTO(successRespBuilder.setKey(key).build()));
             }
-            return cachedSuccessResponses.get(key);
+            return cachedSuccessResponses.get(key)
+                    .setId(requestDTO.getId()).build();
         }, releaseExecutor);
     }
 

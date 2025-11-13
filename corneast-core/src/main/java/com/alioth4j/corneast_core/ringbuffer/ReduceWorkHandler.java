@@ -37,8 +37,8 @@ public class ReduceWorkHandler implements WorkHandler<ReduceEvent>  {
         this.nodeSize = redissonClients.size();
     }
 
-    private static final Map<String, ResponseProto.ResponseDTO> cachedSuccessResponses = new ConcurrentHashMap<>();
-    private static final Map<String, ResponseProto.ResponseDTO> cachedFailResponses = new ConcurrentHashMap<>();
+    private static final Map<String, ResponseProto.ResponseDTO.Builder> cachedSuccessResponses = new ConcurrentHashMap<>();
+    private static final Map<String, ResponseProto.ResponseDTO.Builder> cachedFailResponses = new ConcurrentHashMap<>();
 
     private static final Random random = new Random();
 
@@ -72,18 +72,20 @@ public class ReduceWorkHandler implements WorkHandler<ReduceEvent>  {
                         .setReduceRespDTO(successReduceRespBuilder
                                 .setKey(key)
                                 .build())
-                        .build());
+                        );
             }
-            responseDTO = cachedSuccessResponses.get(key);
+            responseDTO = cachedSuccessResponses.get(key)
+                          .setId(reduceEvent.getId()).build();
         } else {
             if (!cachedFailResponses.containsKey(key)) {
                 cachedFailResponses.put(key, responseBuilder
                         .setReduceRespDTO(failReduceRespBuilder
                                 .setKey(key)
                                 .build())
-                        .build());
+                        );
             }
-            responseDTO = cachedFailResponses.get(key);
+            responseDTO = cachedFailResponses.get(key)
+                          .setId(reduceEvent.getId()).build();
         }
         future.complete(responseDTO);
     }

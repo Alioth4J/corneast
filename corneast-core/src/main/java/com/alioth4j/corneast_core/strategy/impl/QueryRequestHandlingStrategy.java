@@ -53,6 +53,7 @@ public class QueryRequestHandlingStrategy implements RequestHandlingStrategy {
                 totalTokenCount += (long) redissonClient.getScript().eval(RScript.Mode.READ_ONLY, luaScript, RScript.ReturnType.INTEGER, List.of(key));
             }
             return responseBuilder
+                   .setId(requestDTO.getId())
                    .setQueryRespDTO(queryResponseBuilder
                                     .setKey(key)
                                     .setRemainingTokenCount(totalTokenCount)

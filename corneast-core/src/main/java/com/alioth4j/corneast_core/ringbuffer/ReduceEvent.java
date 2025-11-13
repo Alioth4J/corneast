@@ -13,10 +13,25 @@ import java.util.concurrent.CompletableFuture;
  */
 public class ReduceEvent {
 
+    private String id;
+
     private String key;
 
     // for response
     private CompletableFuture<ResponseProto.ResponseDTO> future;
+
+
+    public ReduceEvent() {
+    }
+
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public String getKey() {
         return key;

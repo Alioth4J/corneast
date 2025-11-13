@@ -79,6 +79,7 @@ public class ReduceDisruptor {
     public CompletableFuture<ResponseProto.ResponseDTO> submitRequest(RequestProto.RequestDTO requestDTO) {
         long sequence = ringBuffer.next();
         ReduceEvent event = ringBuffer.get(sequence);
+        event.setId(requestDTO.getId());
         event.setKey(requestDTO.getReduceReqDTO().getKey());
         CompletableFuture<ResponseProto.ResponseDTO> future = new CompletableFuture<>();
         event.setFuture(future);
