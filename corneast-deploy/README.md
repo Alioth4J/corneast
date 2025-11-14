@@ -26,7 +26,7 @@ sudo docker network create corneast-redis-network
 #### Clusters
 Users can deploy any number of clusters according to their business, and custom the composition of a cluster as well.  
 
-Here is an example of deploying **one** cluster. You may repeat this operation several times to deploy other clusters. Note that you need to use your own arguments in the following bash statements.  
+Here is an example of deploying clusters. You may repeat the operation several times to deploy other clusters. Note that you need to use your own arguments in the following bash statements.  
 
 > Please look into the config file of Redis sentinel (sentinel-*.conf), you have to change the real master ip in it.  
 > 
