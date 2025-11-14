@@ -9,6 +9,11 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 
+/**
+ * Sends requests and receives responses with socket.
+ *
+ * @author Alioth Null
+ */
 public class CorneastSocketClient {
 
     private static final String host = "127.0.0.1";
@@ -23,7 +28,7 @@ public class CorneastSocketClient {
 
         // TODO exception handling
         try (Socket socket = new Socket(host, port)) {
-            // TODO debug
+//            // debug
 //            socket.setSoTimeout(5000);
 
             OutputStream out = socket.getOutputStream();
@@ -31,21 +36,6 @@ public class CorneastSocketClient {
             out.flush();
 
             InputStream in = socket.getInputStream();
-//            byte[] responseData = readAll(in);
-//            if (responseData.length == 0) {
-//                throw new IOException("No response bytes received");
-//            }
-//
-//            int[] decodedVarint32 = decodeVarint32(responseData);
-//            int payloadLength = decodedVarint32[0];
-//            int prefixLength = decodedVarint32[1];
-//
-//            if (responseData.length < prefixLength + payloadLength) {
-//                throw new IOException("Incomplete frame: expected " + payloadLength + " payload bytes, actual " + (responseData.length - prefixLength));
-//            }
-//
-//            byte[] payload = new byte[payloadLength];
-//            System.arraycopy(responseData, prefixLength, payload, 0, payloadLength);
             byte[] payload = readPayload(in);
             return ResponseProto.ResponseDTO.parseFrom(payload);
         } catch (Exception e) {
@@ -53,6 +43,17 @@ public class CorneastSocketClient {
         }
     }
 
+    /**
+     * Reads payload from input stream.
+     * Reads varint32 length prefix first, then the payload according to the length.
+     *
+     * The length prefix will be discarded after use.
+     *
+     * @param in input stream from socket
+     * @return payload in byte array
+     * @throws IOException thrown when socket closes while reading
+     */
+    // TODO optimize
     private static byte[] readPayload(InputStream in) throws IOException {
         int shift = 0;
         int result = 0;
