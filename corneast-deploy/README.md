@@ -28,7 +28,12 @@ Users can deploy any number of clusters according to their business, and custom 
 
 Here is an example of deploying **one** cluster. You may repeat this operation several times to deploy other clusters. Note that you need to use your own arguments in the following bash statements.  
 
-> Please look into the config file of Redis sentinel (sentinel-*.conf), you have to change the real master ip in it. If using docker instance name, it won't work. You can get the master ip with the following command:  
+> Please look into the config file of Redis sentinel (sentinel-*.conf), you have to change the real master ip in it.  
+> 
+> - If using docker instance name, it won't work.
+> - If setting the wrong ip, an exception will occur.
+> 
+> You can get the master ip with the following command:  
 > ```bash
 > sudo docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' <container_name_or_id>
 > ```

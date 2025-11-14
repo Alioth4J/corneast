@@ -1,5 +1,6 @@
 package com.alioth4j.corneast_core.netty;
 
+import com.alioth4j.corneast_core.exception.CorneastHandleException;
 import com.alioth4j.corneast_core.proto.RequestProto;
 import com.alioth4j.corneast_core.proto.ResponseProto;
 import com.alioth4j.corneast_core.strategy.RequestHandlingStrategy;
@@ -33,7 +34,13 @@ public class RequestRouteHandler extends SimpleChannelInboundHandler<RequestProt
         CompletableFuture<ResponseProto.ResponseDTO> responseCompletableFuture = requestHandlingStrategy.handle(requestDTO);
         // write and flush the response
         responseCompletableFuture.whenComplete((responseDTO, t) -> {
-            channelHandlerContext.writeAndFlush(responseDTO);
+            if (t == null) {
+                channelHandlerContext.writeAndFlush(responseDTO);
+            } else {
+                // TODO exception handling
+                t.printStackTrace();
+                throw new CorneastHandleException(t);
+            }
         });
     }
 
