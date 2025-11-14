@@ -17,9 +17,9 @@ java -jar corneast-<module>-<version>[-exec].jar
 ```
 
 ## Usage
-Deploy example: [corneast-deploy/README.md](corneast-deploy/README.md)  
+Deploy example: [corneast-docs/deploy.md](corneast-docs/deploy.md)  
 
-Client Usage: [corneast-client/README.md](corneast-client/README.md)  
+Client Usage: [corneast-docs/client.md](corneast-docs/client.md)  
 
 ## Reporting Issues
 Use Github Issues.  
