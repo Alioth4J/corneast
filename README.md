@@ -19,9 +19,7 @@ java -jar corneast-<module>-<version>[-exec].jar
 ## Usage
 Deploy example: [corneast-deploy/README.md](corneast-deploy/README.md)  
 
-Request object generating: Use `CorneastRequest` or `CorneastRequestBuilder` in `corneast-client` to construct request objects.  
-
-Request file generating example: generate while testing in `ProtobufRequestGeneratorTests.java`.  
+Client Usage: [corneast-client/README.md](corneast-client/README.md)  
 
 ## Reporting Issues
 Use Github Issues.  
