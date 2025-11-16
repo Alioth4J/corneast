@@ -2,6 +2,8 @@ package com.alioth4j.corneast_client.send;
 
 import com.alioth4j.corneast_core.proto.RequestProto;
 import com.alioth4j.corneast_core.proto.ResponseProto;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.net.Socket;
@@ -13,6 +15,8 @@ import java.net.Socket;
  */
 public class CorneastSocketClient {
 
+    private static final Logger log = LoggerFactory.getLogger(CorneastSocketClient.class);
+
     private static final String host = "127.0.0.1";
     private static final int port = 8088;
 
@@ -23,7 +27,6 @@ public class CorneastSocketClient {
         System.arraycopy(preVarint32, 0, requestData, 0, preVarint32.length);
         System.arraycopy(requestDTOBytes, 0, requestData, preVarint32.length, requestDTOBytes.length);
 
-        // TODO exception handling
         try (Socket socket = new Socket(host, port)) {
 //            // debug
 //            socket.setSoTimeout(5000);
@@ -35,7 +38,11 @@ public class CorneastSocketClient {
             InputStream in = socket.getInputStream();
             byte[] payload = readPayload(in);
             return ResponseProto.ResponseDTO.parseFrom(payload);
+        } catch (IOException e) {
+            log.error("I/O failure: {}", e.getMessage(), e);
+            throw e;
         } catch (Exception e) {
+            log.error("Unexpected error: {}", e.getMessage(), e);
             throw e;
         }
     }
