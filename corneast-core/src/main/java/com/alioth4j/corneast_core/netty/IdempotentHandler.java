@@ -42,9 +42,9 @@ public class IdempotentHandler extends SimpleChannelInboundHandler<RequestProto.
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, RequestProto.RequestDTO requestDTO) throws Exception {
         String id = requestDTO.getId();
-        // TODO optimize
         // id != null because of protobuf
-        if ("".equals(id)) {
+        // String#intern in compile-time by java
+        if (id == "") {
             // disable idempotence
             ctx.fireChannelRead(requestDTO);
             return;
