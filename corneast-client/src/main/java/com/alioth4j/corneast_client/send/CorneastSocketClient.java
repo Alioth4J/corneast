@@ -20,6 +20,12 @@ public class CorneastSocketClient {
     private static final String host = "127.0.0.1";
     private static final int port = 8088;
 
+    /**
+     * Sends requests to corneast-core, receiving responses.
+     * @param requestDTO request object
+     * @return response object
+     * @throws IOException if socket read or write fails
+     */
     public static ResponseProto.ResponseDTO send(RequestProto.RequestDTO requestDTO) throws IOException {
         byte[] requestDTOBytes = requestDTO.toByteArray();
         byte[] preVarint32 = encodeVarint32(requestDTOBytes.length);
