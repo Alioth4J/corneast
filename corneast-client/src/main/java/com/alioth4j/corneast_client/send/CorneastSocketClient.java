@@ -3,10 +3,7 @@ package com.alioth4j.corneast_client.send;
 import com.alioth4j.corneast_core.proto.RequestProto;
 import com.alioth4j.corneast_core.proto.ResponseProto;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.net.Socket;
 
 /**
@@ -43,27 +40,29 @@ public class CorneastSocketClient {
         }
     }
 
+    private static final int MAX_VARINT32_BYTES = 5;
+
+    // upper bound for a payload
+    private static final int MAX_PAYLOAD_SIZE = 10 * 1024 * 1024; // 10MB
+
     /**
-     * Reads payload from input stream.
-     * Reads varint32 length prefix first, then the payload according to the length.
-     *
-     * The length prefix will be discarded after use.
-     *
-     * @param in input stream from socket
+     * Reads a length‑prefixed payload from the given stream.
+     * @param in input stream
      * @return payload in byte array
-     * @throws IOException thrown when socket closes while reading
+     * @throws IOException if the stream ends prematurely or the length is invalid
      */
-    // TODO optimize
     private static byte[] readPayload(InputStream in) throws IOException {
-        int shift = 0;
+        // Wrap the input in a BufferedInputStream to reduce system calls.
+        BufferedInputStream buf = (in instanceof BufferedInputStream)
+                ? (BufferedInputStream) in
+                : new BufferedInputStream(in);
+        DataInputStream dis = new DataInputStream(buf);
+
+        // read the varint32 length prefix
         int result = 0;
-        int prefixLen = 0;
-        while (prefixLen < 5) {
-            int b = in.read();
-            if (b == -1) {
-                throw new IOException("Stream closed while reading length prefix");
-            }
-            prefixLen++;
+        int shift = 0;
+        for (int i = 0; i < MAX_VARINT32_BYTES; i++) {
+            int b = dis.readUnsignedByte();
             result |= (b & 0x7F) << shift;
             if ((b & 0x80) == 0) {
                 break;
@@ -71,16 +70,17 @@ public class CorneastSocketClient {
             shift += 7;
         }
 
-        int payloadLen = result;
-        byte[] payload = new byte[payloadLen];
-        int read = 0;
-        while (read < payloadLen) {
-            int r = in.read(payload, read, payloadLen - read);
-            if (r == -1) {
-                throw new IOException("Stream closed while reading payload");
-            }
-            read += r;
+        // validate the length
+        if (result < 0) {
+            throw new IOException("Negative payload length: " + result);
         }
+        if (result > MAX_PAYLOAD_SIZE) {
+            throw new IOException("Payload too large: " + result);
+        }
+
+        // read the full payload
+        byte[] payload = new byte[result];
+        dis.readFully(payload);
         return payload;
     }
 
