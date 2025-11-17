@@ -14,10 +14,13 @@ import io.netty.handler.codec.protobuf.ProtobufVarint32LengthFieldPrepender;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 import jakarta.annotation.PostConstruct;
-import jakarta.annotation.PreDestroy;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.beans.factory.annotation.Value;
+
+import java.util.concurrent.TimeUnit;
 
 /**
  * Netty server.
@@ -27,6 +30,8 @@ import org.springframework.beans.factory.annotation.Value;
 @Component
 public class NettyServer {
 
+    private static final Logger log = LoggerFactory.getLogger(NettyServer.class);
+
     @Value("${netty.server.port:8088}")
     private int port;
 
@@ -34,6 +39,8 @@ public class NettyServer {
     private EventLoopGroup workerGroup;
 
     private ChannelFuture channelFuture;
+
+    private Thread serverThread;
 
     @Autowired
     private RateLimitingHandler rateLimitingHandler;
@@ -46,7 +53,7 @@ public class NettyServer {
 
     @PostConstruct
     public void start() {
-        new Thread(() -> {
+        serverThread = new Thread(() -> {
             bossGroup = new NioEventLoopGroup(1);
             workerGroup = new NioEventLoopGroup(80); // 4 * (CPU cores)
             try {
@@ -82,23 +89,72 @@ public class NettyServer {
                 channelFuture = bootstrap.bind(port).sync();
                 channelFuture.channel().closeFuture().sync();
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                log.warn("Interruption occurs in netty server thread", e);
+                Thread.currentThread().interrupt();
             } finally {
-                shutdown();
+                shutdownBossAndWorkerGroups(NettyServer.log);
             }
-        }).start();
+        });
+        serverThread.setDaemon(false);
+        serverThread.start();
     }
 
-    @PreDestroy
-    public void shutdown() {
-        if (channelFuture != null) {
+    /**
+     * Shutdown netty server.
+     * @param log Logger object to use
+     */
+    public void shutdown(Logger log) {
+        // channelFuture
+        if (channelFuture != null && channelFuture.channel() != null && channelFuture.channel().isOpen()) {
             channelFuture.channel().close();
         }
-        if (bossGroup != null) {
-            bossGroup.shutdownGracefully();
+
+        // defensive code: serverThread
+        if (serverThread != null && serverThread.isAlive()) {
+            try {
+                serverThread.join(5000);
+                if (serverThread.isAlive()) {
+                    serverThread.interrupt();
+                    serverThread.join(1000);
+                }
+            } catch (InterruptedException e) {
+                log.warn("Interrupted when joining serverThread", e);
+                Thread.currentThread().interrupt();
+                if (serverThread != null) {
+                    serverThread.interrupt();
+                }
+            }
         }
+
+        // defensive code: bossGroup and workerGroup
+        shutdownBossAndWorkerGroups(log);
+    }
+
+    /**
+     * Shutdown bossGroup and workerGroup
+     * @param log Logger object to use
+     */
+    private void shutdownBossAndWorkerGroups(Logger log) {
+        // boss group
+        if (bossGroup != null) {
+            try {
+                bossGroup.shutdownGracefully(0, 5, TimeUnit.SECONDS).sync();
+            } catch (InterruptedException e) {
+                log.warn("Interrupted when shutting down BossGroup", e);
+                Thread.currentThread().interrupt();
+                bossGroup.shutdownGracefully();
+            }
+        }
+
+        // worker group
         if (workerGroup != null) {
-            workerGroup.shutdownGracefully();
+            try {
+                workerGroup.shutdownGracefully(0, 5, TimeUnit.SECONDS).sync();
+            } catch (InterruptedException e) {
+                log.warn("Interrupted when shutting down WorkerGroup", e);
+                Thread.currentThread().interrupt();
+                workerGroup.shutdownGracefully();
+            }
         }
     }
 

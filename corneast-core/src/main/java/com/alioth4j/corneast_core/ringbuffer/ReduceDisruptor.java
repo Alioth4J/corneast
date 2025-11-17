@@ -7,16 +7,19 @@ import com.lmax.disruptor.dsl.Disruptor;
 import com.lmax.disruptor.dsl.ProducerType;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 /**
  * RingBuffer for reduce requests.
@@ -87,16 +90,44 @@ public class ReduceDisruptor {
         return future;
     }
 
-    @PreDestroy
-    public void shutdown() {
-        if (disruptor != null) {
-            disruptor.shutdown();
-        }
+    /**
+     * Shutdown disruptor.
+     * @param log Logger object to use
+     */
+    public void shutdown(Logger log) {
+        // halt worker threads
         if (workerPool != null) {
-            workerPool.halt();
+            try {
+                workerPool.halt();
+            } catch (Exception e) {
+                log.warn("Error halting worker pool in Disruptor", e);
+            }
         }
-        if (executor != null) {
+
+        // shutdown disruptor
+        if (disruptor != null) {
+            try {
+                disruptor.shutdown();
+            } catch (Exception e) {
+                log.warn("Error shutting down disruptor", e);
+            }
+        }
+
+        // shutdown executor
+        if (executor != null && !executor.isShutdown()) {
             executor.shutdown();
+            try {
+                if (!executor.awaitTermination(10, TimeUnit.SECONDS)) {
+                    executor.shutdownNow();
+                    if (!executor.awaitTermination(5, TimeUnit.SECONDS)) {
+                        log.warn("Error shutting down executor in disruptor");
+                    }
+                }
+            } catch (InterruptedException e) {
+                log.warn("Interrupted when shutting down executor in disruptor", e);
+                Thread.currentThread().interrupt();
+                executor.shutdownNow();
+            }
         }
     }
 
