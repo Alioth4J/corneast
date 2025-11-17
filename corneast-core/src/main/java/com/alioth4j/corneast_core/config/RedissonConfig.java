@@ -46,26 +46,6 @@ public class RedissonConfig {
         return redissonClients;
     }
 
-//    /**
-//     * Redis nodes
-//     */
-//    @Bean
-//    public List<RedissonClient> redissonClients(RedisConfigProperties redisConfigProperties) {
-//        List<RedissonClient> redissonClients = new ArrayList<>();
-//        for (RedisNodeProperties node : redisConfigProperties.getNodes()) {
-//            Config config = new Config();
-//            config.useSingleServer()
-//                  .setAddress(node.getAddress())
-//                  .setDatabase(node.getDatabase())
-//                  .setTimeout(node.getTimeout())
-//                  .setConnectTimeout(node.getConnectTimeout())
-//                  .setConnectionPoolSize(node.getConnectionPoolSize());
-//            RedissonClient redissonClient = Redisson.create(config);
-//            redissonClients.add(redissonClient);
-//        }
-//        return redissonClients;
-//    }
-
     /**
      * Idempotent redis nodes
      */
