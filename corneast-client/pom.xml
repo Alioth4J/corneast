@@ -28,6 +28,12 @@
             <artifactId>corneast-core</artifactId>
             <groupId>com.alioth4j</groupId>
             <version>3.2.0</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-starter-log4j2</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <artifactId>junit-jupiter-api</artifactId>
