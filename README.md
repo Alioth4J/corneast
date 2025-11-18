@@ -7,7 +7,7 @@ Corneast is a distributed token middleware.
 - **Scalability**
 
 ## Building
-Run `mvn clean install` from the root directory of the project.  
+Run `./mvnw clean install -DskipTests` from the root directory of the project.  
 
 The built jar files will be located in the `target` directory of each module.  
 
