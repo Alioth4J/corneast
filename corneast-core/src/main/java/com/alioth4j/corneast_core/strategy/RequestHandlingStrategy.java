@@ -18,8 +18,8 @@
 
 package com.alioth4j.corneast_core.strategy;
 
-import com.alioth4j.corneast_core.proto.RequestProto;
-import com.alioth4j.corneast_core.proto.ResponseProto;
+import com.alioth4j.corneast_common.proto.RequestProto;
+import com.alioth4j.corneast_common.proto.ResponseProto;
 
 import java.util.concurrent.CompletableFuture;
 

@@ -18,7 +18,7 @@
 
 package com.alioth4j.corneast_core.netty;
 
-import com.alioth4j.corneast_core.proto.RequestProto;
+import com.alioth4j.corneast_common.proto.RequestProto;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.buffer.PooledByteBufAllocator;
 import io.netty.channel.*;

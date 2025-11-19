@@ -20,8 +20,8 @@ package com.alioth4j.corneast_client.request;
 
 import com.alioth4j.corneast_client.exception.RequestBuildException;
 import com.alioth4j.corneast_client.utils.StringUtils;
-import com.alioth4j.corneast_core.common.CorneastOperation;
-import com.alioth4j.corneast_core.proto.RequestProto;
+import com.alioth4j.corneast_common.operation.CorneastOperation;
+import com.alioth4j.corneast_common.proto.RequestProto;
 
 /**
  * Protobuf request builder for client to use.

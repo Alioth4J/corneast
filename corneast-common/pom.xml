@@ -11,10 +11,10 @@
     </parent>
 
     <groupId>com.alioth4j</groupId>
-    <artifactId>corneast-client</artifactId>
+    <artifactId>corneast-common</artifactId>
     <version>3.2.0</version>
-    <name>corneast-client</name>
-    <description>corneast client module</description>
+    <name>corneast-common</name>
+    <description>corneast common module</description>
     <packaging>jar</packaging>
 
     <properties>
@@ -25,18 +25,9 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.alioth4j</groupId>
-            <artifactId>corneast-common</artifactId>
-            <version>3.2.0</version>
-        </dependency>
-        <dependency>
-            <artifactId>junit-jupiter-api</artifactId>
-            <groupId>org.junit.jupiter</groupId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
+            <groupId>com.google.protobuf</groupId>
+            <artifactId>protobuf-java</artifactId>
+            <version>3.25.5</version>
         </dependency>
     </dependencies>
 

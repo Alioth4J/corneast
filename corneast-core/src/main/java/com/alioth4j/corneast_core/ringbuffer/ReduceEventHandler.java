@@ -18,7 +18,7 @@
 
 package com.alioth4j.corneast_core.ringbuffer;
 
-import com.alioth4j.corneast_core.proto.ResponseProto;
+import com.alioth4j.corneast_common.proto.ResponseProto;
 import com.lmax.disruptor.EventHandler;
 import jakarta.annotation.PostConstruct;
 import org.redisson.api.RScript;

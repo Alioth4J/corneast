@@ -18,8 +18,8 @@
 
 package com.alioth4j.corneast_client.send;
 
-import com.alioth4j.corneast_core.proto.RequestProto;
-import com.alioth4j.corneast_core.proto.ResponseProto;
+import com.alioth4j.corneast_common.proto.RequestProto;
+import com.alioth4j.corneast_common.proto.ResponseProto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

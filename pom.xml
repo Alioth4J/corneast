@@ -20,6 +20,7 @@
 		<module>corneast-core</module>
 		<module>corneast-eureka</module>
         <module>corneast-client</module>
+        <module>corneast-common</module>
     </modules>
 
 	<properties>

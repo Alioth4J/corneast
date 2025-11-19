@@ -18,7 +18,7 @@
 
 package com.alioth4j.corneast_client.request;
 
-import com.alioth4j.corneast_core.proto.RequestProto;
+import com.alioth4j.corneast_common.proto.RequestProto;
 
 /**
  * Construct a request object with `new` keyword.

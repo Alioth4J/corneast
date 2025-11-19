@@ -18,9 +18,9 @@
 
 package com.alioth4j.corneast_core.strategy.impl;
 
-import com.alioth4j.corneast_core.common.CorneastOperation;
-import com.alioth4j.corneast_core.proto.RequestProto;
-import com.alioth4j.corneast_core.proto.ResponseProto;
+import com.alioth4j.corneast_common.operation.CorneastOperation;
+import com.alioth4j.corneast_common.proto.RequestProto;
+import com.alioth4j.corneast_common.proto.ResponseProto;
 import com.alioth4j.corneast_core.strategy.RequestHandlingStrategy;
 import jakarta.annotation.PostConstruct;
 import org.redisson.api.RScript;

@@ -18,15 +18,14 @@
 
 package com.alioth4j.corneast_core.strategy.impl;
 
-import com.alioth4j.corneast_core.common.CorneastOperation;
-import com.alioth4j.corneast_core.proto.RequestProto;
-import com.alioth4j.corneast_core.proto.ResponseProto;
+import com.alioth4j.corneast_common.operation.CorneastOperation;
+import com.alioth4j.corneast_common.proto.RequestProto;
+import com.alioth4j.corneast_common.proto.ResponseProto;
 import com.alioth4j.corneast_core.strategy.RequestHandlingStrategy;
 import org.redisson.api.RScript;
 import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import java.util.List;

@@ -18,7 +18,7 @@
 
 package com.alioth4j.corneast_core.aop;
 
-import com.alioth4j.corneast_core.proto.RequestProto;
+import com.alioth4j.corneast_common.proto.RequestProto;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
