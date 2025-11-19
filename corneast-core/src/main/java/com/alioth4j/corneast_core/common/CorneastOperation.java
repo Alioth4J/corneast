@@ -26,6 +26,8 @@ package com.alioth4j.corneast_core.common;
  * - release
  * - query
  *
+ * - idempotent
+ *
  * @author Alioth Null
  */
 public class CorneastOperation {
@@ -34,5 +36,7 @@ public class CorneastOperation {
     public static final String REDUCE = "reduce";
     public static final String RELEASE = "release";
     public static final String QUERY = "query";
+
+    public static final String IDEMPOTENT = "idempotent";
 
 }

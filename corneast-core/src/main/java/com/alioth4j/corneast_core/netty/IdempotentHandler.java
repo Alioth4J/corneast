@@ -18,6 +18,7 @@
 
 package com.alioth4j.corneast_core.netty;
 
+import com.alioth4j.corneast_core.common.CorneastOperation;
 import com.alioth4j.corneast_core.proto.RequestProto;
 import com.alioth4j.corneast_core.proto.ResponseProto;
 import io.netty.channel.ChannelHandler;
@@ -54,7 +55,7 @@ public class IdempotentHandler extends SimpleChannelInboundHandler<RequestProto.
                                                  """;
 
     private static final ResponseProto.ResponseDTO idempotentResponse = ResponseProto.ResponseDTO.newBuilder()
-                                                                                                 .setType("idempotent")
+                                                                                                 .setType(CorneastOperation.IDEMPOTENT)
                                                                                                  .build();
 
     @Override
