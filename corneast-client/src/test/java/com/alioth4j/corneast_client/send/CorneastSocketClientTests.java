@@ -18,6 +18,7 @@
 
 package com.alioth4j.corneast_client.send;
 
+import com.alioth4j.corneast_client.exception.RequestBuildException;
 import com.alioth4j.corneast_client.request.CorneastRequest;
 import com.alioth4j.corneast_core.common.CorneastOperation;
 import com.alioth4j.corneast_core.proto.RequestProto;
@@ -37,6 +38,27 @@ public class CorneastSocketClientTests {
         Assertions.assertEquals("", responseDTO.getId());
         Assertions.assertEquals("key-register", responseDTO.getRegisterRespDTO().getKey());
         Assertions.assertEquals(true, responseDTO.getRegisterRespDTO().getSuccess());
+    }
+
+    @Test
+    void testUnknownTypeWithClientAPI() throws IOException {
+        Assertions.assertThrows(RequestBuildException.class, () -> {
+            RequestProto.RequestDTO requestDTO = new CorneastRequest("abcdefg", "", "key-unknown").instance;
+            ResponseProto.ResponseDTO responseDTO = CorneastSocketClient.send(requestDTO);
+            Assertions.assertEquals(CorneastOperation.UNKNOWN, responseDTO.getType());
+            Assertions.assertEquals("", responseDTO.getId());
+        });
+    }
+
+    @Test
+    void testUnknownTypeWithProtobufAPI() throws IOException {
+        RequestProto.RequestDTO requestDTO = RequestProto.RequestDTO.newBuilder()
+                .setType("abcdefg")
+                .setId("")
+                .build();
+        ResponseProto.ResponseDTO responseDTO = CorneastSocketClient.send(requestDTO);
+        Assertions.assertEquals(CorneastOperation.UNKNOWN, responseDTO.getType());
+        Assertions.assertEquals("", responseDTO.getId());
     }
 
 }

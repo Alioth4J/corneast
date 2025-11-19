@@ -49,6 +49,9 @@ public class RequestRouteHandler extends SimpleChannelInboundHandler<RequestProt
     private Map<String/* beanName */, RequestHandlingStrategy/* object of strategy */> requestHandlingStrategyMap;
 
     /* flyweight start */
+    private final ResponseProto.ResponseDTO.Builder unknownTypeResponseBuilder = ResponseProto.ResponseDTO.newBuilder()
+            .setType(CorneastOperation.UNKNOWN);
+
     private final ResponseProto.ResponseDTO.Builder exRegisterResponseBuilder = ResponseProto.ResponseDTO.newBuilder()
             .setType(CorneastOperation.REGISTER);
 
@@ -75,6 +78,14 @@ public class RequestRouteHandler extends SimpleChannelInboundHandler<RequestProt
         // choose the strategy
         String requestType = requestDTO.getType();
         RequestHandlingStrategy requestHandlingStrategy = requestHandlingStrategyMap.get(requestType);
+        // request type does not exist
+        if (requestHandlingStrategy == null) {
+            ResponseProto.ResponseDTO unknownTypeResponseDTO = unknownTypeResponseBuilder
+                    .setId(requestDTO.getId())
+                    .build();
+            channelHandlerContext.writeAndFlush(unknownTypeResponseDTO);
+            return;
+        }
         // handle
         CompletableFuture<ResponseProto.ResponseDTO> responseCompletableFuture = requestHandlingStrategy.handle(requestDTO);
         // write and flush the response
