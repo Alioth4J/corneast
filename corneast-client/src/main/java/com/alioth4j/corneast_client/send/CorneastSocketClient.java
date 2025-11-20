@@ -18,6 +18,7 @@
 
 package com.alioth4j.corneast_client.send;
 
+import com.alioth4j.corneast_client.config.CorneastConfig;
 import com.alioth4j.corneast_common.proto.RequestProto;
 import com.alioth4j.corneast_common.proto.ResponseProto;
 import org.slf4j.Logger;
@@ -35,12 +36,32 @@ public class CorneastSocketClient {
 
     private static final Logger log = LoggerFactory.getLogger(CorneastSocketClient.class);
 
+    /* server host */
     private final String host;
+
+    /* server port */
     private final int port;
 
-    public CorneastSocketClient(String host, int port) {
+    /**
+     * Private constructor, invoked by <code>of()</code>.
+     * @param host server host
+     * @param port server port
+     */
+    private CorneastSocketClient(String host, int port) {
         this.host = host;
         this.port = port;
+    }
+
+    /**
+     * The only way to construct a <code>CorneastSocketClient</code> instance.
+     * @param config config object
+     * @return instance of <code>CorneastSocketClient</code>
+     */
+    public static CorneastSocketClient of(CorneastConfig config) {
+        if (!config.validate()) {
+            throw new IllegalArgumentException("CorneastConfig has not been completely set, current config: " + config);
+        }
+        return new CorneastSocketClient(config.getHost(), config.getPort());
     }
 
     /**

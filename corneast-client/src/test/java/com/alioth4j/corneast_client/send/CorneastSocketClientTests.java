@@ -18,6 +18,7 @@
 
 package com.alioth4j.corneast_client.send;
 
+import com.alioth4j.corneast_client.config.CorneastConfig;
 import com.alioth4j.corneast_client.exception.RequestBuildException;
 import com.alioth4j.corneast_client.request.CorneastRequest;
 import com.alioth4j.corneast_common.operation.CorneastOperation;
@@ -33,7 +34,10 @@ public class CorneastSocketClientTests {
     @Test
     void testSend() throws IOException {
         RequestProto.RequestDTO registerReqDTO = new CorneastRequest(CorneastOperation.REGISTER, "", "key-register", 1000).instance;
-        CorneastSocketClient corneastSocketClient = new CorneastSocketClient("127.0.0.1", 8088);
+        CorneastConfig config = new CorneastConfig();
+        config.setHost("127.0.0.1");
+        config.setPort(8088);
+        CorneastSocketClient corneastSocketClient = CorneastSocketClient.of(config);
         ResponseProto.ResponseDTO responseDTO = corneastSocketClient.send(registerReqDTO);
         Assertions.assertEquals(CorneastOperation.REGISTER, responseDTO.getType());
         Assertions.assertEquals("", responseDTO.getId());
@@ -45,7 +49,10 @@ public class CorneastSocketClientTests {
     void testUnknownTypeWithClientAPI() throws IOException {
         Assertions.assertThrows(RequestBuildException.class, () -> {
             RequestProto.RequestDTO requestDTO = new CorneastRequest("abcdefg", "", "key-unknown").instance;
-            CorneastSocketClient corneastSocketClient = new CorneastSocketClient("127.0.0.1", 8088);
+            CorneastConfig config = new CorneastConfig();
+            config.setHost("127.0.0.1");
+            config.setPort(8088);
+            CorneastSocketClient corneastSocketClient = CorneastSocketClient.of(config);
             ResponseProto.ResponseDTO responseDTO = corneastSocketClient.send(requestDTO);
             Assertions.assertEquals(CorneastOperation.UNKNOWN, responseDTO.getType());
             Assertions.assertEquals("", responseDTO.getId());
@@ -58,7 +65,10 @@ public class CorneastSocketClientTests {
                 .setType("abcdefg")
                 .setId("")
                 .build();
-        CorneastSocketClient corneastSocketClient = new CorneastSocketClient("127.0.0.1", 8088);
+        CorneastConfig config = new CorneastConfig();
+        config.setHost("127.0.0.1");
+        config.setPort(8088);
+        CorneastSocketClient corneastSocketClient = CorneastSocketClient.of(config);
         ResponseProto.ResponseDTO responseDTO = corneastSocketClient.send(requestDTO);
         Assertions.assertEquals(CorneastOperation.UNKNOWN, responseDTO.getType());
         Assertions.assertEquals("", responseDTO.getId());
