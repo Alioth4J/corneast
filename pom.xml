@@ -21,6 +21,7 @@
 		<module>corneast-eureka</module>
         <module>corneast-client</module>
         <module>corneast-common</module>
+        <module>corneast-example</module>
     </modules>
 
 	<properties>
