@@ -32,11 +32,5 @@ build/
 ### VS Code ###
 .vscode/
 
-### corneast-test binary requests ###
-/corneast-test/request/
-
-### redis data
-/data/
-
 ### generated request files
 /corneast-client/request/
