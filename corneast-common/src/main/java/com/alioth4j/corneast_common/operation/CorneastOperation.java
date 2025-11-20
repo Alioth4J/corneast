@@ -43,4 +43,11 @@ public class CorneastOperation {
     public static final String IDEMPOTENT = "idempotent";
     public static final String UNKNOWN = "unknown";
 
+
+    /**
+     * Private constructor to prevent instantiation.
+     */
+    private CorneastOperation() {
+    }
+
 }
