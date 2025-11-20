@@ -33,7 +33,8 @@ public class CorneastSocketClientTests {
     @Test
     void testSend() throws IOException {
         RequestProto.RequestDTO registerReqDTO = new CorneastRequest(CorneastOperation.REGISTER, "", "key-register", 1000).instance;
-        ResponseProto.ResponseDTO responseDTO = CorneastSocketClient.send(registerReqDTO);
+        CorneastSocketClient corneastSocketClient = new CorneastSocketClient("127.0.0.1", 8088);
+        ResponseProto.ResponseDTO responseDTO = corneastSocketClient.send(registerReqDTO);
         Assertions.assertEquals(CorneastOperation.REGISTER, responseDTO.getType());
         Assertions.assertEquals("", responseDTO.getId());
         Assertions.assertEquals("key-register", responseDTO.getRegisterRespDTO().getKey());
@@ -44,7 +45,8 @@ public class CorneastSocketClientTests {
     void testUnknownTypeWithClientAPI() throws IOException {
         Assertions.assertThrows(RequestBuildException.class, () -> {
             RequestProto.RequestDTO requestDTO = new CorneastRequest("abcdefg", "", "key-unknown").instance;
-            ResponseProto.ResponseDTO responseDTO = CorneastSocketClient.send(requestDTO);
+            CorneastSocketClient corneastSocketClient = new CorneastSocketClient("127.0.0.1", 8088);
+            ResponseProto.ResponseDTO responseDTO = corneastSocketClient.send(requestDTO);
             Assertions.assertEquals(CorneastOperation.UNKNOWN, responseDTO.getType());
             Assertions.assertEquals("", responseDTO.getId());
         });
@@ -56,7 +58,8 @@ public class CorneastSocketClientTests {
                 .setType("abcdefg")
                 .setId("")
                 .build();
-        ResponseProto.ResponseDTO responseDTO = CorneastSocketClient.send(requestDTO);
+        CorneastSocketClient corneastSocketClient = new CorneastSocketClient("127.0.0.1", 8088);
+        ResponseProto.ResponseDTO responseDTO = corneastSocketClient.send(requestDTO);
         Assertions.assertEquals(CorneastOperation.UNKNOWN, responseDTO.getType());
         Assertions.assertEquals("", responseDTO.getId());
     }

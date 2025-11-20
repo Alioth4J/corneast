@@ -35,8 +35,13 @@ public class CorneastSocketClient {
 
     private static final Logger log = LoggerFactory.getLogger(CorneastSocketClient.class);
 
-    private static final String host = "127.0.0.1";
-    private static final int port = 8088;
+    private final String host;
+    private final int port;
+
+    public CorneastSocketClient(String host, int port) {
+        this.host = host;
+        this.port = port;
+    }
 
     /**
      * Sends requests to corneast-core, receiving responses.
@@ -44,7 +49,7 @@ public class CorneastSocketClient {
      * @return response object
      * @throws IOException if socket read or write fails
      */
-    public static ResponseProto.ResponseDTO send(RequestProto.RequestDTO requestDTO) throws IOException {
+    public ResponseProto.ResponseDTO send(RequestProto.RequestDTO requestDTO) throws IOException {
         byte[] requestDTOBytes = requestDTO.toByteArray();
         byte[] preVarint32 = encodeVarint32(requestDTOBytes.length);
         byte[] requestData = new byte[requestDTOBytes.length + preVarint32.length];
@@ -82,7 +87,7 @@ public class CorneastSocketClient {
      * @return payload in byte array
      * @throws IOException if the stream ends prematurely or the length is invalid
      */
-    private static byte[] readPayload(InputStream in) throws IOException {
+    private byte[] readPayload(InputStream in) throws IOException {
         // Wrap the input in a BufferedInputStream to reduce system calls.
         BufferedInputStream buf = (in instanceof BufferedInputStream)
                 ? (BufferedInputStream) in
@@ -121,7 +126,7 @@ public class CorneastSocketClient {
      * @return byte array containing all bytes
      * @throws IOException error reading bytes
      */
-    private static byte[] readAll(InputStream in) throws IOException {
+    private byte[] readAll(InputStream in) throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         byte[] buf = new byte[1024];
         int r;
@@ -137,7 +142,7 @@ public class CorneastSocketClient {
      * @param value int to encode
      * @return length prefix
      */
-    private static byte[] encodeVarint32(int value) {
+    private byte[] encodeVarint32(int value) {
         byte[] buffer = new byte[5];
         int position = 0;
         while ((value & ~0x7F) != 0) {
@@ -160,7 +165,7 @@ public class CorneastSocketClient {
      *                     within 5 bytes) or the buffer is too short to contain
      *                     a complete 32-bit varint
      */
-    private static int[] decodeVarint32(byte[] buf) throws IOException {
+    private int[] decodeVarint32(byte[] buf) throws IOException {
         int result = 0;
         int shift = 0;
         for (int i = 0; i < Math.min(5, buf.length); i++) {
