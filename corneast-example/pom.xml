@@ -5,13 +5,13 @@
 	<parent>
 		<groupId>com.alioth4j</groupId>
 		<artifactId>corneast</artifactId>
-		<version>3.3.0</version>
+		<version>3.4.0</version>
         <relativePath>../pom.xml</relativePath>
 	</parent>
 
 	<groupId>com.alioth4j</groupId>
 	<artifactId>corneast-example</artifactId>
-	<version>3.3.0</version>
+	<version>3.4.0</version>
 	<name>corneast-example</name>
 	<description>corneast example module</description>
 
@@ -23,7 +23,7 @@
         <dependency>
             <groupId>com.alioth4j</groupId>
             <artifactId>corneast-client</artifactId>
-            <version>3.3.0</version>
+            <version>3.4.0</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
