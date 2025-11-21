@@ -122,8 +122,6 @@ public class RequestRouteHandler extends SimpleChannelInboundHandler<RequestProt
                         break;
                     }
                 }
-                ResponseProto.RegisterRespDTO test = exRegisterRespDTOBuilder.setKey("").build();
-                exRegisterResponseBuilder.setRegisterRespDTO(test).setId("id").build();
                 channelHandlerContext.writeAndFlush(exResponseDTO);
             }
         });
