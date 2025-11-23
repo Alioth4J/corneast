@@ -16,7 +16,6 @@
 	<description>corneast example module</description>
 
 	<properties>
-		<java.version>21</java.version>
 	</properties>
 
 	<dependencies>
