@@ -32,6 +32,12 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
+                <groupId>com.alioth4j</groupId>
+                <artifactId>corneast-common</artifactId>
+                <version>3.4.0</version>
+                <optional>true</optional>
+            </dependency>
+            <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-starter-web</artifactId>
                 <version>${spring-boot.version}</version>
