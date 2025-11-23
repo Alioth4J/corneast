@@ -18,6 +18,7 @@
 
 package com.alioth4j.corneast_eureka;
 
+import com.alioth4j.corneast_common.common.CorneastBanner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.netflix.eureka.server.EnableEurekaServer;
@@ -27,6 +28,7 @@ import org.springframework.cloud.netflix.eureka.server.EnableEurekaServer;
 public class CorneastEurekaApplication {
 
 	public static void main(String[] args) {
+        System.out.println(CorneastBanner.instance);
 		SpringApplication.run(CorneastEurekaApplication.class, args);
 	}
 

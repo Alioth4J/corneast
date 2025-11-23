@@ -18,6 +18,7 @@
 
 package com.alioth4j.corneast_core;
 
+import com.alioth4j.corneast_common.common.CorneastBanner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
@@ -34,6 +35,7 @@ import org.springframework.scheduling.annotation.EnableAsync;
 public class CorneastCoreApplication {
 
 	public static void main(String[] args) {
+        System.out.println(CorneastBanner.instance);
 		SpringApplication.run(CorneastCoreApplication.class, args);
 	}
 
