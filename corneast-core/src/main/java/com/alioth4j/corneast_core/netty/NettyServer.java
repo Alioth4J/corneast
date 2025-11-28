@@ -19,6 +19,7 @@
 package com.alioth4j.corneast_core.netty;
 
 import com.alioth4j.corneast_common.proto.RequestProto;
+import com.alioth4j.corneast_core.netty.spi.NettyCustomHandler;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.buffer.PooledByteBufAllocator;
 import io.netty.channel.*;
@@ -38,7 +39,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.beans.factory.annotation.Value;
 
+import java.util.Comparator;
+import java.util.List;
+import java.util.ServiceLoader;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 /**
  * Netty server.
@@ -66,11 +71,14 @@ public class NettyServer {
     @Autowired
     private IdempotentHandler idempotentHandler;
 
+    private List<NettyCustomHandler> customHandlers;
+
     @Autowired
     private RequestRouteHandler requestRouteHandler;
 
     @PostConstruct
     public void start() {
+        initCustomHandlers();
         serverThread = new Thread(() -> {
             bossGroup = new NioEventLoopGroup(1);
             workerGroup = new NioEventLoopGroup(80); // 4 * (CPU cores)
@@ -100,6 +108,11 @@ public class NettyServer {
                                 // idempotent handler
                                 ch.pipeline().addLast(idempotentHandler);
 
+                                // custom handlers
+                                for (ChannelHandler customHandler : customHandlers) {
+                                    ch.pipeline().addLast(customHandler);
+                                }
+
                                 // route handler
                                 ch.pipeline().addLast(requestRouteHandler);
                             }
@@ -115,6 +128,17 @@ public class NettyServer {
         });
         serverThread.setDaemon(false);
         serverThread.start();
+    }
+
+    /**
+     * SPI.
+     */
+    private void initCustomHandlers() {
+        customHandlers = ServiceLoader.load(NettyCustomHandler.class)
+                .stream()
+                .map(ServiceLoader.Provider::get)
+                .sorted(Comparator.comparingInt(NettyCustomHandler::getOrder))
+                .collect(Collectors.toList());
     }
 
     /**
