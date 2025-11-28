@@ -13,7 +13,7 @@ The built jar files will be located in the `target` directory of each module.
 
 ## Running
 ```java
-java -jar corneast-<module>-<version>[-exec].jar
+java -jar corneast-<module>-<version>.jar
 ```
 
 ## Usage
