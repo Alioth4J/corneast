@@ -131,7 +131,8 @@ public class NettyServer {
     }
 
     /**
-     * SPI.
+     * Init custom child handlers using SPI.
+     * <code>customHandlers</code> is non-null.
      */
     private void initCustomHandlers() {
         customHandlers = ServiceLoader.load(NettyCustomHandler.class)
