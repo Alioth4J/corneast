@@ -39,6 +39,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.beans.factory.annotation.Value;
 
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.ServiceLoader;
@@ -132,7 +133,7 @@ public class NettyServer {
 
     /**
      * Init custom child handlers using SPI.
-     * <code>customHandlers</code> is non-null.
+     * <code>customHandlers</code> is non-null, unmodifiable <code>List</code>.
      */
     private void initCustomHandlers() {
         customHandlers = ServiceLoader.load(NettyCustomHandler.class)
@@ -140,6 +141,7 @@ public class NettyServer {
                 .map(ServiceLoader.Provider::get)
                 .sorted(Comparator.comparingInt(NettyCustomHandler::getOrder))
                 .collect(Collectors.toList());
+        customHandlers = Collections.unmodifiableList(customHandlers);
     }
 
     /**
