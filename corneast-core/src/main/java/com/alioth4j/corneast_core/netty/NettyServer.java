@@ -79,6 +79,7 @@ public class NettyServer {
 
     @PostConstruct
     public void start() {
+        log.info("Netty server is starting...");
         initCustomHandlers();
         serverThread = new Thread(() -> {
             bossGroup = new NioEventLoopGroup(1);
@@ -120,6 +121,7 @@ public class NettyServer {
                         });
                 channelFuture = bootstrap.bind(port).sync();
                 channelFuture.channel().closeFuture().sync();
+                log.info("Netty server channel closed, shutting down");
             } catch (InterruptedException e) {
                 log.warn("Interruption occurs in netty server thread", e);
                 Thread.currentThread().interrupt();
@@ -142,6 +144,16 @@ public class NettyServer {
                 .sorted(Comparator.comparingInt(NettyCustomHandler::getOrder))
                 .collect(Collectors.toList());
         customHandlers = Collections.unmodifiableList(customHandlers);
+
+        // logging
+        if (customHandlers.isEmpty()) {
+            log.info("No custom netty handlers found via SPI");
+            return;
+        }
+        String handlerNames = customHandlers.stream()
+                .map(handler -> handler.getClass().getCanonicalName())
+                .collect(Collectors.joining(", "));
+        log.info("Initialized {} netty custom handler(s): {}", customHandlers.size(), handlerNames);
     }
 
     /**
