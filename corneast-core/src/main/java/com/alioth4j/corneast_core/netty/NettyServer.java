@@ -129,6 +129,7 @@ public class NettyServer {
                 shutdownBossAndWorkerGroups(NettyServer.log);
             }
         });
+        serverThread.setName("Netty-Server");
         serverThread.setDaemon(false);
         serverThread.start();
     }
