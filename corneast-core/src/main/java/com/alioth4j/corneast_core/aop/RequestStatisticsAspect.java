@@ -47,7 +47,9 @@ public class RequestStatisticsAspect {
         try {
             result = joinPoint.proceed();
             long endTime = System.nanoTime();
-            log.info("Stated Request: type = {}, id = {}, key = {}, requestCount = {}; processedTime = {}", requestDTO.getType(), requestDTO.getId(), requestDTO.getRegisterReqDTO().getKey(), requestDTO.getRegisterReqDTO().getTokenCount(), endTime - startTime);
+            if (log.isInfoEnabled()) {
+                log.info("Stated Request: type = {}, id = {}, key = {}, requestCount = {}; processedTime = {}", requestDTO.getType(), requestDTO.getId(), requestDTO.getRegisterReqDTO().getKey(), requestDTO.getRegisterReqDTO().getTokenCount(), endTime - startTime);
+            }
         } catch (Throwable t) {
             log.error("Error stat request: type = {}, id = {}, key = {}, requestCount = {}", requestDTO.getType(), requestDTO.getId(), requestDTO.getRegisterReqDTO().getKey(), requestDTO.getRegisterReqDTO().getTokenCount(), t);
             throw t;
@@ -65,7 +67,9 @@ public class RequestStatisticsAspect {
         try {
             result = joinPoint.proceed();
             long endTime = System.nanoTime();
-            log.info("Stated Request: type = {}, id = {}, key = {}; processedTime = {}", requestDTO.getType(), requestDTO.getId(), requestDTO.getReduceReqDTO().getKey(), endTime - startTime);
+            if (log.isInfoEnabled()) {
+                log.info("Stated Request: type = {}, id = {}, key = {}; processedTime = {}", requestDTO.getType(), requestDTO.getId(), requestDTO.getReduceReqDTO().getKey(), endTime - startTime);
+            }
         } catch (Throwable t) {
             log.error("Error stat request: type = {}, id = {}, key = {}", requestDTO.getType(), requestDTO.getId(), requestDTO.getReduceReqDTO().getKey(), t);
             throw t;
@@ -83,7 +87,9 @@ public class RequestStatisticsAspect {
         try {
             result = joinPoint.proceed();
             long endTime = System.nanoTime();
-            log.info("Stated Request: type = {}, id = {}, key = {}; processedTime = {}", requestDTO.getType(), requestDTO.getId(), requestDTO.getQueryReqDTO().getKey(), endTime - startTime);
+            if (log.isInfoEnabled()) {
+                log.info("Stated Request: type = {}, id = {}, key = {}; processedTime = {}", requestDTO.getType(), requestDTO.getId(), requestDTO.getQueryReqDTO().getKey(), endTime - startTime);
+            }
         } catch (Throwable t) {
             log.error("Error stat request: type = {}, id = {}, key = {}", requestDTO.getType(), requestDTO.getId(), requestDTO.getQueryReqDTO().getKey(), t);
             throw t;
@@ -101,7 +107,9 @@ public class RequestStatisticsAspect {
         try {
             result = joinPoint.proceed();
             long endTime = System.nanoTime();
-            log.info("Stated Request: type = {}, id = {}, key = {}; processedTime = {}", requestDTO.getType(), requestDTO.getId(), requestDTO.getReleaseReqDTO().getKey(), endTime - startTime);
+            if (log.isInfoEnabled()) {
+                log.info("Stated Request: type = {}, id = {}, key = {}; processedTime = {}", requestDTO.getType(), requestDTO.getId(), requestDTO.getReleaseReqDTO().getKey(), endTime - startTime);
+            }
         } catch (Throwable t) {
             log.error("Error stat request: type = {}, id = {}, key = {}", requestDTO.getType(), requestDTO.getId(), requestDTO.getReleaseReqDTO().getKey(), t);
             throw t;

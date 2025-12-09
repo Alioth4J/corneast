@@ -41,7 +41,9 @@ public class RequestLoggingAspect {
     public Object logRegisterRequest(ProceedingJoinPoint joinPoint) throws Throwable {
         Object[] args = joinPoint.getArgs();
         RequestProto.RequestDTO requestDTO = (RequestProto.RequestDTO) args[0];
-        log.info("Received request: type = {}, id = {}, key = {}, tokenCount = {}", requestDTO.getType(), requestDTO.getId(), requestDTO.getRegisterReqDTO().getKey(), requestDTO.getRegisterReqDTO().getTokenCount());
+        if (log.isInfoEnabled()) {
+            log.info("Received request: type = {}, id = {}, key = {}, tokenCount = {}", requestDTO.getType(), requestDTO.getId(), requestDTO.getRegisterReqDTO().getKey(), requestDTO.getRegisterReqDTO().getTokenCount());
+        }
         Object result;
         try {
             result = joinPoint.proceed();
@@ -56,7 +58,9 @@ public class RequestLoggingAspect {
     public Object logReduceRequest(ProceedingJoinPoint joinPoint) throws Throwable {
         Object[] args = joinPoint.getArgs();
         RequestProto.RequestDTO requestDTO = (RequestProto.RequestDTO) args[0];
-        log.info("Received request: type = {}, id = {}, key = {}", requestDTO.getType(), requestDTO.getId(), requestDTO.getReduceReqDTO().getKey());
+        if (log.isInfoEnabled()) {
+            log.info("Received request: type = {}, id = {}, key = {}", requestDTO.getType(), requestDTO.getId(), requestDTO.getReduceReqDTO().getKey());
+        }
         Object result;
         try {
             result = joinPoint.proceed();
@@ -71,7 +75,9 @@ public class RequestLoggingAspect {
     public Object logQueryRequest(ProceedingJoinPoint joinPoint) throws Throwable {
         Object[] args = joinPoint.getArgs();
         RequestProto.RequestDTO requestDTO = (RequestProto.RequestDTO) args[0];
-        log.info("Received request: type = {}, id = {}, key = {}", requestDTO.getType(), requestDTO.getId(), requestDTO.getQueryReqDTO().getKey());
+        if (log.isInfoEnabled()) {
+            log.info("Received request: type = {}, id = {}, key = {}", requestDTO.getType(), requestDTO.getId(), requestDTO.getQueryReqDTO().getKey());
+        }
         Object result;
         try {
             result = joinPoint.proceed();
@@ -86,7 +92,9 @@ public class RequestLoggingAspect {
     public Object logReleaseRequest(ProceedingJoinPoint joinPoint) throws Throwable {
         Object[] args = joinPoint.getArgs();
         RequestProto.RequestDTO requestDTO = (RequestProto.RequestDTO) args[0];
-        log.info("Received request: type = {}, id = {}, key = {}", requestDTO.getType(), requestDTO.getId(), requestDTO.getReleaseReqDTO().getKey());
+        if (log.isInfoEnabled()) {
+            log.info("Received request: type = {}, id = {}, key = {}", requestDTO.getType(), requestDTO.getId(), requestDTO.getReleaseReqDTO().getKey());
+        }
         Object result;
         try {
             result = joinPoint.proceed();
