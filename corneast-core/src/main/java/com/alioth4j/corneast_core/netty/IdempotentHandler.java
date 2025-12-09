@@ -27,6 +27,8 @@ import io.netty.channel.SimpleChannelInboundHandler;
 import org.redisson.api.RScript;
 import org.redisson.api.RedissonClient;
 import org.redisson.client.codec.StringCodec;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
@@ -41,6 +43,8 @@ import java.util.List;
 @Component
 @ChannelHandler.Sharable
 public class IdempotentHandler extends SimpleChannelInboundHandler<RequestProto.RequestDTO> {
+
+    private static final Logger log = LoggerFactory.getLogger(IdempotentHandler.class);
 
     @Autowired
     @Qualifier("idempotentRedissonClient")
@@ -61,6 +65,8 @@ public class IdempotentHandler extends SimpleChannelInboundHandler<RequestProto.
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, RequestProto.RequestDTO requestDTO) throws Exception {
         String id = requestDTO.getId();
+        log.debug("arrived at idempotenthandler, id = {}", id);
+
         // id != null because of protobuf
         // String#intern in compile-time by java
         if (id == "") {
@@ -72,9 +78,11 @@ public class IdempotentHandler extends SimpleChannelInboundHandler<RequestProto.
         if (exists == null) {
             idempotentRedissonClient.getScript(StringCodec.INSTANCE).eval(RScript.Mode.READ_WRITE, writeLuaScript, RScript.ReturnType.VALUE, List.of(id));
             ctx.fireChannelRead(requestDTO);
+            log.debug("Passed IdempotentHandler, id = {}", id);
         } else {
             ctx.writeAndFlush(idempotentResponse);
             ctx.close();
+            log.debug("Being Idempotented, id = {}", id);
         }
     }
 

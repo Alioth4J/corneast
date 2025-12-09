@@ -25,6 +25,8 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import com.google.common.util.concurrent.RateLimiter;
 import jakarta.annotation.PostConstruct;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -36,6 +38,8 @@ import org.springframework.stereotype.Component;
 @Component
 @ChannelHandler.Sharable
 public class RateLimitingHandler extends SimpleChannelInboundHandler<RequestProto.RequestDTO> {
+
+    private static final Logger log = LoggerFactory.getLogger(RateLimitingHandler.class);
 
     @Value("${rateLimiting.permitsPerSecond}")
     private double permitsPerSecond;
@@ -53,11 +57,15 @@ public class RateLimitingHandler extends SimpleChannelInboundHandler<RequestProt
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, RequestProto.RequestDTO requestDTO) throws Exception {
+        String id = requestDTO.getId();
+        log.debug("Arrived at RateLimitingHandler, id = {}", id);
         if (rateLimiter.tryAcquire()) {
             ctx.fireChannelRead(requestDTO);
+            log.debug("Passed RateLimitingHandler, id = {}", id);
         } else {
             ctx.writeAndFlush(rateLimitedResponse);
             ctx.close();
+            log.debug("Being rate-limited, id = {}", id);
         }
     }
 

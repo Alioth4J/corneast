@@ -74,15 +74,20 @@ public class RequestRouteHandler extends SimpleChannelInboundHandler<RequestProt
 
     @Override
     protected void channelRead0(ChannelHandlerContext channelHandlerContext, RequestProto.RequestDTO requestDTO) throws Exception {
+        String id = requestDTO.getId();
+        log.debug("Arrived at RequestRouteHandler, id = {}", id);
+
         // choose the strategy
         String requestType = requestDTO.getType();
         RequestHandlingStrategy requestHandlingStrategy = requestHandlingStrategyMap.get(requestType);
+        log.debug("Routing request to [{}] handling strategy", requestType);
         // request type does not exist
         if (requestHandlingStrategy == null) {
             ResponseProto.ResponseDTO unknownTypeResponseDTO = unknownTypeResponseBuilder
-                    .setId(requestDTO.getId())
+                    .setId(id)
                     .build();
             channelHandlerContext.writeAndFlush(unknownTypeResponseDTO);
+            log.debug("Unknown requestType, currentType = {}", requestType);
             return;
         }
         // handle
@@ -98,25 +103,25 @@ public class RequestRouteHandler extends SimpleChannelInboundHandler<RequestProt
                 ResponseProto.ResponseDTO exResponseDTO = null;
                 switch (requestType) {
                     case CorneastOperation.REGISTER: {
-                        exResponseDTO = exRegisterResponseBuilder.setId(requestDTO.getId())
+                        exResponseDTO = exRegisterResponseBuilder.setId(id)
                                 .setRegisterRespDTO(exRegisterRespDTOBuilder.setKey(requestDTO.getRegisterReqDTO().getKey()).build())
                                 .build();
                         break;
                     }
                     case CorneastOperation.REDUCE: {
-                        exResponseDTO = exReduceResponseBuilder.setId(requestDTO.getId())
+                        exResponseDTO = exReduceResponseBuilder.setId(id)
                                 .setReduceRespDTO(exReduceRespDTOBuilder.setKey(requestDTO.getReduceReqDTO().getKey()).build())
                                 .build();
                         break;
                     }
                     case CorneastOperation.RELEASE: {
-                        exResponseDTO = exReleaseResponseBuilder.setId(requestDTO.getId())
+                        exResponseDTO = exReleaseResponseBuilder.setId(id)
                                 .setReleaseRespDTO(exReleaseRespDTOBuilder.setKey(requestDTO.getReleaseReqDTO().getKey()).build())
                                 .build();
                         break;
                     }
                     case CorneastOperation.QUERY: {
-                        exResponseDTO = exQueryResponseBuilder.setId(requestDTO.getId())
+                        exResponseDTO = exQueryResponseBuilder.setId(id)
                                 .setQueryRespDTO(exQueryRespDTOBuilder.setKey(requestDTO.getQueryReqDTO().getKey()).build())
                                 .build();
                         break;
