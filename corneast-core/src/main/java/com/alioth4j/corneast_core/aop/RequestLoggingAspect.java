@@ -41,12 +41,12 @@ public class RequestLoggingAspect {
     public Object logRegisterRequest(ProceedingJoinPoint joinPoint) throws Throwable {
         Object[] args = joinPoint.getArgs();
         RequestProto.RequestDTO requestDTO = (RequestProto.RequestDTO) args[0];
-        log.info("Received request: type={}, key={}, tokenCount={}", requestDTO.getType(), requestDTO.getRegisterReqDTO().getKey(), requestDTO.getRegisterReqDTO().getTokenCount());
+        log.info("Received request: type = {}, id = {}, key = {}, tokenCount = {}", requestDTO.getType(), requestDTO.getId(), requestDTO.getRegisterReqDTO().getKey(), requestDTO.getRegisterReqDTO().getTokenCount());
         Object result;
         try {
             result = joinPoint.proceed();
         } catch (Throwable t) {
-            log.error("Error processing request: type={}, key={}, tokenCount={}", requestDTO.getType(), requestDTO.getRegisterReqDTO().getKey(), requestDTO.getRegisterReqDTO().getTokenCount());
+            log.error("Error processing request: type = {}, id = {}, key = {}, tokenCount = {}", requestDTO.getType(), requestDTO.getId(),requestDTO.getRegisterReqDTO().getKey(), requestDTO.getRegisterReqDTO().getTokenCount(), t);
             throw t;
         }
         return result;
@@ -56,12 +56,12 @@ public class RequestLoggingAspect {
     public Object logReduceRequest(ProceedingJoinPoint joinPoint) throws Throwable {
         Object[] args = joinPoint.getArgs();
         RequestProto.RequestDTO requestDTO = (RequestProto.RequestDTO) args[0];
-        log.info("Received request: type={}, key={}", requestDTO.getType(), requestDTO.getReduceReqDTO().getKey());
+        log.info("Received request: type = {}, id = {}, key = {}", requestDTO.getType(), requestDTO.getId(), requestDTO.getReduceReqDTO().getKey());
         Object result;
         try {
             result = joinPoint.proceed();
         } catch (Throwable t) {
-            log.error("Error processing request: type={}, key={}", requestDTO.getType(), requestDTO.getReduceReqDTO().getKey());
+            log.error("Error processing request: type = {}, id = {},  key = {}", requestDTO.getType(), requestDTO.getId(), requestDTO.getReduceReqDTO().getKey(), t);
             throw t;
         }
         return result;
@@ -71,12 +71,12 @@ public class RequestLoggingAspect {
     public Object logQueryRequest(ProceedingJoinPoint joinPoint) throws Throwable {
         Object[] args = joinPoint.getArgs();
         RequestProto.RequestDTO requestDTO = (RequestProto.RequestDTO) args[0];
-        log.info("Received request: type={}, key={}", requestDTO.getType(), requestDTO.getQueryReqDTO().getKey());
+        log.info("Received request: type = {}, id = {}, key = {}", requestDTO.getType(), requestDTO.getId(), requestDTO.getQueryReqDTO().getKey());
         Object result;
         try {
             result = joinPoint.proceed();
         } catch (Throwable t) {
-            log.error("Error processing request: type={}, key={}", requestDTO.getType(), requestDTO.getQueryReqDTO().getKey());
+            log.error("Error processing request: type = {}, id = {}, key = {}", requestDTO.getType(), requestDTO.getId(), requestDTO.getQueryReqDTO().getKey(), t);
             throw t;
         }
         return result;
@@ -86,12 +86,12 @@ public class RequestLoggingAspect {
     public Object logReleaseRequest(ProceedingJoinPoint joinPoint) throws Throwable {
         Object[] args = joinPoint.getArgs();
         RequestProto.RequestDTO requestDTO = (RequestProto.RequestDTO) args[0];
-        log.info("Received request: type={}, key={}", requestDTO.getType(), requestDTO.getReleaseReqDTO().getKey());
+        log.info("Received request: type = {}, id = {}, key = {}", requestDTO.getType(), requestDTO.getId(), requestDTO.getReleaseReqDTO().getKey());
         Object result;
         try {
             result = joinPoint.proceed();
         } catch (Throwable t) {
-            log.error("Error processing request: type={}, key={}", requestDTO.getType(), requestDTO.getReleaseReqDTO().getKey());
+            log.error("Error processing request: type = {}, id = {}, key = {}", requestDTO.getType(), requestDTO.getId(), requestDTO.getReleaseReqDTO().getKey(), t);
             throw t;
         }
         return result;
