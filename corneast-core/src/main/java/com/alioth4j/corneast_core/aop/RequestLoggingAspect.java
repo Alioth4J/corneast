@@ -37,69 +37,21 @@ public class RequestLoggingAspect {
 
     private static final Logger log = LoggerFactory.getLogger(RequestLoggingAspect.class);
 
-    @Around("execution(* com.alioth4j.corneast_core.strategy.impl.RegisterRequestHandlingStrategy.handle(..))")
-    public Object logRegisterRequest(ProceedingJoinPoint joinPoint) throws Throwable {
+    @Around("execution(* com.alioth4j.corneast_core.strategy.impl.RegisterRequestHandlingStrategy.handle(..)) || " +
+            "execution(* com.alioth4j.corneast_core.strategy.impl.ReduceRequestHandlingStrategy.handle(..)) || " +
+            "execution(* com.alioth4j.corneast_core.strategy.impl.QueryRequestHandlingStrategy.handle(..)) || " +
+            "execution(* com.alioth4j.corneast_core.strategy.impl.ReleaseRequestHandlingStrategy.handle(..))")
+    public Object logRequest(ProceedingJoinPoint joinPoint) throws Throwable {
         Object[] args = joinPoint.getArgs();
         RequestProto.RequestDTO requestDTO = (RequestProto.RequestDTO) args[0];
         if (log.isInfoEnabled()) {
-            log.info("Received request: type = {}, id = {}, key = {}, tokenCount = {}", requestDTO.getType(), requestDTO.getId(), requestDTO.getRegisterReqDTO().getKey(), requestDTO.getRegisterReqDTO().getTokenCount());
+            log.info("Received request: id = {}", requestDTO.getId());
         }
         Object result;
         try {
             result = joinPoint.proceed();
         } catch (Throwable t) {
-            log.error("Error processing request: type = {}, id = {}, key = {}, tokenCount = {}", requestDTO.getType(), requestDTO.getId(),requestDTO.getRegisterReqDTO().getKey(), requestDTO.getRegisterReqDTO().getTokenCount(), t);
-            throw t;
-        }
-        return result;
-    }
-
-    @Around("execution(* com.alioth4j.corneast_core.strategy.impl.ReduceRequestHandlingStrategy.handle(..))")
-    public Object logReduceRequest(ProceedingJoinPoint joinPoint) throws Throwable {
-        Object[] args = joinPoint.getArgs();
-        RequestProto.RequestDTO requestDTO = (RequestProto.RequestDTO) args[0];
-        if (log.isInfoEnabled()) {
-            log.info("Received request: type = {}, id = {}, key = {}", requestDTO.getType(), requestDTO.getId(), requestDTO.getReduceReqDTO().getKey());
-        }
-        Object result;
-        try {
-            result = joinPoint.proceed();
-        } catch (Throwable t) {
-            log.error("Error processing request: type = {}, id = {},  key = {}", requestDTO.getType(), requestDTO.getId(), requestDTO.getReduceReqDTO().getKey(), t);
-            throw t;
-        }
-        return result;
-    }
-
-    @Around("execution(* com.alioth4j.corneast_core.strategy.impl.QueryRequestHandlingStrategy.handle(..))")
-    public Object logQueryRequest(ProceedingJoinPoint joinPoint) throws Throwable {
-        Object[] args = joinPoint.getArgs();
-        RequestProto.RequestDTO requestDTO = (RequestProto.RequestDTO) args[0];
-        if (log.isInfoEnabled()) {
-            log.info("Received request: type = {}, id = {}, key = {}", requestDTO.getType(), requestDTO.getId(), requestDTO.getQueryReqDTO().getKey());
-        }
-        Object result;
-        try {
-            result = joinPoint.proceed();
-        } catch (Throwable t) {
-            log.error("Error processing request: type = {}, id = {}, key = {}", requestDTO.getType(), requestDTO.getId(), requestDTO.getQueryReqDTO().getKey(), t);
-            throw t;
-        }
-        return result;
-    }
-
-    @Around("execution(* com.alioth4j.corneast_core.strategy.impl.ReleaseRequestHandlingStrategy.handle(..))")
-    public Object logReleaseRequest(ProceedingJoinPoint joinPoint) throws Throwable {
-        Object[] args = joinPoint.getArgs();
-        RequestProto.RequestDTO requestDTO = (RequestProto.RequestDTO) args[0];
-        if (log.isInfoEnabled()) {
-            log.info("Received request: type = {}, id = {}, key = {}", requestDTO.getType(), requestDTO.getId(), requestDTO.getReleaseReqDTO().getKey());
-        }
-        Object result;
-        try {
-            result = joinPoint.proceed();
-        } catch (Throwable t) {
-            log.error("Error processing request: type = {}, id = {}, key = {}", requestDTO.getType(), requestDTO.getId(), requestDTO.getReleaseReqDTO().getKey(), t);
+            log.error("Error processing request: id = {}", requestDTO.getId(), t);
             throw t;
         }
         return result;
