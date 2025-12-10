@@ -51,7 +51,7 @@ public class RequestStatisticsAspect {
             result = joinPoint.proceed();
             long endTime = System.nanoTime();
             if (log.isInfoEnabled()) {
-                log.info("Stated Request: id = {}; processedTime = {}", requestDTO.getId(), endTime - startTime);
+                log.info("Stated Request: id = {}; processedTime = {}ns", requestDTO.getId(), endTime - startTime);
             }
         } catch (Throwable t) {
             log.error("Error stat request: id = {},", requestDTO.getId(), t);
