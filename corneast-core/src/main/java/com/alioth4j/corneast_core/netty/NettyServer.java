@@ -89,10 +89,10 @@ public class NettyServer {
                 bootstrap.group(bossGroup, workerGroup)
                         .channel(NioServerSocketChannel.class)
                         .option(ChannelOption.SO_BACKLOG, 1024)
-                        .option(ChannelOption.TCP_NODELAY, true)
                         .option(ChannelOption.SO_REUSEADDR, true)
                         .handler(new LoggingHandler(LogLevel.INFO))
                         .childOption(ChannelOption.SO_KEEPALIVE, false)
+                        .childOption(ChannelOption.TCP_NODELAY, true)
                         .childOption(ChannelOption.ALLOCATOR, new PooledByteBufAllocator(true, 40, 40, 8192, 11))
                         .childOption(ChannelOption.RCVBUF_ALLOCATOR, new AdaptiveRecvByteBufAllocator(64, 8192, 65535))
                         .childHandler(new ChannelInitializer<SocketChannel>() {
