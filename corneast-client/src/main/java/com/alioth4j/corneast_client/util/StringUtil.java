@@ -25,6 +25,9 @@ package com.alioth4j.corneast_client.util;
  */
 public final class StringUtil {
 
+    private StringUtil() {
+    }
+
     /**
      * Check whether a String has length.
      * @param str the String to be checked
