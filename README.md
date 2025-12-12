@@ -16,7 +16,7 @@ Corneast centralizes token management so that application teams can enforce reso
 - **Pluggable clients** – Official Java client with generated Protobuf DTOs and builders to reduce manual serialization work.  
 
 ## Architecture at a Glance  
-- **Core (`corneast‑core`)** – Processes REGISTER/REDUCE/RELEASE/QUERY operations, talks to Redis clusters, and exposes both HTTP (port 8080) and Netty (port 8088) endpoints.  
+- **Core (`corneast‑core`)** – Processes REGISTER/REDUCE/RELEASE/QUERY operations, talks to Redis clusters, and exposes Netty endpoint.  
 - **Eureka (`corneast‑eureka`)** – Spring Cloud Eureka server that tracks available core nodes and keeps heartbeats tuned for fast failover.  
 - **Client (`corneast‑client`)** – Java library that builds/sends Protobuf requests via `CorneastRequest`/`CorneastRequestBuilder` and a socket client.  
 - **Common (`corneast‑common`)** – Shared operations enum, DTO definitions, and banners.  
