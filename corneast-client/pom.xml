@@ -6,13 +6,13 @@
     <parent>
         <groupId>com.alioth4j</groupId>
         <artifactId>corneast</artifactId>
-        <version>3.5.0</version>
+        <version>3.6.0</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
     <groupId>com.alioth4j</groupId>
     <artifactId>corneast-client</artifactId>
-    <version>3.5.0</version>
+    <version>3.6.0</version>
     <name>corneast-client</name>
     <description>corneast client module</description>
     <packaging>jar</packaging>
