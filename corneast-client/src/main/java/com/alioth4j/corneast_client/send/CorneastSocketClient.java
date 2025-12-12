@@ -143,22 +143,6 @@ public class CorneastSocketClient {
     }
 
     /**
-     * Reads all the bytes in `InputStream`.
-     * @param in input stream
-     * @return byte array containing all bytes
-     * @throws IOException error reading bytes
-     */
-    private byte[] readAll(InputStream in) throws IOException {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        byte[] buf = new byte[1024];
-        int r;
-        while ((r = in.read(buf)) > 0) {
-            baos.write(buf, 0, r);
-        }
-        return baos.toByteArray();
-    }
-
-    /**
      * Encodes an integer into a varint32 format as used by Protobuf.
      *
      * @param value int to encode
@@ -175,30 +159,6 @@ public class CorneastSocketClient {
         byte[] result = new byte[position];
         System.arraycopy(buffer, 0, result, 0, position);
         return result;
-    }
-
-    /**
-     * Decodes a 32-bit varint, as used by protobuf, from the start of the
-     * provided byte buffer.
-     *
-     * @param buf the byte array containing the varint32 prefix
-     * @return a two-element int array: {@code [decodedValue, bytesConsumed]}
-     * @throws IOException if the varint is malformed (no terminating byte
-     *                     within 5 bytes) or the buffer is too short to contain
-     *                     a complete 32-bit varint
-     */
-    private int[] decodeVarint32(byte[] buf) throws IOException {
-        int result = 0;
-        int shift = 0;
-        for (int i = 0; i < Math.min(5, buf.length); i++) {
-            int b = buf[i] & 0xFF;
-            result |= (b & 0x7F) << shift;
-            if ((b & 0x80) == 0) {
-                return new int[]{result, i + 1};
-            }
-            shift += 7;
-        }
-        throw new IOException("Malformed varint32 or buffer too short");
     }
 
 }
