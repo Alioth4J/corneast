@@ -35,6 +35,10 @@ public final class Varint32Util {
     // upper bound for a payload
     private static final int MAX_PAYLOAD_SIZE = 10 * 1024 * 1024; // 10MB
 
+    
+    private Varint32Util() {
+    }
+
 
     /**
      * Encodes an integer into a varint32 format as used by Protobuf.

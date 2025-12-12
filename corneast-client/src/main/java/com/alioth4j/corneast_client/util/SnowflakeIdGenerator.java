@@ -38,7 +38,7 @@ package com.alioth4j.corneast_client.util;
  *    (both in the range 0‑31).
  * 2. Choose a fixed past epoch to keep the timestamp portion positive.
  */
-public class SnowflakeIdGenerator {
+public final class SnowflakeIdGenerator {
 
     /** Custom epoch (2020‑01‑01 00:00:00 UTC). Change if desired. */
     private static final long EPOCH = 1577836800000L;

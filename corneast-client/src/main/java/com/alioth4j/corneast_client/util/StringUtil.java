@@ -23,7 +23,7 @@ package com.alioth4j.corneast_client.util;
  *
  * @author Alioth Null
  */
-public class StringUtil {
+public final class StringUtil {
 
     /**
      * Check whether a String has length.
