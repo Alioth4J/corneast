@@ -72,23 +72,18 @@ public class CorneastSocketClient {
      * @throws IOException if socket read or write fails
      */
     public ResponseProto.ResponseDTO send(RequestProto.RequestDTO requestDTO) throws IOException {
-        byte[] requestDTOBytes = requestDTO.toByteArray();
-        byte[] preVarint32 = Varint32Util.encode(requestDTOBytes.length);
-        byte[] requestData = new byte[requestDTOBytes.length + preVarint32.length];
-        System.arraycopy(preVarint32, 0, requestData, 0, preVarint32.length);
-        System.arraycopy(requestDTOBytes, 0, requestData, preVarint32.length, requestDTOBytes.length);
+        byte[] binaryRequest = getRequestBinary(requestDTO);
 
         try (Socket socket = new Socket(host, port)) {
 //            // debug
 //            socket.setSoTimeout(5000);
 
             OutputStream out = socket.getOutputStream();
-            out.write(requestData);
+            out.write(binaryRequest);
             out.flush();
 
             InputStream in = socket.getInputStream();
-            byte[] payload = Varint32Util.getPayload(in);
-            return ResponseProto.ResponseDTO.parseFrom(payload);
+            return getResponseObject(in);
         } catch (IOException e) {
             log.error("I/O failure: {}", e.getMessage(), e);
             throw e;
@@ -96,6 +91,30 @@ public class CorneastSocketClient {
             log.error("Unexpected error: {}", e.getMessage(), e);
             throw e;
         }
+    }
+
+    /**
+     * Switch a <code>requestDTO</code> to binary request that includes varint32 prefix.
+     * @param requestDTO request object
+     * @return the complete binary request
+     */
+    private byte[] getRequestBinary(RequestProto.RequestDTO requestDTO) {
+        byte[] requestDTOBytes = requestDTO.toByteArray();
+        byte[] preVarint32 = Varint32Util.encode(requestDTOBytes.length);
+        byte[] binaryRequest = new byte[requestDTOBytes.length + preVarint32.length];
+        System.arraycopy(preVarint32, 0, binaryRequest, 0, preVarint32.length);
+        System.arraycopy(requestDTOBytes, 0, binaryRequest, preVarint32.length, requestDTOBytes.length);
+        return binaryRequest;
+    }
+
+    /**
+     * Switch input stream to response object.
+     * @param in input stream including varint32 prefix
+     * @return response object
+     */
+    private ResponseProto.ResponseDTO getResponseObject(InputStream in) throws IOException {
+        byte[] payload = Varint32Util.getPayload(in);
+        return ResponseProto.ResponseDTO.parseFrom(payload);
     }
 
 }
