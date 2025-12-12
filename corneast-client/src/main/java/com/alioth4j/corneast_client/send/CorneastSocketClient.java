@@ -103,9 +103,10 @@ public class CorneastSocketClient {
     private static final int MAX_PAYLOAD_SIZE = 10 * 1024 * 1024; // 10MB
 
     /**
-     * Reads a length‑prefixed payload from the given stream.
+     * Reads varint32 prefix and the payload from the given stream,
+     * returns the payload only.
      * @param in input stream
-     * @return payload in byte array
+     * @return payload without prefix
      * @throws IOException if the stream ends prematurely or the length is invalid
      */
     private byte[] readPayload(InputStream in) throws IOException {
