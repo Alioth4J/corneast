@@ -16,31 +16,22 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.alioth4j.corneast_client.utils;
-
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
+package com.alioth4j.corneast_client.util;
 
 /**
- * Test class for <code>StringUtils</code>.
+ * Util class for String operations.
  *
  * @author Alioth Null
  */
-public class StringUtilsTests {
+public class StringUtil {
 
-    @Test
-    void testNullStr() {
-        Assertions.assertFalse(StringUtils.hasLength(null));
-    }
-
-    @Test
-    void testEmptyStr() {
-        Assertions.assertFalse(StringUtils.hasLength(""));
-    }
-
-    @Test
-    void testStrWithLength() {
-        Assertions.assertTrue(StringUtils.hasLength("text"));
+    /**
+     * Check whether a String has length.
+     * @param str the String to be checked
+     * @return null || "" -> false; others -> true;
+     */
+    public static boolean hasLength(String str) {
+        return str != null && !str.isEmpty();
     }
 
 }

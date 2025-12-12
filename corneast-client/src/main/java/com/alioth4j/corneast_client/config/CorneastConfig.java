@@ -18,7 +18,7 @@
 
 package com.alioth4j.corneast_client.config;
 
-import com.alioth4j.corneast_client.utils.StringUtils;
+import com.alioth4j.corneast_client.util.StringUtil;
 
 /**
  * Config class for client to construct a <code>CorneastSocketClient</code>.
@@ -41,7 +41,7 @@ public class CorneastConfig {
     }
 
     public void setHost(String host) {
-        if (!StringUtils.hasLength(host)) {
+        if (!StringUtil.hasLength(host)) {
             throw new IllegalArgumentException("host must not be null or empty");
         }
         this.host = host;
@@ -63,7 +63,7 @@ public class CorneastConfig {
      * @return true if the validation passes
      */
     public boolean validate() {
-        if (!StringUtils.hasLength(host)) {
+        if (!StringUtil.hasLength(host)) {
             return false;
         }
         if (port < 0 || port > 65535) {

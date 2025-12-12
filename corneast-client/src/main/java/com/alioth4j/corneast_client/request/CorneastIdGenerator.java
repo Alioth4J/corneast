@@ -18,7 +18,7 @@
 
 package com.alioth4j.corneast_client.request;
 
-import com.alioth4j.corneast_client.utils.SnowflakeIdGenerator;
+import com.alioth4j.corneast_client.util.SnowflakeIdGenerator;
 
 import java.util.UUID;
 

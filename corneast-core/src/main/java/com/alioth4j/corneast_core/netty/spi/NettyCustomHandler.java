@@ -18,7 +18,7 @@
 
 package com.alioth4j.corneast_core.netty.spi;
 
-import com.alioth4j.corneast_core.utils.Ordered;
+import com.alioth4j.corneast_core.util.Ordered;
 import io.netty.channel.ChannelHandler;
 
 /**

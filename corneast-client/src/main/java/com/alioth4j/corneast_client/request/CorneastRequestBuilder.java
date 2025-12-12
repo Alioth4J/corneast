@@ -19,7 +19,7 @@
 package com.alioth4j.corneast_client.request;
 
 import com.alioth4j.corneast_client.exception.RequestBuildException;
-import com.alioth4j.corneast_client.utils.StringUtils;
+import com.alioth4j.corneast_client.util.StringUtil;
 import com.alioth4j.corneast_common.operation.CorneastOperation;
 import com.alioth4j.corneast_common.proto.RequestProto;
 
@@ -73,7 +73,7 @@ public class CorneastRequestBuilder {
     }
 
     public CorneastRequestBuilder setType(String type) {
-        if (!StringUtils.hasLength(type)) {
+        if (!StringUtil.hasLength(type)) {
             throw new RequestBuildException(TYPE_NULL_MSG);
         }
         switch (type) {
@@ -116,11 +116,11 @@ public class CorneastRequestBuilder {
     }
 
     public CorneastRequestBuilder setKey(String key) {
-        if (!StringUtils.hasLength(key)) {
+        if (!StringUtil.hasLength(key)) {
             throw new RequestBuildException(KEY_NULL_MSG);
         }
         String type = protoBuilder.getType();
-        if (!StringUtils.hasLength(type)) {
+        if (!StringUtil.hasLength(type)) {
             throw new RequestBuildException(TYPE_NOT_SET_MSG);
         }
         switch (type) {
@@ -153,7 +153,7 @@ public class CorneastRequestBuilder {
             throw new RequestBuildException(TOKENCOUNT_LESS_THAN_ZERO_MSG);
         }
         String type = protoBuilder.getType();
-        if (!StringUtils.hasLength(type)) {
+        if (!StringUtil.hasLength(type)) {
             throw new RequestBuildException(TYPE_OF_REGISTER_NOT_SET_BEFORE_TOKENCOUNT_SET_MSG);
         }
         if (!CorneastOperation.REGISTER.equals(type)) {

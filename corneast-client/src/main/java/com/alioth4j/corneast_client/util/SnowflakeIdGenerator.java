@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.alioth4j.corneast_client.utils;
+package com.alioth4j.corneast_client.util;
 
 /**
  * Snowflake ID generator.
