@@ -22,6 +22,8 @@ import java.io.BufferedInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.ByteBuffer;
+import java.nio.channels.ReadableByteChannel;
 
 /**
  * Util class for operating varint32.
@@ -60,6 +62,7 @@ public final class Varint32Util {
     }
 
     /**
+     * Supports BIO.
      * Reads varint32 prefix and the payload from the given stream,
      * returns the payload only.
      * @param in input stream
@@ -97,6 +100,50 @@ public final class Varint32Util {
         byte[] payload = new byte[result];
         dis.readFully(payload);
         return payload;
+    }
+
+    /**
+     * Supports NIO.
+     * Reads varint32 prefix and the payload from the given stream,
+     * returns the payload only.
+     * @param channel NIO channel
+     * @return payload without prefix
+     * @throws IOException exception occurs while reading
+     */
+    public static byte[] getPayload(ReadableByteChannel channel) throws IOException {
+        int result = 0;
+        int shift  = 0;
+        ByteBuffer oneByte = ByteBuffer.allocate(1);
+        for (int i = 0; i < MAX_VARINT32_BYTES; i++) {
+            oneByte.clear();
+            int read = channel.read(oneByte);
+            if (read != 1) {
+                throw new IOException("Premature end of stream while reading length prefix");
+            }
+            oneByte.flip();
+            int b = oneByte.get() & 0xFF;
+            result |= (b & 0x7F) << shift;
+            if ((b & 0x80) == 0) {
+                break;
+            }
+            shift += 7;
+        }
+
+        if (result < 0) {
+            throw new IOException("Negative payload length: " + result);
+        }
+        if (result > MAX_PAYLOAD_SIZE) {
+            throw new IOException("Payload too large: " + result);
+        }
+
+        ByteBuffer payloadBuf = ByteBuffer.allocate(result);
+        while (payloadBuf.hasRemaining()) {
+            int read = channel.read(payloadBuf);
+            if (read == -1) {
+                throw new IOException("Stream ended before full payload could be read");
+            }
+        }
+        return payloadBuf.array();
     }
 
 }
