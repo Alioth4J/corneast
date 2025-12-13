@@ -80,7 +80,6 @@ public class RequestRouteHandler extends SimpleChannelInboundHandler<RequestProt
         // choose the strategy
         String requestType = requestDTO.getType();
         RequestHandlingStrategy requestHandlingStrategy = requestHandlingStrategyMap.get(requestType);
-        log.debug("Routing request to [{}] handling strategy", requestType);
         // request type does not exist
         if (requestHandlingStrategy == null) {
             ResponseProto.ResponseDTO unknownTypeResponseDTO = unknownTypeResponseBuilder
@@ -90,6 +89,7 @@ public class RequestRouteHandler extends SimpleChannelInboundHandler<RequestProt
             log.debug("Unknown requestType, currentType = {}", requestType);
             return;
         }
+        log.debug("Routing request to [{}] handling strategy", requestHandlingStrategy.getType());
         // handle
         CompletableFuture<ResponseProto.ResponseDTO> responseCompletableFuture = requestHandlingStrategy.handle(requestDTO);
         // write and flush the response

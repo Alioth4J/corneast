@@ -46,4 +46,9 @@ public class ReduceRequestHandlingStrategy implements RequestHandlingStrategy {
         return reduceDisruptor.submitRequest(requestDTO);
     }
 
+    @Override
+    public String getType() {
+        return CorneastOperation.REDUCE;
+    }
+
 }

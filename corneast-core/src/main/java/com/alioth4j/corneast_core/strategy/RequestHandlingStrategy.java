@@ -34,4 +34,6 @@ public interface RequestHandlingStrategy {
 
     CompletableFuture<ResponseProto.ResponseDTO> handle(RequestProto.RequestDTO requestDTO);
 
+    String getType();
+
 }

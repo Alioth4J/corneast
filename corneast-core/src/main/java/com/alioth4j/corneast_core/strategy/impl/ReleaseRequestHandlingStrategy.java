@@ -87,4 +87,10 @@ public class ReleaseRequestHandlingStrategy implements RequestHandlingStrategy {
         }, releaseExecutor);
     }
 
+    @Override
+    public String getType() {
+        return CorneastOperation.RELEASE;
+
+    }
+
 }

@@ -79,4 +79,9 @@ public class QueryRequestHandlingStrategy implements RequestHandlingStrategy {
         }, queryExecutor);
     }
 
+    @Override
+    public String getType() {
+        return CorneastOperation.QUERY;
+    }
+
 }

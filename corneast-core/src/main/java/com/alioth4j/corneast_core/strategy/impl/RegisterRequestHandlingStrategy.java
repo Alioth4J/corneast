@@ -91,4 +91,9 @@ public class RegisterRequestHandlingStrategy implements RequestHandlingStrategy 
         }, registerExecutor);
     }
 
+    @Override
+    public String getType() {
+        return CorneastOperation.REGISTER;
+    }
+
 }
