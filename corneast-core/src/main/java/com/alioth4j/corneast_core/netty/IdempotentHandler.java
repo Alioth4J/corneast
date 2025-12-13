@@ -65,7 +65,7 @@ public class IdempotentHandler extends SimpleChannelInboundHandler<RequestProto.
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, RequestProto.RequestDTO requestDTO) throws Exception {
         String id = requestDTO.getId();
-        log.debug("arrived at idempotenthandler, id = {}", id);
+        log.debug("Arrived at IdempotentHandler, id = {}", id);
 
         // id != null because of protobuf
         // String#intern in compile-time by java
