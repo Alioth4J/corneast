@@ -71,18 +71,19 @@ public class IdempotentHandler extends SimpleChannelInboundHandler<RequestProto.
         // String#intern in compile-time by java
         if (id == "") {
             // disable idempotence
+            log.debug("Disabled idempotent, id = {}", id);
             ctx.fireChannelRead(requestDTO);
             return;
         }
         String exists = idempotentRedissonClient.getScript(StringCodec.INSTANCE).eval(RScript.Mode.READ_ONLY, readLuaScript, RScript.ReturnType.VALUE, List.of(id));
         if (exists == null) {
             idempotentRedissonClient.getScript(StringCodec.INSTANCE).eval(RScript.Mode.READ_WRITE, writeLuaScript, RScript.ReturnType.VALUE, List.of(id));
-            ctx.fireChannelRead(requestDTO);
             log.debug("Passed IdempotentHandler, id = {}", id);
+            ctx.fireChannelRead(requestDTO);
         } else {
+            log.debug("Being Idempotented, id = {}", id);
             ctx.writeAndFlush(idempotentResponse);
             ctx.close();
-            log.debug("Being Idempotented, id = {}", id);
         }
     }
 
