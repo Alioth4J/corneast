@@ -50,13 +50,11 @@ public class IdempotentHandler extends SimpleChannelInboundHandler<RequestProto.
     @Qualifier("idempotentRedissonClient")
     private RedissonClient idempotentRedissonClient;
 
-    private static final String readLuaScript = """
-                                                return redis.call("GET", KEYS[1])
-                                                """;
-
-    private static final String writeLuaScript = """
-                                                 redis.call("SET", KEYS[1], "1")
-                                                 """;
+    private static final String testAndSetLuaScript = """
+                                                      local v = redis.call("GET", KEYS[1])
+                                                      if not v then redis.call("SET", KEYS[1], "1") end
+                                                      return v
+                                                      """;
 
     private static final ResponseProto.ResponseDTO idempotentResponse = ResponseProto.ResponseDTO.newBuilder()
                                                                                                  .setType(CorneastOperation.IDEMPOTENT)
@@ -75,9 +73,8 @@ public class IdempotentHandler extends SimpleChannelInboundHandler<RequestProto.
             ctx.fireChannelRead(requestDTO);
             return;
         }
-        String exists = idempotentRedissonClient.getScript(StringCodec.INSTANCE).eval(RScript.Mode.READ_ONLY, readLuaScript, RScript.ReturnType.VALUE, List.of(id));
+        String exists = idempotentRedissonClient.getScript(StringCodec.INSTANCE).eval(RScript.Mode.READ_WRITE, testAndSetLuaScript, RScript.ReturnType.VALUE, List.of(id));
         if (exists == null) {
-            idempotentRedissonClient.getScript(StringCodec.INSTANCE).eval(RScript.Mode.READ_WRITE, writeLuaScript, RScript.ReturnType.VALUE, List.of(id));
             log.debug("Passed IdempotentHandler, id = {}", id);
             ctx.fireChannelRead(requestDTO);
         } else {
