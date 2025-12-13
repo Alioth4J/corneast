@@ -121,7 +121,7 @@ public class NettyServer {
                         });
                 channelFuture = bootstrap.bind(port).sync();
                 channelFuture.channel().closeFuture().sync();
-                log.info("Netty server channel closed, shutting down");
+                log.info("Netty server channel closed, shutting down...");
             } catch (InterruptedException e) {
                 log.warn("Interruption occurs in netty server thread", e);
                 Thread.currentThread().interrupt();
@@ -166,6 +166,7 @@ public class NettyServer {
     public void shutdown(Logger log) {
         // channelFuture
         if (channelFuture != null && channelFuture.channel() != null && channelFuture.channel().isOpen()) {
+            log.info("Closing channel future");
             channelFuture.channel().close();
         }
 
@@ -197,6 +198,7 @@ public class NettyServer {
     private void shutdownBossAndWorkerGroups(Logger log) {
         // boss group
         if (bossGroup != null) {
+            log.info("Shutting down boss group");
             try {
                 bossGroup.shutdownGracefully(0, 5, TimeUnit.SECONDS).sync();
             } catch (InterruptedException e) {
@@ -208,6 +210,7 @@ public class NettyServer {
 
         // worker group
         if (workerGroup != null) {
+            log.info("Shutting down worker group");
             try {
                 workerGroup.shutdownGracefully(0, 5, TimeUnit.SECONDS).sync();
             } catch (InterruptedException e) {

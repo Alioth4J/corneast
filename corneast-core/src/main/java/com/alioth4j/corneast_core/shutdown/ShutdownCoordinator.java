@@ -45,12 +45,14 @@ public class ShutdownCoordinator {
      */
     @PreDestroy
     public void shutdown() {
+        log.info("ShutdownCordinator begins working");
         for (ShutdownTask shutdownTask : shutdownTaskList) {
             try {
                 log.info("Start shutting down {}", shutdownTask.getComponentName());
                 shutdownTask.shutdown();
                 log.info("End shutting down {}", shutdownTask.getComponentName());
             } catch (Exception e) {
+                // TODO handle exception
                 log.warn("Error shutting down {}", shutdownTask.getComponentName(), e);
             }
         }
