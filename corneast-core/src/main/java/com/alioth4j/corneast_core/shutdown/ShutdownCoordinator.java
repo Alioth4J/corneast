@@ -36,7 +36,7 @@ public class ShutdownCoordinator {
 
     private static final Logger log = LoggerFactory.getLogger(ShutdownCoordinator.class);
 
-    /* shutdown tasks injected by Spring Framework */
+    // injected by Spring Framework
     @Autowired
     private List<ShutdownTask> shutdownTaskList;
 
