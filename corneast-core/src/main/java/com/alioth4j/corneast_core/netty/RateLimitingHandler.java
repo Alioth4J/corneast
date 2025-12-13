@@ -57,7 +57,6 @@ public class RateLimitingHandler extends SimpleChannelInboundHandler<RequestProt
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, RequestProto.RequestDTO requestDTO) throws Exception {
-        log.error("ssssssssssssssssssssssss");
         String id = requestDTO.getId();
         log.debug("Arrived at RateLimitingHandler, id = {}", id);
         if (rateLimiter.tryAcquire()) {
