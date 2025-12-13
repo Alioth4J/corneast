@@ -147,14 +147,16 @@ public class NettyServer {
         customHandlers = Collections.unmodifiableList(customHandlers);
 
         // logging
-        if (customHandlers.isEmpty()) {
-            log.info("No custom netty handlers found via SPI");
-            return;
+        if (log.isInfoEnabled()) {
+            if (customHandlers.isEmpty()) {
+                log.info("No custom netty handlers found via SPI");
+            } else {
+                String handlerNames = customHandlers.stream()
+                        .map(handler -> handler.getClass().getCanonicalName())
+                        .collect(Collectors.joining(", "));
+                log.info("Initialized {} netty custom handler(s): {}", customHandlers.size(), handlerNames);
+            }
         }
-        String handlerNames = customHandlers.stream()
-                .map(handler -> handler.getClass().getCanonicalName())
-                .collect(Collectors.joining(", "));
-        log.info("Initialized {} netty custom handler(s): {}", customHandlers.size(), handlerNames);
     }
 
     /**
