@@ -98,14 +98,16 @@ public class NettyServer {
                         .childHandler(new ChannelInitializer<SocketChannel>() {
                             @Override
                             protected void initChannel(SocketChannel ch) {
+                                // outbound protobuf serializers
+                                ch.pipeline().addLast(new ProtobufVarint32LengthFieldPrepender());
+                                ch.pipeline().addLast(new ProtobufEncoder());
+
                                 // rate limiting
                                 ch.pipeline().addLast(rateLimitingHandler);
 
-                                // protobuf handler
+                                // inbound protobuf deserializer
                                 ch.pipeline().addLast(new ProtobufVarint32FrameDecoder());
                                 ch.pipeline().addLast(new ProtobufDecoder(RequestProto.RequestDTO.getDefaultInstance()));
-                                ch.pipeline().addLast(new ProtobufVarint32LengthFieldPrepender());
-                                ch.pipeline().addLast(new ProtobufEncoder());
 
                                 // idempotent handler
                                 ch.pipeline().addLast(idempotentHandler);

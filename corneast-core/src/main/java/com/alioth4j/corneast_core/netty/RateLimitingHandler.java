@@ -18,8 +18,8 @@
 
 package com.alioth4j.corneast_core.netty;
 
-import com.alioth4j.corneast_common.proto.RequestProto;
 import com.alioth4j.corneast_common.proto.ResponseProto;
+import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -37,7 +37,7 @@ import org.springframework.stereotype.Component;
  */
 @Component
 @ChannelHandler.Sharable
-public class RateLimitingHandler extends SimpleChannelInboundHandler<RequestProto.RequestDTO> {
+public class RateLimitingHandler extends SimpleChannelInboundHandler<ByteBuf> {
 
     private static final Logger log = LoggerFactory.getLogger(RateLimitingHandler.class);
 
@@ -56,14 +56,14 @@ public class RateLimitingHandler extends SimpleChannelInboundHandler<RequestProt
                                                             .build();
 
     @Override
-    protected void channelRead0(ChannelHandlerContext ctx, RequestProto.RequestDTO requestDTO) throws Exception {
-        String id = requestDTO.getId();
-        log.debug("Arrived at RateLimitingHandler, id = {}", id);
+    protected void channelRead0(ChannelHandlerContext ctx, ByteBuf msg) throws Exception {
+        // TODO unknown id
+        log.debug("Arrived at RateLimitingHandler, unknown id");
         if (rateLimiter.tryAcquire()) {
-            log.debug("Passed RateLimitingHandler, id = {}", id);
-            ctx.fireChannelRead(requestDTO);
+            log.debug("Passed RateLimitingHandler, unknown id");
+            ctx.fireChannelRead(msg.retain());
         } else {
-            log.debug("Being rate-limited, id = {}", id);
+            log.warn("Being rate limited, unknown id");
             ctx.writeAndFlush(rateLimitedResponse);
             ctx.close();
         }
