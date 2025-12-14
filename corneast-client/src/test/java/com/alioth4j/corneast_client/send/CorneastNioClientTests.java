@@ -41,7 +41,7 @@ public class CorneastNioClientTests {
         try {
             responseDTO = corneastNioClient.send(registerReqDTO);
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
         Assertions.assertEquals(CorneastOperation.REGISTER, responseDTO.getType());
         Assertions.assertEquals("", responseDTO.getId());

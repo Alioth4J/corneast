@@ -32,13 +32,18 @@ import java.io.IOException;
 public class CorneastSocketClientTests {
 
     @Test
-    void testSend() throws IOException {
+    void testSend() {
         RequestProto.RequestDTO registerReqDTO = new CorneastRequest(CorneastOperation.REGISTER, "", "key-register", 1000).instance;
         CorneastConfig config = new CorneastConfig();
         config.setHost("127.0.0.1");
         config.setPort(8088);
         CorneastSocketClient corneastSocketClient = CorneastSocketClient.of(config);
-        ResponseProto.ResponseDTO responseDTO = corneastSocketClient.send(registerReqDTO);
+        ResponseProto.ResponseDTO responseDTO = null;
+        try {
+            responseDTO = corneastSocketClient.send(registerReqDTO);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         Assertions.assertEquals(CorneastOperation.REGISTER, responseDTO.getType());
         Assertions.assertEquals("", responseDTO.getId());
         Assertions.assertEquals("key-register", responseDTO.getRegisterRespDTO().getKey());
@@ -46,21 +51,26 @@ public class CorneastSocketClientTests {
     }
 
     @Test
-    void testUnknownTypeWithClientAPI() throws IOException {
+    void testUnknownTypeWithClientAPI() {
         Assertions.assertThrows(RequestBuildException.class, () -> {
             RequestProto.RequestDTO requestDTO = new CorneastRequest("abcdefg", "", "key-unknown").instance;
             CorneastConfig config = new CorneastConfig();
             config.setHost("127.0.0.1");
             config.setPort(8088);
             CorneastSocketClient corneastSocketClient = CorneastSocketClient.of(config);
-            ResponseProto.ResponseDTO responseDTO = corneastSocketClient.send(requestDTO);
+            ResponseProto.ResponseDTO responseDTO = null;
+            try {
+                responseDTO = corneastSocketClient.send(requestDTO);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
             Assertions.assertEquals(CorneastOperation.UNKNOWN, responseDTO.getType());
             Assertions.assertEquals("", responseDTO.getId());
         });
     }
 
     @Test
-    void testUnknownTypeWithProtobufAPI() throws IOException {
+    void testUnknownTypeWithProtobufAPI() {
         RequestProto.RequestDTO requestDTO = RequestProto.RequestDTO.newBuilder()
                 .setType("abcdefg")
                 .setId("")
@@ -69,7 +79,12 @@ public class CorneastSocketClientTests {
         config.setHost("127.0.0.1");
         config.setPort(8088);
         CorneastSocketClient corneastSocketClient = CorneastSocketClient.of(config);
-        ResponseProto.ResponseDTO responseDTO = corneastSocketClient.send(requestDTO);
+        ResponseProto.ResponseDTO responseDTO = null;
+        try {
+            responseDTO = corneastSocketClient.send(requestDTO);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         Assertions.assertEquals(CorneastOperation.UNKNOWN, responseDTO.getType());
         Assertions.assertEquals("", responseDTO.getId());
     }
