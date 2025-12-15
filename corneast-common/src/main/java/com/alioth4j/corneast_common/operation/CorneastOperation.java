@@ -42,6 +42,7 @@ public class CorneastOperation {
     // only used in response
     public static final String IDEMPOTENT = "idempotent";
     public static final String UNKNOWN = "unknown";
+    public static final String RATE_LIMITED = "rateLimited";
 
 
     /**

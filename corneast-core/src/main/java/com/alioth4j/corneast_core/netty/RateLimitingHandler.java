@@ -18,6 +18,7 @@
 
 package com.alioth4j.corneast_core.netty;
 
+import com.alioth4j.corneast_common.operation.CorneastOperation;
 import com.alioth4j.corneast_common.proto.ResponseProto;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandler;
@@ -52,7 +53,7 @@ public class RateLimitingHandler extends SimpleChannelInboundHandler<ByteBuf> {
     }
 
     private ResponseProto.ResponseDTO rateLimitedResponse = ResponseProto.ResponseDTO.newBuilder()
-                                                            .setType("rateLimited")
+                                                            .setType(CorneastOperation.RATE_LIMITED)
                                                             .build();
 
     @Override
