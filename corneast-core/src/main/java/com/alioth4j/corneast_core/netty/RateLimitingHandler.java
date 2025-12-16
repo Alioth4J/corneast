@@ -58,7 +58,6 @@ public class RateLimitingHandler extends SimpleChannelInboundHandler<ByteBuf> {
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, ByteBuf msg) throws Exception {
-        // TODO unknown id
         log.debug("Arrived at RateLimitingHandler, unknown id");
         if (rateLimiter.tryAcquire()) {
             log.debug("Passed RateLimitingHandler, unknown id");
