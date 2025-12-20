@@ -70,11 +70,9 @@ public class RedissonConfig {
     @Bean
     public RedissonClient idempotentRedissonClient(IdempotentConfigProperties idempotentConfigProperties) {
         Config config = new Config();
+        List<String> redisEndpoints = idempotentConfigProperties.getRedisEndpoints();
         config.useClusterServers()
-              .addNodeAddress(
-       "redis://127.0.0.1:6000",
-                  "redis://127.0.0.1:6001",
-                  "redis://127.0.0.1:6002");
+              .addNodeAddress(redisEndpoints.toArray(new String[redisEndpoints.size()]));
         return Redisson.create(config);
     }
 

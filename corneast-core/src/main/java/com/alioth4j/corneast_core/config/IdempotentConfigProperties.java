@@ -25,23 +25,21 @@ import java.util.List;
 @ConfigurationProperties(prefix = "idempotent")
 public class IdempotentConfigProperties {
 
-    private List<String> redisAddresses;
-
+    private List<String> redisEndpoints;
 
     public IdempotentConfigProperties() {
     }
 
-    public IdempotentConfigProperties(List<String> redisAddresses) {
-        this.redisAddresses = redisAddresses;
+    public IdempotentConfigProperties(List<String> redisEndpoints) {
+        this.redisEndpoints = redisEndpoints;
     }
 
-
-    public List<String> getRedisAddresses() {
-        return redisAddresses;
+    public List<String> getRedisEndpoints() {
+        return redisEndpoints;
     }
 
-    public void setRedisAddresses(List<String> redisAddresses) {
-        this.redisAddresses = redisAddresses;
+    public void setRedisEndpoints(List<String> redisEndpoints) {
+        this.redisEndpoints = redisEndpoints;
     }
 
 }
