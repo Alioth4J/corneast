@@ -48,7 +48,7 @@ public class RedissonConfig {
         int database = storageConfigProperties.getDatabase();
         int timeout = storageConfigProperties.getTimeout();
         int connectTimeout = storageConfigProperties.getConnectTimeout();
-        List<Object> redissonClients = new ArrayList<>();
+        List<RedissonClient> redissonClients = new ArrayList<>();
         for (String master : masters) {
             Config config = new Config();
             config.useSentinelServers()
