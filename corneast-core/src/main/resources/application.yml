@@ -24,9 +24,9 @@ rateLimiting:
 
 idempotent:
   redisEndpoints:
-    - "redis://127.0.0.1/6000"
-    - "redis://127.0.0.1/6001"
-    - "redis://127.0.0.1/6002"
+    - "redis://127.0.0.1:6000"
+    - "redis://127.0.0.1:6001"
+    - "redis://127.0.0.1:6002"
 
 storage:
   masters:
