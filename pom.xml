@@ -11,7 +11,7 @@
 
 	<groupId>com.alioth4j</groupId>
 	<artifactId>corneast</artifactId>
-	<version>3.9.0</version>
+	<version>3.10.0</version>
 	<name>corneast</name>
 	<description>coreneast project</description>
 	<packaging>pom</packaging>
