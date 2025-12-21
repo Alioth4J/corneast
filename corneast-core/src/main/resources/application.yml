@@ -23,29 +23,19 @@ rateLimiting:
   permitsPerSecond: 1000000
 
 idempotent:
-  redisAddresses:
-    - "redis://127.0.0.1/6000"
-    - "redis://127.0.0.1/6001"
-    - "redis://127.0.0.1/6002"
+  redisEndpoints:
+    - "redis://127.0.0.1:6000"
+    - "redis://127.0.0.1:6001"
+    - "redis://127.0.0.1:6002"
 
-redis-config:
+storage:
+  masters:
+    - "corneast-storage-001-master"
+    - "corneast-storage-002-master"
   sentinels:
-    - master: "master-1"
-      nodes:
-        - "redis://127.0.0.1:27001"
-    - master: "master-2"
-      nodes:
-        - "redis://127.0.0.1:27002"
-#    - master: "master-3"
-#      nodes:
-#        - "redis://127.0.0.1:27003"
-#    - master: "master-4"
-#      nodes:
-#        - "redis://127.0.0.1:27004"
-#    - master: "master-5"
-#      nodes:
-#        -  "redis://127.0.0.1:27005"
+    - "redis://172.19.0.10:26379"
+    - "redis://172.19.0.11:26379"
+    - "redis://172.19.0.12:26379"
   database: 0
-  timeout: 100
+  timeout: 1000
   connectTimeout: 100
-  connectionPoolSize: 2000

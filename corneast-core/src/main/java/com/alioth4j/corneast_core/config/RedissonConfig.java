@@ -21,6 +21,7 @@ package com.alioth4j.corneast_core.config;
 import org.redisson.Redisson;
 import org.redisson.api.RedissonClient;
 import org.redisson.config.Config;
+import org.redisson.config.ReadMode;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -36,30 +37,29 @@ import java.util.List;
  * @author Alioth Null
  */
 @Configuration
-@EnableConfigurationProperties({RedisConfigProperties.class, IdempotentConfigProperties.class})
+@EnableConfigurationProperties({StorageConfigProperties.class, IdempotentConfigProperties.class})
 public class RedissonConfig {
 
     @Bean
-    public List<RedissonClient> redissonClients(RedisConfigProperties redisConfigProperties) {
-        List<RedisSentinelConfigProperties> sentinels = redisConfigProperties.getSentinels();
-        int database = redisConfigProperties.getDatabase();
-        int timeout = redisConfigProperties.getTimeout();
-        int connectTimeout = redisConfigProperties.getConnectTimeout();
-        int connectionPoolSize = redisConfigProperties.getConnectionPoolSize();
+    public List<RedissonClient> redissonClients(StorageConfigProperties storageConfigProperties) {
+        List<String> masters = storageConfigProperties.getMasters();
+        List<String> sentinels = storageConfigProperties.getSentinels();
+        String[] sentinelArray = sentinels.toArray(new String[sentinels.size()]);
+        int database = storageConfigProperties.getDatabase();
+        int timeout = storageConfigProperties.getTimeout();
+        int connectTimeout = storageConfigProperties.getConnectTimeout();
         List<RedissonClient> redissonClients = new ArrayList<>();
-        for (RedisSentinelConfigProperties sentinel : sentinels) {
-            String master = sentinel.getMaster();
-            List<String> nodes = sentinel.getNodes();
+        for (String master : masters) {
             Config config = new Config();
             config.useSentinelServers()
                     .setMasterName(master)
-                    .addSentinelAddress(nodes.toArray(new String[0]))
+                    .addSentinelAddress(sentinelArray)
                     .setDatabase(database)
                     .setTimeout(timeout)
                     .setConnectTimeout(connectTimeout)
-                    .setMasterConnectionPoolSize(connectionPoolSize)
-                    .setCheckSentinelsList(false);
-            redissonClients.add(Redisson.create(config));
+                    .setReadMode(ReadMode.SLAVE);
+            RedissonClient redissonClient = Redisson.create(config);
+            redissonClients.add(redissonClient);
         }
         return redissonClients;
     }
@@ -70,13 +70,10 @@ public class RedissonConfig {
     @Bean
     public RedissonClient idempotentRedissonClient(IdempotentConfigProperties idempotentConfigProperties) {
         Config config = new Config();
+        List<String> redisEndpoints = idempotentConfigProperties.getRedisEndpoints();
         config.useClusterServers()
-              .addNodeAddress(
-       "redis://127.0.0.1:6000",
-                  "redis://127.0.0.1:6001",
-                  "redis://127.0.0.1:6002");
+              .addNodeAddress(redisEndpoints.toArray(new String[redisEndpoints.size()]));
         return Redisson.create(config);
     }
-
 
 }
