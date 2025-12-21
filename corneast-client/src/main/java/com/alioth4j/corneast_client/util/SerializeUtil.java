@@ -23,7 +23,9 @@ import com.alioth4j.corneast_common.proto.ResponseProto;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.channels.AsynchronousSocketChannel;
 import java.nio.channels.ReadableByteChannel;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * Util class for serialize request and response.
@@ -62,6 +64,10 @@ public final class SerializeUtil {
     public static ResponseProto.ResponseDTO deserialize(ReadableByteChannel channel) throws IOException {
         byte[] payload = Varint32Util.getPayload(channel);
         return ResponseProto.ResponseDTO.parseFrom(payload);
+    }
+
+    public static void deserialize(AsynchronousSocketChannel channel, CompletableFuture<ResponseProto.ResponseDTO> response) {
+        Varint32Util.getPayload(channel, response);
     }
 
 }

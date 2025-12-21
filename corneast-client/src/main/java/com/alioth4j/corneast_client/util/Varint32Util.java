@@ -18,12 +18,17 @@
 
 package com.alioth4j.corneast_client.util;
 
+import com.alioth4j.corneast_common.proto.ResponseProto;
+
 import java.io.BufferedInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
+import java.nio.channels.AsynchronousSocketChannel;
+import java.nio.channels.CompletionHandler;
 import java.nio.channels.ReadableByteChannel;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * Util class for operating varint32.
@@ -144,6 +149,85 @@ public final class Varint32Util {
             }
         }
         return payloadBuf.array();
+    }
+
+    public static void getPayload(AsynchronousSocketChannel channel, CompletableFuture<ResponseProto.ResponseDTO> response) {
+        ByteBuffer oneByte = ByteBuffer.allocate(1);
+        // state[0] = result, state[1] = shift
+        int[] state = new int[]{0, 0};
+
+        channel.read(oneByte, null, new CompletionHandler<Integer, Void>() {
+            @Override
+            public void completed(Integer bytesRead, Void att) {
+                if (bytesRead == -1) {
+                    closeQuietly(channel);
+                    response.completeExceptionally(new IOException("Stream closed while reading length prefix"));
+                    return;
+                }
+                oneByte.flip();
+                int b = oneByte.get() & 0xFF;
+                state[0] |= (b & 0x7F) << state[1];
+                if ((b & 0x80) != 0) {
+                    state[1] += 7;
+                    oneByte.clear();
+                    channel.read(oneByte, null, this);
+                } else {
+                    int length = state[0];
+                    if (length < 0 || length > Varint32Util.MAX_PAYLOAD_SIZE) {
+                        closeQuietly(channel);
+                        response.completeExceptionally(new IOException("Invalid payload length: " + length));
+                        return;
+                    }
+                    readPayload(channel, length, response);
+                }
+            }
+
+            @Override
+            public void failed(Throwable t, Void att) {
+                closeQuietly(channel);
+                response.completeExceptionally(t);
+            }
+        });
+    }
+
+    public static void readPayload(AsynchronousSocketChannel channel, int length, CompletableFuture<ResponseProto.ResponseDTO> response) {
+        ByteBuffer payloadBuf = ByteBuffer.allocate(length);
+        channel.read(payloadBuf, null, new CompletionHandler<Integer, Void>() {
+            @Override
+            public void completed(Integer bytesRead, Void att) {
+                if (bytesRead == -1) {
+                    closeQuietly(channel);
+                    response.completeExceptionally(new IOException("Stream closed before full payload received"));
+                    return;
+                }
+                if (payloadBuf.hasRemaining()) {
+                    channel.read(payloadBuf, null, this);
+                } else {
+                    try {
+                        payloadBuf.flip();
+                        ResponseProto.ResponseDTO resp = ResponseProto.ResponseDTO.parseFrom(payloadBuf);
+                        response.complete(resp);
+                    } catch (Exception e) {
+                        response.completeExceptionally(e);
+                    } finally {
+                        closeQuietly(channel);
+                    }
+                }
+            }
+
+            @Override
+            public void failed(Throwable t, Void att) {
+                closeQuietly(channel);
+                response.completeExceptionally(t);
+            }
+        });
+    }
+
+    private static void closeQuietly(AsynchronousSocketChannel channel) {
+        try {
+            channel.close();
+        } catch (IOException ignored) {
+        }
     }
 
 }
