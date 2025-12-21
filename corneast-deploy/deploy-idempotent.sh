@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Usage: ./deploy.sh N
+# Usage: ./deploy-idempotent.sh N
 
 N=$1
 BASE=6000
