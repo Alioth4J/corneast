@@ -21,7 +21,7 @@ package com.alioth4j.corneast_client.config;
 import com.alioth4j.corneast_client.util.StringUtil;
 
 /**
- * Config class for client to construct a <code>CorneastSocketClient</code>.
+ * Config class for client to construct a <code>CorneastBioClient</code>.
  *
  * @author Alioth Null
  */

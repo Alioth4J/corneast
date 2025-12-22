@@ -29,7 +29,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 
-public class CorneastSocketClientTests {
+public class CorneastBioClientTests {
 
     @Test
     void testSend() {
@@ -37,10 +37,10 @@ public class CorneastSocketClientTests {
         CorneastConfig config = new CorneastConfig();
         config.setHost("127.0.0.1");
         config.setPort(8088);
-        CorneastSocketClient corneastSocketClient = CorneastSocketClient.of(config);
+        CorneastBioClient corneastBioClient = CorneastBioClient.of(config);
         ResponseProto.ResponseDTO responseDTO = null;
         try {
-            responseDTO = corneastSocketClient.send(registerReqDTO);
+            responseDTO = corneastBioClient.send(registerReqDTO);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -57,10 +57,10 @@ public class CorneastSocketClientTests {
             CorneastConfig config = new CorneastConfig();
             config.setHost("127.0.0.1");
             config.setPort(8088);
-            CorneastSocketClient corneastSocketClient = CorneastSocketClient.of(config);
+            CorneastBioClient corneastBioClient = CorneastBioClient.of(config);
             ResponseProto.ResponseDTO responseDTO = null;
             try {
-                responseDTO = corneastSocketClient.send(requestDTO);
+                responseDTO = corneastBioClient.send(requestDTO);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -78,10 +78,10 @@ public class CorneastSocketClientTests {
         CorneastConfig config = new CorneastConfig();
         config.setHost("127.0.0.1");
         config.setPort(8088);
-        CorneastSocketClient corneastSocketClient = CorneastSocketClient.of(config);
+        CorneastBioClient corneastBioClient = CorneastBioClient.of(config);
         ResponseProto.ResponseDTO responseDTO = null;
         try {
-            responseDTO = corneastSocketClient.send(requestDTO);
+            responseDTO = corneastBioClient.send(requestDTO);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

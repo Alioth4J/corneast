@@ -18,7 +18,7 @@ RequestProto.RequestDTO requestDTO = CorneastRequestBuilder.newBuilder()
 
 #### Send Requests And Receive Responses
 ```java
-ResponseProto.ResponseDTO responseDTO = CorneastSocketClient.send(RequestProto.RequestDTO);
+ResponseProto.ResponseDTO responseDTO = CorneastBioClient.send(RequestProto.RequestDTO);
 ```
 
 ### Details

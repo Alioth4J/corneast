@@ -30,12 +30,14 @@ import java.net.Socket;
 
 /**
  * Sends requests and receives responses with socket.
+ * <p>
+ * BIO.
  *
  * @author Alioth Null
  */
-public class CorneastSocketClient {
+public class CorneastBioClient {
 
-    private static final Logger log = LoggerFactory.getLogger(CorneastSocketClient.class);
+    private static final Logger log = LoggerFactory.getLogger(CorneastBioClient.class);
 
     /* server host */
     private final String host;
@@ -48,21 +50,21 @@ public class CorneastSocketClient {
      * @param host server host
      * @param port server port
      */
-    private CorneastSocketClient(String host, int port) {
+    private CorneastBioClient(String host, int port) {
         this.host = host;
         this.port = port;
     }
 
     /**
-     * The only way to construct a <code>CorneastSocketClient</code> instance.
+     * The only way to construct a <code>CorneastBioClient</code> instance.
      * @param config config object
-     * @return instance of <code>CorneastSocketClient</code>
+     * @return instance of <code>CorneastBioClient</code>
      */
-    public static CorneastSocketClient of(CorneastConfig config) {
+    public static CorneastBioClient of(CorneastConfig config) {
         if (!config.validate()) {
             throw new IllegalArgumentException("CorneastConfig has not been completely set, current config: " + config);
         }
-        return new CorneastSocketClient(config.getHost(), config.getPort());
+        return new CorneastBioClient(config.getHost(), config.getPort());
     }
 
     /**
