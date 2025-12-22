@@ -21,9 +21,13 @@ package com.alioth4j.corneast_client.util;
 import com.alioth4j.corneast_common.proto.RequestProto;
 import com.alioth4j.corneast_common.proto.ResponseProto;
 
+import java.io.BufferedInputStream;
+import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.ByteBuffer;
 import java.nio.channels.AsynchronousSocketChannel;
+import java.nio.channels.CompletionHandler;
 import java.nio.channels.ReadableByteChannel;
 import java.util.concurrent.CompletableFuture;
 
@@ -34,9 +38,15 @@ import java.util.concurrent.CompletableFuture;
  */
 public final class SerializeUtil {
 
+    private static final int MAX_VARINT32_BYTES = 5;
+
+    // upper bound for a payload
+    private static final int MAX_PAYLOAD_SIZE = 10 * 1024 * 1024; // 10MB
+
     private SerializeUtil() {
     }
 
+    // ===== Serialize start =====
     /**
      * Switch a <code>requestDTO</code> to binary request that includes varint32 prefix.
      * @param requestDTO request object
@@ -44,7 +54,7 @@ public final class SerializeUtil {
      */
     public static byte[] serialize(RequestProto.RequestDTO requestDTO) {
         byte[] requestDTOBytes = requestDTO.toByteArray();
-        byte[] preVarint32 = Varint32Util.encode(requestDTOBytes.length);
+        byte[] preVarint32 = encodeVarint32(requestDTOBytes.length);
         byte[] binaryRequest = new byte[requestDTOBytes.length + preVarint32.length];
         System.arraycopy(preVarint32, 0, binaryRequest, 0, preVarint32.length);
         System.arraycopy(requestDTOBytes, 0, binaryRequest, preVarint32.length, requestDTOBytes.length);
@@ -52,22 +62,203 @@ public final class SerializeUtil {
     }
 
     /**
-     * Switch input stream to response object.
-     * @param in input stream including varint32 prefix
+     * Encodes an integer into a varint32 format as used by Protobuf.
+     *
+     * @param value int to encode
+     * @return length prefix
+     */
+    private static byte[] encodeVarint32(int value) {
+        byte[] buffer = new byte[5];
+        int position = 0;
+        while ((value & ~0x7F) != 0) {
+            buffer[position++] = (byte)((value & 0x7F) | 0x80);
+            value >>>= 7;
+        }
+        buffer[position++] = (byte)(value);
+        byte[] result = new byte[position];
+        System.arraycopy(buffer, 0, result, 0, position);
+        return result;
+    }
+
+    // ===== Serialize end =====
+
+    // ===== Deserialize start =====
+    /**
+     * Deserializes for BIO.
+     * @param in input stream
      * @return response object
+     * @throws IOException thrown when error occurs during io
      */
     public static ResponseProto.ResponseDTO deserialize(InputStream in) throws IOException {
-        byte[] payload = Varint32Util.getPayload(in);
+        // Wrap the input in a BufferedInputStream to reduce system calls.
+        BufferedInputStream buf = (in instanceof BufferedInputStream)
+                ? (BufferedInputStream) in
+                : new BufferedInputStream(in);
+        DataInputStream dis = new DataInputStream(buf);
+
+        // read the varint32 length prefix
+        int result = 0;
+        int shift = 0;
+        for (int i = 0; i < MAX_VARINT32_BYTES; i++) {
+            int b = dis.readUnsignedByte();
+            result |= (b & 0x7F) << shift;
+            if ((b & 0x80) == 0) {
+                break;
+            }
+            shift += 7;
+        }
+
+        // validate the length
+        if (result < 0) {
+            throw new IOException("Negative payload length: " + result);
+        }
+        if (result > MAX_PAYLOAD_SIZE) {
+            throw new IOException("Payload too large: " + result);
+        }
+
+        // read the full payload
+        byte[] payload = new byte[result];
+        dis.readFully(payload);
         return ResponseProto.ResponseDTO.parseFrom(payload);
     }
 
+    /**
+     * Deserializes for NIO.
+     * @param channel NIO channel
+     * @return response object
+     * @throws IOException thrown when error occurs during io
+     */
     public static ResponseProto.ResponseDTO deserialize(ReadableByteChannel channel) throws IOException {
-        byte[] payload = Varint32Util.getPayload(channel);
-        return ResponseProto.ResponseDTO.parseFrom(payload);
+        int result = 0;
+        int shift  = 0;
+        ByteBuffer oneByte = ByteBuffer.allocate(1);
+        for (int i = 0; i < MAX_VARINT32_BYTES; i++) {
+            oneByte.clear();
+            int read = channel.read(oneByte);
+            if (read != 1) {
+                throw new IOException("Premature end of stream while reading length prefix");
+            }
+            oneByte.flip();
+            int b = oneByte.get() & 0xFF;
+            result |= (b & 0x7F) << shift;
+            if ((b & 0x80) == 0) {
+                break;
+            }
+            shift += 7;
+        }
+
+        if (result < 0) {
+            throw new IOException("Negative payload length: " + result);
+        }
+        if (result > MAX_PAYLOAD_SIZE) {
+            throw new IOException("Payload too large: " + result);
+        }
+
+        ByteBuffer payloadBuf = ByteBuffer.allocate(result);
+        while (payloadBuf.hasRemaining()) {
+            int read = channel.read(payloadBuf);
+            if (read == -1) {
+                throw new IOException("Stream ended before full payload could be read");
+            }
+        }
+        return ResponseProto.ResponseDTO.parseFrom(payloadBuf.flip());
     }
 
+    /**
+     * Deserializes for AIO.
+     * @param channel AIO channel
+     * @param response CompletableFuture of response object
+     */
     public static void deserialize(AsynchronousSocketChannel channel, CompletableFuture<ResponseProto.ResponseDTO> response) {
-        Varint32Util.getPayload(channel, response);
+        ByteBuffer oneByte = ByteBuffer.allocate(1);
+        // state[0] = result, state[1] = shift
+        int[] state = new int[]{0, 0};
+
+        channel.read(oneByte, null, new CompletionHandler<Integer, Void>() {
+            @Override
+            public void completed(Integer bytesRead, Void att) {
+                if (bytesRead == -1) {
+                    closeQuietly(channel);
+                    response.completeExceptionally(new IOException("Stream closed while reading length prefix"));
+                    return;
+                }
+                oneByte.flip();
+                int b = oneByte.get() & 0xFF;
+                state[0] |= (b & 0x7F) << state[1];
+                if ((b & 0x80) != 0) {
+                    state[1] += 7;
+                    oneByte.clear();
+                    channel.read(oneByte, null, this);
+                } else {
+                    int length = state[0];
+                    if (length < 0 || length > MAX_PAYLOAD_SIZE) {
+                        closeQuietly(channel);
+                        response.completeExceptionally(new IOException("Invalid payload length: " + length));
+                        return;
+                    }
+                    readPayload(channel, length, response);
+                }
+            }
+
+            @Override
+            public void failed(Throwable t, Void att) {
+                closeQuietly(channel);
+                response.completeExceptionally(t);
+            }
+        });
     }
+
+    /**
+     * Gets the payload without length prefix.
+     * It is a helper method for Aio, invoked by <code>deserialize(AsynchronousSocketChannel, CompletableFuture<ResponseProto.ResponseDTO>)</code>
+     * @param channel AIO channel
+     * @param length payload length
+     * @param response CompletableFuture of response object
+     */
+    private static void readPayload(AsynchronousSocketChannel channel, int length, CompletableFuture<ResponseProto.ResponseDTO> response) {
+        ByteBuffer payloadBuf = ByteBuffer.allocate(length);
+        channel.read(payloadBuf, null, new CompletionHandler<Integer, Void>() {
+            @Override
+            public void completed(Integer bytesRead, Void att) {
+                if (bytesRead == -1) {
+                    closeQuietly(channel);
+                    response.completeExceptionally(new IOException("Stream closed before full payload received"));
+                    return;
+                }
+                if (payloadBuf.hasRemaining()) {
+                    channel.read(payloadBuf, null, this);
+                } else {
+                    try {
+                        payloadBuf.flip();
+                        ResponseProto.ResponseDTO resp = ResponseProto.ResponseDTO.parseFrom(payloadBuf);
+                        response.complete(resp);
+                    } catch (Exception e) {
+                        response.completeExceptionally(e);
+                    } finally {
+                        closeQuietly(channel);
+                    }
+                }
+            }
+
+            @Override
+            public void failed(Throwable t, Void att) {
+                closeQuietly(channel);
+                response.completeExceptionally(t);
+            }
+        });
+    }
+
+    /**
+     * Closes AIO channel quietly.
+     * @param channel AIO channel
+     */
+    private static void closeQuietly(AsynchronousSocketChannel channel) {
+        try {
+            channel.close();
+        } catch (IOException ignored) {
+        }
+    }
+
+    // ===== Deserialize end =====
 
 }
