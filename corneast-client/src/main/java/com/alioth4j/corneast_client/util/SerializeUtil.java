@@ -36,6 +36,7 @@ import java.util.concurrent.CompletableFuture;
  *
  * @author Alioth Null
  */
+@Deprecated
 public final class SerializeUtil {
 
     private static final int MAX_VARINT32_BYTES = 5;

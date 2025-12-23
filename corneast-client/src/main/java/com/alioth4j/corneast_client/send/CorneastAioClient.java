@@ -19,7 +19,8 @@
 package com.alioth4j.corneast_client.send;
 
 import com.alioth4j.corneast_client.config.CorneastConfig;
-import com.alioth4j.corneast_client.util.SerializeUtil;
+import com.alioth4j.corneast_client.serialize.AioDeserializer;
+import com.alioth4j.corneast_client.serialize.ProtobufSerializer;
 import com.alioth4j.corneast_common.proto.RequestProto;
 import com.alioth4j.corneast_common.proto.ResponseProto;
 import org.slf4j.Logger;
@@ -57,10 +58,10 @@ public class CorneastAioClient {
     }
 
     public CompletableFuture<ResponseProto.ResponseDTO> send(RequestProto.RequestDTO requestDTO) throws IOException {
-        byte[] requestBinary = SerializeUtil.serialize(requestDTO);
+        byte[] requestBinary = ProtobufSerializer.getInstance().serialize(requestDTO);
         ByteBuffer writeBuf = ByteBuffer.wrap(requestBinary);
 
-        CompletableFuture<ResponseProto.ResponseDTO> response = new CompletableFuture<>();
+        CompletableFuture<ResponseProto.ResponseDTO> outerResponse = new CompletableFuture<>();
         try {
             AsynchronousSocketChannel channel = AsynchronousSocketChannel.open();
             CompletionHandler<Integer, Void> writeHandler = new CompletionHandler<>() {
@@ -73,13 +74,21 @@ public class CorneastAioClient {
                     }
 
                     // read
-                    SerializeUtil.deserialize(channel, response);
+                    CompletableFuture<ResponseProto.ResponseDTO> innerResponse = AioDeserializer.getInstance().deserialize(channel);
+                    innerResponse.whenComplete((responseDTO, throwable) -> {
+                        if (throwable != null) {
+                            closeQuietly(channel);
+                            outerResponse.completeExceptionally(throwable);
+                        } else {
+                            outerResponse.complete(responseDTO);
+                        }
+                    });
                 }
 
                 @Override
                 public void failed(Throwable t, Void unused) {
                     closeQuietly(channel);
-                    response.completeExceptionally(t);
+                    outerResponse.completeExceptionally(t);
                 }
             };
             channel.connect(new InetSocketAddress(host, port), null, new CompletionHandler<Void, Void>() {
@@ -92,14 +101,14 @@ public class CorneastAioClient {
                 @Override
                 public void failed(Throwable t, Void unusedAtt) {
                     closeQuietly(channel);
-                    response.completeExceptionally(t);
+                    outerResponse.completeExceptionally(t);
                 }
             });
         } catch (IOException e) {
             log.error("Error occurs during sending or receiving", e);
-            response.completeExceptionally(e);
+            outerResponse.completeExceptionally(e);
         }
-        return response;
+        return outerResponse;
     }
 
     private void closeQuietly(AsynchronousSocketChannel channel) {

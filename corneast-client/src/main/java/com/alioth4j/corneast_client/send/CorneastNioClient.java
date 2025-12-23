@@ -19,7 +19,8 @@
 package com.alioth4j.corneast_client.send;
 
 import com.alioth4j.corneast_client.config.CorneastConfig;
-import com.alioth4j.corneast_client.util.SerializeUtil;
+import com.alioth4j.corneast_client.serialize.NioDeserializer;
+import com.alioth4j.corneast_client.serialize.ProtobufSerializer;
 import com.alioth4j.corneast_common.proto.RequestProto;
 import com.alioth4j.corneast_common.proto.ResponseProto;
 
@@ -51,7 +52,7 @@ public class CorneastNioClient {
     }
     
     public ResponseProto.ResponseDTO send(RequestProto.RequestDTO requestDTO) throws IOException {
-        byte[] requestBinary = SerializeUtil.serialize(requestDTO);
+        byte[] requestBinary = ProtobufSerializer.getInstance().serialize(requestDTO);
         try (SocketChannel channel = SocketChannel.open()) {
             // TODO
             channel.configureBlocking(true);
@@ -62,7 +63,7 @@ public class CorneastNioClient {
                 channel.write(writeBuf);
             }
 
-            return SerializeUtil.deserialize(channel);
+            return NioDeserializer.getInstance().deserialize(channel);
         }
     }
 

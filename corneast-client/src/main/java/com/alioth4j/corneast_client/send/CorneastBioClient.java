@@ -19,7 +19,8 @@
 package com.alioth4j.corneast_client.send;
 
 import com.alioth4j.corneast_client.config.CorneastConfig;
-import com.alioth4j.corneast_client.util.SerializeUtil;
+import com.alioth4j.corneast_client.serialize.BioDeserializer;
+import com.alioth4j.corneast_client.serialize.ProtobufSerializer;
 import com.alioth4j.corneast_common.proto.RequestProto;
 import com.alioth4j.corneast_common.proto.ResponseProto;
 import org.slf4j.Logger;
@@ -74,7 +75,7 @@ public class CorneastBioClient {
      * @throws IOException if socket read or write fails
      */
     public ResponseProto.ResponseDTO send(RequestProto.RequestDTO requestDTO) throws IOException {
-        byte[] binaryRequest = SerializeUtil.serialize(requestDTO);
+        byte[] binaryRequest = ProtobufSerializer.getInstance().serialize(requestDTO);
 
         try (Socket socket = new Socket(host, port)) {
 //            // debug
@@ -85,7 +86,7 @@ public class CorneastBioClient {
             out.flush();
 
             InputStream in = socket.getInputStream();
-            return SerializeUtil.deserialize(in);
+            return BioDeserializer.getInstance().deserialize(in);
         } catch (IOException e) {
             log.error("I/O failure: {}", e.getMessage(), e);
             throw e;
