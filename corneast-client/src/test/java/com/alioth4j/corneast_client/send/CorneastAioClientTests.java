@@ -44,8 +44,10 @@ public class CorneastAioClientTests {
         try {
             responseFuture = corneastAioClient.send(registerReqDTO);
             responseDTO = responseFuture.get();
-        } catch (IOException | InterruptedException | ExecutionException e) {
+        } catch (IOException | InterruptedException e) {
             throw new RuntimeException(e);
+        } catch (ExecutionException e) {
+            throw new RuntimeException(e.getCause());
         }
         Assertions.assertEquals(CorneastOperation.REGISTER, responseDTO.getType());
         Assertions.assertEquals("", responseDTO.getId());
