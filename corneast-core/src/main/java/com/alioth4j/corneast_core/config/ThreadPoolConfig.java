@@ -18,6 +18,7 @@
 
 package com.alioth4j.corneast_core.config;
 
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableAsync;
@@ -27,21 +28,21 @@ import java.util.concurrent.*;
 /**
  * Custom thread pool used by async methods.
  *
- * Adjust parameters according to your machines.
- *
  * @author Alioth Null
  */
 @Configuration
+@EnableConfigurationProperties(ThreadPoolConfigProperties.class)
 @EnableAsync
 public class ThreadPoolConfig {
 
     @Bean(value = "reduceExecutor")
-    public Executor reduceExecutor() {
+    public Executor reduceExecutor(ThreadPoolConfigProperties configProperties) {
+        ThreadPoolConfigProperties.SingleThreadPoolConfigProperties reduceConfigProperties = configProperties.getReduce();
         return new ThreadPoolExecutor(
-                1000,
-                1000,
-                10,
-                TimeUnit.SECONDS,
+                reduceConfigProperties.getCorePoolSize(),
+                reduceConfigProperties.getMaximumPoolSize(),
+                reduceConfigProperties.getKeepAliveTime(),
+                reduceConfigProperties.getUnit(),
                 new SynchronousQueue<>(),
                 Executors.defaultThreadFactory(),
                 new ThreadPoolExecutor.CallerRunsPolicy()
@@ -49,12 +50,13 @@ public class ThreadPoolConfig {
     }
 
     @Bean(value = "registerExecutor")
-    public Executor registerExecutor() {
+    public Executor registerExecutor(ThreadPoolConfigProperties configProperties) {
+        ThreadPoolConfigProperties.SingleThreadPoolConfigProperties registerConfigProperties = configProperties.getRegister();
         return new ThreadPoolExecutor(
-                1,
-                10,
-                10,
-                TimeUnit.SECONDS,
+                registerConfigProperties.getCorePoolSize(),
+                registerConfigProperties.getMaximumPoolSize(),
+                registerConfigProperties.getKeepAliveTime(),
+                registerConfigProperties.getUnit(),
                 new SynchronousQueue<>(),
                 Executors.defaultThreadFactory(),
                 new ThreadPoolExecutor.CallerRunsPolicy()
@@ -62,12 +64,13 @@ public class ThreadPoolConfig {
     }
 
     @Bean(value = "queryExecutor")
-    public Executor queryExecutor() {
+    public Executor queryExecutor(ThreadPoolConfigProperties configProperties) {
+        ThreadPoolConfigProperties.SingleThreadPoolConfigProperties queryConfigProperties = configProperties.getQuery();
         return new ThreadPoolExecutor(
-                1,
-                10,
-                10,
-                TimeUnit.SECONDS,
+                queryConfigProperties.getCorePoolSize(),
+                queryConfigProperties.getMaximumPoolSize(),
+                queryConfigProperties.getKeepAliveTime(),
+                queryConfigProperties.getUnit(),
                 new SynchronousQueue<>(),
                 Executors.defaultThreadFactory(),
                 new ThreadPoolExecutor.CallerRunsPolicy()
@@ -75,12 +78,13 @@ public class ThreadPoolConfig {
     }
 
     @Bean(value = "releaseExecutor")
-    public Executor releaseExecutor() {
+    public Executor releaseExecutor(ThreadPoolConfigProperties configProperties) {
+        ThreadPoolConfigProperties.SingleThreadPoolConfigProperties releaseConfigProperties = configProperties.getRelease();
         return new ThreadPoolExecutor(
-                20,
-                40,
-                10,
-                TimeUnit.SECONDS,
+                releaseConfigProperties.getCorePoolSize(),
+                releaseConfigProperties.getMaximumPoolSize(),
+                releaseConfigProperties.getKeepAliveTime(),
+                releaseConfigProperties.getUnit(),
                 new SynchronousQueue<>(),
                 Executors.defaultThreadFactory(),
                 new ThreadPoolExecutor.CallerRunsPolicy()
