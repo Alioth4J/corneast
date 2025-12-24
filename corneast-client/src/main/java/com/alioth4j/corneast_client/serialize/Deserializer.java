@@ -18,5 +18,10 @@
 
 package com.alioth4j.corneast_client.serialize;
 
+/**
+ * Top interface of a deserializer.
+ *
+ * @author Alioth Null
+ */
 public interface Deserializer {
 }

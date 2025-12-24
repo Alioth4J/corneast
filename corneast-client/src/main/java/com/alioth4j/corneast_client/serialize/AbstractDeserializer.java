@@ -18,6 +18,11 @@
 
 package com.alioth4j.corneast_client.serialize;
 
+/**
+ * Abstract class of a deserializer, defines common fields.
+ *
+ * @author Alioth Null
+ */
 public abstract class AbstractDeserializer implements Deserializer {
 
     protected static final int MAX_VARINT32_BYTES = 5;

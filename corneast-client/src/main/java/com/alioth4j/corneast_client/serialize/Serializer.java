@@ -20,6 +20,11 @@ package com.alioth4j.corneast_client.serialize;
 
 import com.alioth4j.corneast_common.proto.RequestProto;
 
+/**
+ * Top interface of a serializer.
+ *
+ * @author Alioth Null
+ */
 public interface Serializer {
 
     byte[] serialize(RequestProto.RequestDTO request);

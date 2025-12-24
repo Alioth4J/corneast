@@ -24,6 +24,13 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.ReadableByteChannel;
 
+/**
+ * Deserializer implemented with NIO.
+ * <p>
+ * It's a singleton.
+ *
+ * @author Alioth Null
+ */
 public final class NioDeserializer extends AbstractDeserializer {
 
     private static volatile NioDeserializer instance;

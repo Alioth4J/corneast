@@ -26,6 +26,13 @@ import java.nio.channels.AsynchronousSocketChannel;
 import java.nio.channels.CompletionHandler;
 import java.util.concurrent.CompletableFuture;
 
+/**
+ * Deserializer implemented with AIO.
+ * <p>
+ * It's a singleton.
+ *
+ * @author Alioth Null
+ */
 public final class AioDeserializer extends AbstractDeserializer {
 
     private static volatile AioDeserializer instance;

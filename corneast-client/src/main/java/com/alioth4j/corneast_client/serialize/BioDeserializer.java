@@ -25,6 +25,13 @@ import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+/**
+ * Deserializer implemented with BIO.
+ * <p>
+ * It's a singleton.
+ *
+ * @author Alioth Null
+ */
 public final class BioDeserializer extends AbstractDeserializer {
 
     private static volatile BioDeserializer instance;
