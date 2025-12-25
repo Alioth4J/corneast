@@ -19,8 +19,8 @@ netty:
 ringbuffer:
   workHandlerCount: 1000
 
-rateLimiting:
-  permitsPerSecond: 1000000
+rate-limiting:
+  permits-per-second: 1000000
 
 idempotent:
   redisEndpoints:
