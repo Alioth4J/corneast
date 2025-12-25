@@ -27,7 +27,7 @@ import java.util.concurrent.TimeUnit;
  *
  * @author Alioth Null
  */
-@ConfigurationProperties("thread-pool")
+@ConfigurationProperties("threadpool")
 public class ThreadPoolConfigProperties {
 
     private SingleThreadPoolConfigProperties register;

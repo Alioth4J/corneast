@@ -42,7 +42,7 @@ public class RateLimitingHandler extends SimpleChannelInboundHandler<ByteBuf> {
 
     private static final Logger log = LoggerFactory.getLogger(RateLimitingHandler.class);
 
-    @Value("${rate-limiting.permits-per-second}")
+    @Value("${ratelimiting.permitsPerSecond}")
     private double permitsPerSecond;
 
     private RateLimiter rateLimiter;

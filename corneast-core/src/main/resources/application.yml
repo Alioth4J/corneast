@@ -12,15 +12,11 @@ eureka:
       defaultZone: http://localhost:8761/eureka/
     initialInstanceInfoReplicationIntervalSeconds: 0
 
-#netty:
-#  server:
-#    port: 8088
-
 ringbuffer:
   workHandlerCount: 1000
 
-rate-limiting:
-  permits-per-second: 1000000
+ratelimiting:
+  permitsPerSecond: 1000000
 
 idempotent:
   redisEndpoints:
@@ -40,7 +36,7 @@ storage:
   timeout: 1000
   connectTimeout: 100
 
-thread-pool:
+threadpool:
   register:
     corePoolSize: 20
     maximumPoolSize: 40
