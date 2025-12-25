@@ -12,9 +12,9 @@ eureka:
       defaultZone: http://localhost:8761/eureka/
     initialInstanceInfoReplicationIntervalSeconds: 0
 
-netty:
-  server:
-    port: 8088
+#netty:
+#  server:
+#    port: 8088
 
 ringbuffer:
   workHandlerCount: 1000
@@ -61,3 +61,27 @@ thread-pool:
     maximumPoolSize: 40
     keepAliveTime: 10
     unit: SECONDS
+
+netty:
+  port: 8088
+  threadName: "Netty-Server"
+  daemon: false
+  bossGroup:
+    nThreads: 1
+    soBacklog: 1024
+    soReuseAddr: true
+    logLevel: INFO
+  workerGroup:
+    nThreads: 80
+    keepAlive: false
+    tcpNodelay: true
+    allocator:
+      preferDirect: true
+      nHeapArena: 40
+      nDirectArena: 40
+      pageSize: 8192
+      maxOrder: 11
+    rcvBufAllocator:
+      minimum: 64
+      initial: 8192
+      maximum: 65535

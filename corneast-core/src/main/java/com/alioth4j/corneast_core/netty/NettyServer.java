@@ -19,6 +19,7 @@
 package com.alioth4j.corneast_core.netty;
 
 import com.alioth4j.corneast_common.proto.RequestProto;
+import com.alioth4j.corneast_core.config.NettyConfigProperties;
 import com.alioth4j.corneast_core.netty.spi.NettyCustomHandler;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.buffer.PooledByteBufAllocator;
@@ -30,14 +31,12 @@ import io.netty.handler.codec.protobuf.ProtobufDecoder;
 import io.netty.handler.codec.protobuf.ProtobufEncoder;
 import io.netty.handler.codec.protobuf.ProtobufVarint32FrameDecoder;
 import io.netty.handler.codec.protobuf.ProtobufVarint32LengthFieldPrepender;
-import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 import jakarta.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.beans.factory.annotation.Value;
 
 import java.util.Collections;
 import java.util.Comparator;
@@ -56,8 +55,8 @@ public class NettyServer {
 
     private static final Logger log = LoggerFactory.getLogger(NettyServer.class);
 
-    @Value("${netty.server.port:8088}")
-    private int port;
+    @Autowired
+    private NettyConfigProperties configProperties;
 
     private EventLoopGroup bossGroup;
     private EventLoopGroup workerGroup;
@@ -81,20 +80,32 @@ public class NettyServer {
     public void start() {
         log.info("Netty server is starting...");
         initCustomHandlers();
+        final NettyConfigProperties.BossGroup bossGroupConfigProperties = configProperties.getBossGroup();
+        final NettyConfigProperties.WorkerGroup workerGroupConfigProperties = configProperties.getWorkerGroup();
+        final NettyConfigProperties.WorkerGroup.Allocator allocator = workerGroupConfigProperties.getAllocator();
+        final NettyConfigProperties.WorkerGroup.RcvBufAllocator rcvBufAllocator = workerGroupConfigProperties.getRcvBufAllocator();
         serverThread = new Thread(() -> {
-            bossGroup = new NioEventLoopGroup(1);
-            workerGroup = new NioEventLoopGroup(80); // 4 * (CPU cores)
+            bossGroup = new NioEventLoopGroup(bossGroupConfigProperties.getNThreads());
+            workerGroup = new NioEventLoopGroup(workerGroupConfigProperties.getNThreads());
             try {
                 ServerBootstrap bootstrap = new ServerBootstrap();
-                bootstrap.group(bossGroup, workerGroup)
+                bootstrap.group(this.bossGroup, workerGroup)
                         .channel(NioServerSocketChannel.class)
-                        .option(ChannelOption.SO_BACKLOG, 1024)
-                        .option(ChannelOption.SO_REUSEADDR, true)
-                        .handler(new LoggingHandler(LogLevel.INFO))
-                        .childOption(ChannelOption.SO_KEEPALIVE, false)
-                        .childOption(ChannelOption.TCP_NODELAY, true)
-                        .childOption(ChannelOption.ALLOCATOR, new PooledByteBufAllocator(true, 40, 40, 8192, 11))
-                        .childOption(ChannelOption.RCVBUF_ALLOCATOR, new AdaptiveRecvByteBufAllocator(64, 8192, 65535))
+                        .option(ChannelOption.SO_BACKLOG, bossGroupConfigProperties.getSoBacklog())
+                        .option(ChannelOption.SO_REUSEADDR, bossGroupConfigProperties.isSoReuseAddr())
+                        .handler(new LoggingHandler(bossGroupConfigProperties.getLogLevel()))
+                        .childOption(ChannelOption.SO_KEEPALIVE, workerGroupConfigProperties.isKeepAlive())
+                        .childOption(ChannelOption.TCP_NODELAY, workerGroupConfigProperties.isTcpNodelay())
+                        .childOption(ChannelOption.ALLOCATOR,
+                                new PooledByteBufAllocator(allocator.isPreferDirect(),
+                                                           allocator.getNHeapArena(),
+                                                           allocator.getNDirectArena(),
+                                                           allocator.getPageSize(),
+                                                           allocator.getMaxOrder()))
+                        .childOption(ChannelOption.RCVBUF_ALLOCATOR,
+                                new AdaptiveRecvByteBufAllocator(rcvBufAllocator.getMinimum(),
+                                                                 rcvBufAllocator.getInitial(),
+                                                                 rcvBufAllocator.getMaximum()))
                         .childHandler(new ChannelInitializer<SocketChannel>() {
                             @Override
                             protected void initChannel(SocketChannel ch) {
@@ -121,7 +132,7 @@ public class NettyServer {
                                 ch.pipeline().addLast(requestRouteHandler);
                             }
                         });
-                channelFuture = bootstrap.bind(port).sync();
+                channelFuture = bootstrap.bind(configProperties.getPort()).sync();
                 channelFuture.channel().closeFuture().sync();
                 log.info("Netty server channel closed, shutting down...");
             } catch (InterruptedException e) {
@@ -131,8 +142,8 @@ public class NettyServer {
                 shutdownBossAndWorkerGroups(NettyServer.log);
             }
         });
-        serverThread.setName("Netty-Server");
-        serverThread.setDaemon(false);
+        serverThread.setName(configProperties.getThreadName());
+        serverThread.setDaemon(configProperties.isDaemon());
         serverThread.start();
     }
 
