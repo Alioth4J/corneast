@@ -25,6 +25,7 @@ import com.lmax.disruptor.dsl.Disruptor;
 import com.lmax.disruptor.dsl.ProducerType;
 import jakarta.annotation.PostConstruct;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
@@ -70,19 +71,22 @@ public class ReduceDisruptor {
         ringBuffer = disruptor.getRingBuffer();
 
         ExceptionHandler<ReduceEvent> exceptionHandler = new ExceptionHandler<>() {
+
+            private static final Logger log = LoggerFactory.getLogger(ReduceDisruptor.class.getName() + "$" + ExceptionHandler.class.getSimpleName());
+
             @Override
-            public void handleEventException(Throwable throwable, long l, ReduceEvent reduceEvent) {
-                throwable.printStackTrace();
+            public void handleEventException(Throwable throwable, long timestamp, ReduceEvent reduceEvent) {
+                log.error("Error handling event [{}] at timestamp [{}]", reduceEvent, timestamp, throwable);
             }
 
             @Override
             public void handleOnStartException(Throwable throwable) {
-                throwable.printStackTrace();
+                log.error("Error starting worker pool of disruptor", throwable);
             }
 
             @Override
             public void handleOnShutdownException(Throwable throwable) {
-                throwable.printStackTrace();
+                log.error("Error shutting down worker pool of disruptor", throwable);
             }
         };
         List<WorkHandler<ReduceEvent>> workHandlerList = new ArrayList<>(workHandlerCount);
