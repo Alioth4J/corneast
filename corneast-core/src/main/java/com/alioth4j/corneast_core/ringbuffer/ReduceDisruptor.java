@@ -115,42 +115,10 @@ public class ReduceDisruptor {
      * @param log Logger object to use
      */
     public void shutdown(Logger log) {
-        // halt worker threads
-        if (workerPool != null) {
-            log.info("Haulting worker pool in disruptor");
-            try {
-                workerPool.halt();
-            } catch (Exception e) {
-                log.warn("Error halting worker pool in Disruptor", e);
-            }
-        }
-
-        // shutdown disruptor
-        if (disruptor != null) {
-            log.info("Shutting down disruptor");
-            try {
-                disruptor.shutdown();
-            } catch (Exception e) {
-                log.warn("Error shutting down disruptor", e);
-            }
-        }
-
         // shutdown executor
         if (executor != null && !executor.isShutdown()) {
             log.info("Shutting down executor in disruptor");
             executor.shutdown();
-            try {
-                if (!executor.awaitTermination(10, TimeUnit.SECONDS)) {
-                    executor.shutdownNow();
-                    if (!executor.awaitTermination(5, TimeUnit.SECONDS)) {
-                        log.warn("Error shutting down executor in disruptor");
-                    }
-                }
-            } catch (InterruptedException e) {
-                log.warn("Interrupted when shutting down executor in disruptor", e);
-                Thread.currentThread().interrupt();
-                executor.shutdownNow();
-            }
         }
     }
 
