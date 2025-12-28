@@ -75,8 +75,8 @@ public class ReduceDisruptor {
             private static final Logger log = LoggerFactory.getLogger(ReduceDisruptor.class.getName() + "$" + ExceptionHandler.class.getSimpleName());
 
             @Override
-            public void handleEventException(Throwable throwable, long timestamp, ReduceEvent reduceEvent) {
-                log.error("Error handling event [{}] at timestamp [{}]", reduceEvent, timestamp, throwable);
+            public void handleEventException(Throwable throwable, long sequence, ReduceEvent reduceEvent) {
+                log.error("Error handling event [{}] at sequence [{}]", reduceEvent, sequence, throwable);
             }
 
             @Override
