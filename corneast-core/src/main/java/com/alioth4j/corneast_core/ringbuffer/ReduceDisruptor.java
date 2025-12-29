@@ -46,9 +46,7 @@ import java.util.concurrent.TimeUnit;
 @Component
 public class ReduceDisruptor {
 
-    private Disruptor<ReduceEvent> disruptor;
     private RingBuffer<ReduceEvent> ringBuffer;
-    private WorkerPool<ReduceEvent> workerPool;
 
     // In order to inject prototype beans of ReduceWorkHandler
     @Autowired
@@ -66,7 +64,7 @@ public class ReduceDisruptor {
         executor = Executors.newCachedThreadPool();
 
         ReduceEventFactory factory = new ReduceEventFactory();
-        disruptor = new Disruptor<>(factory, BUFFER_SIZE, executor, ProducerType.MULTI, new BlockingWaitStrategy());
+        Disruptor<ReduceEvent> disruptor = new Disruptor<>(factory, BUFFER_SIZE, executor, ProducerType.MULTI, new BlockingWaitStrategy());
 
         ringBuffer = disruptor.getRingBuffer();
 
@@ -95,7 +93,7 @@ public class ReduceDisruptor {
         for (int i = 0; i < workHandlerCount; i++) {
             workHandlers[i] = applicationContext.getBean(ReduceWorkHandler.class);
         }
-        workerPool = new WorkerPool<>(ringBuffer, ringBuffer.newBarrier(), exceptionHandler, workHandlers);
+        WorkerPool<ReduceEvent> workerPool = new WorkerPool<>(ringBuffer, ringBuffer.newBarrier(), exceptionHandler, workHandlers);
         ringBuffer.addGatingSequences(workerPool.getWorkerSequences());
 //        disruptor.start();
         ringBuffer = workerPool.start(executor);
