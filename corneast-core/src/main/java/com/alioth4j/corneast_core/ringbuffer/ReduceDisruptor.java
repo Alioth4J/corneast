@@ -89,11 +89,13 @@ public class ReduceDisruptor {
                 log.error("Error shutting down worker pool of disruptor", throwable);
             }
         };
-        List<WorkHandler<ReduceEvent>> workHandlerList = new ArrayList<>(workHandlerCount);
+
+        @SuppressWarnings("unchecked")
+        WorkHandler<ReduceEvent>[] workHandlers = new WorkHandler[workHandlerCount];
         for (int i = 0; i < workHandlerCount; i++) {
-            workHandlerList.add(applicationContext.getBean(ReduceWorkHandler.class));
+            workHandlers[i] = applicationContext.getBean(ReduceWorkHandler.class);
         }
-        workerPool = new WorkerPool<>(ringBuffer, ringBuffer.newBarrier(), exceptionHandler, workHandlerList.toArray(new WorkHandler[0]));
+        workerPool = new WorkerPool<>(ringBuffer, ringBuffer.newBarrier(), exceptionHandler, workHandlers);
         ringBuffer.addGatingSequences(workerPool.getWorkerSequences());
 //        disruptor.start();
         ringBuffer = workerPool.start(executor);
