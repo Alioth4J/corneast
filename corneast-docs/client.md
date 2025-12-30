@@ -16,10 +16,45 @@ RequestProto.RequestDTO requestDTO = CorneastRequestBuilder.newBuilder()
         .build();
 ```
 
-#### Send Requests And Receive Responses
+#### Create Client Object
 ```java
-ResponseProto.ResponseDTO responseDTO = CorneastBioClient.send(RequestProto.RequestDTO);
+CorneastConfig config = new CorneastConfig();
+config.setHost(<host>);
+config.setPort(<port>);
+Corneast[B|N|A]ioClient corneast[B|N|A]ioClient = Corneast[B|N|A]ioClient.of(config);
 ```
+
+#### Send Requests and Receive Responses
+```java
+ResponseProto.ResponseDTO responseDTO = null;
+try {
+    responseDTO = corneastBioClient.send(registerReqDTO);
+} catch (IOException e) {
+    // handle exception
+}
+```
+
+```java
+ResponseProto.ResponseDTO responseDTO = null;
+try {
+    responseDTO = corneastNioClient.send(registerReqDTO);
+} catch (IOException e) {
+    // handle exception
+}
+```
+
+```java
+CompletableFuture<ResponseProto.ResponseDTO> responseFuture = null;
+ResponseProto.ResponseDTO responseDTO = null;
+try {
+    responseFuture = corneastAioClient.send(registerReqDTO);
+    responseDTO = responseFuture.get();
+} catch (IOException | InterruptedException e) {
+    // handle exception
+} catch (ExecutionException e) {
+    // handle exception
+}
+``` 
 
 ### Details
 #### Operations
