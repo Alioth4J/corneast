@@ -72,8 +72,8 @@ Setting `id` to `null` or `""` to disable idempotence.
 A unique string stands for an item.  
 
 #### TokenCount
-The total number of a key that represents a kind of tokens.  
+The total number of a kind of item.  
 
 ### Etc
 #### Write Request Object to Files
-Generate while `mvn test` in `ProtobufRequestGeneratorTests`.  
+Generate while `mvn test` in `ProtobufRequestGeneratorTests`(in corneast-client).  
