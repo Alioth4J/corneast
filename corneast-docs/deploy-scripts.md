@@ -1,6 +1,8 @@
 # Deploy with Scripts
 Working directory: `corneast/corneast-deploy`  
 
+> Note: Use custom configurations.  
+
 ## Idempotent
 ```bash
 ./deploy-idempotent.sh <N>
