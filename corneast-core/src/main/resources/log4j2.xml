@@ -1,4 +1,5 @@
 <Configuration status="WARN">
+    <AsyncLoggerContextSelector/>
     <Appenders>
         <Console name="Console" target="SYSTEM_OUT">
             <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n" />
@@ -8,8 +9,8 @@
 <!--        </File>-->
     </Appenders>
     <Loggers>
-        <Root level="info">
+        <AsyncRoot level="info">
             <AppenderRef ref="Console" />
-        </Root>
+        </AsyncRoot>
     </Loggers>
 </Configuration>
