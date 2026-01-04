@@ -1,6 +1,6 @@
 /*
  * Corneast
- * Copyright (C) 2025 Alioth Null
+ * Copyright (C) 2025-2026 Alioth Null
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,10 +30,8 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Processes reduce requests.
@@ -55,15 +53,14 @@ public class ReduceWorkHandler implements WorkHandler<ReduceEvent>  {
         this.nodeSize = redissonClients.size();
     }
 
-    private static final Map<String, ResponseProto.ResponseDTO.Builder> cachedSuccessResponses = new ConcurrentHashMap<>();
-    private static final Map<String, ResponseProto.ResponseDTO.Builder> cachedFailResponses = new ConcurrentHashMap<>();
-
     private static final Random random = new Random();
 
     // reused objects
     private static final ResponseProto.ResponseDTO.Builder responseBuilder = ResponseProto.ResponseDTO.newBuilder().setType(CorneastOperation.REDUCE);
     private static final ResponseProto.ReduceRespDTO.Builder successReduceRespBuilder = ResponseProto.ReduceRespDTO.newBuilder().setSuccess(true);
     private static final ResponseProto.ReduceRespDTO.Builder failReduceRespBuilder = ResponseProto.ReduceRespDTO.newBuilder().setSuccess(false);
+
+    private final Object builderLock = new Object();
 
     private static final String luaScript = """
                                             local n = tonumber(redis.call('GET', KEYS[1]) or "0")
@@ -85,25 +82,21 @@ public class ReduceWorkHandler implements WorkHandler<ReduceEvent>  {
         RedissonClient redissonClient = redissonClients.get(random.nextInt(nodeSize));
         long result = redissonClient.getScript().eval(RScript.Mode.READ_WRITE, luaScript, RScript.ReturnType.INTEGER, List.of(key));
         if (result == 1) {
-            if (!cachedSuccessResponses.containsKey(key)) {
-                cachedSuccessResponses.put(key, responseBuilder
-                        .setReduceRespDTO(successReduceRespBuilder
-                                .setKey(key)
-                                .build())
-                        );
+            synchronized (builderLock) {
+                responseDTO = responseBuilder.setId(reduceEvent.getId())
+                                             .setReduceRespDTO(successReduceRespBuilder
+                                                               .setKey(key)
+                                                               .build())
+                                             .build();
             }
-            responseDTO = cachedSuccessResponses.get(key)
-                          .setId(reduceEvent.getId()).build();
         } else {
-            if (!cachedFailResponses.containsKey(key)) {
-                cachedFailResponses.put(key, responseBuilder
-                        .setReduceRespDTO(failReduceRespBuilder
-                                .setKey(key)
-                                .build())
-                        );
+            synchronized (builderLock) {
+                responseDTO = responseBuilder.setId(reduceEvent.getId())
+                                             .setReduceRespDTO(failReduceRespBuilder
+                                                              .setKey(key)
+                                                              .build())
+                                             .build();
             }
-            responseDTO = cachedFailResponses.get(key)
-                          .setId(reduceEvent.getId()).build();
         }
         future.complete(responseDTO);
     }

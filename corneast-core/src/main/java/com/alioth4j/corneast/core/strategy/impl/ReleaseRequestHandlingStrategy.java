@@ -1,6 +1,6 @@
 /*
  * Corneast
- * Copyright (C) 2025 Alioth Null
+ * Copyright (C) 2025-2026 Alioth Null
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,10 +30,8 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executor;
 
 @Component(CorneastOperation.RELEASE)
@@ -70,20 +68,19 @@ public class ReleaseRequestHandlingStrategy implements RequestHandlingStrategy {
     private static final ResponseProto.ReleaseRespDTO.Builder successRespBuilder = ResponseProto.ReleaseRespDTO.newBuilder().setSuccess(true);
 //    private static final ResponseProto.ReleaseRespDTO.Builder failRespBuilder = ResponseProto.ReleaseRespDTO.newBuilder().setSuccess(false);
 
-    private static final Map<String, ResponseProto.ResponseDTO.Builder> cachedSuccessResponses = new ConcurrentHashMap<>();
-
-//    private static final Map<String, ResponseProto.ResponseDTO> cachedFailResponses = new ConcurrentHashMap<>();
+    private final Object builderLock = new Object();
 
     @Override
     public CompletableFuture<ResponseProto.ResponseDTO> handle(RequestProto.RequestDTO requestDTO) {
         return CompletableFuture.supplyAsync(() -> {
             String key = requestDTO.getReleaseReqDTO().getKey();
             redissonClients.get(random.nextInt(nodeSize)).getScript().eval(RScript.Mode.READ_WRITE, luaScript, RScript.ReturnType.VALUE, List.of(key));
-            if (!cachedSuccessResponses.containsKey(key)) {
-                cachedSuccessResponses.put(key, responseBuilder.setReleaseRespDTO(successRespBuilder.setKey(key).build()));
+            synchronized (builderLock) {
+                return responseBuilder
+                        .setId(requestDTO.getId())
+                        .setReleaseRespDTO(successRespBuilder.setKey(key).build())
+                        .build();
             }
-            return cachedSuccessResponses.get(key)
-                    .setId(requestDTO.getId()).build();
         }, releaseExecutor);
     }
 

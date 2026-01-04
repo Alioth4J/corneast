@@ -1,6 +1,6 @@
 /*
  * Corneast
- * Copyright (C) 2025 Alioth Null
+ * Copyright (C) 2025-2026 Alioth Null
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -61,6 +61,8 @@ public class RegisterRequestHandlingStrategy implements RequestHandlingStrategy 
     private static final ResponseProto.RegisterRespDTO.Builder successRespBuilder = ResponseProto.RegisterRespDTO.newBuilder().setSuccess(true);
     private static final ResponseProto.RegisterRespDTO.Builder failRespBuilder = ResponseProto.RegisterRespDTO.newBuilder().setSuccess(false);
 
+    private final Object builderLock = new Object();
+
     private static final String luaScript = """
                                             redis.call('SET', KEYS[1], ARGV[1])
                                             """;
@@ -82,12 +84,14 @@ public class RegisterRequestHandlingStrategy implements RequestHandlingStrategy 
                 }
                 redissonClient.getScript(StringCodec.INSTANCE).eval(RScript.Mode.READ_WRITE, luaScript, RScript.ReturnType.VALUE, List.of(key), curTokenCount);
             }
-            return responseBuilder
-                   .setId(requestDTO.getId())
-                   .setRegisterRespDTO(successRespBuilder
-                                       .setKey(key)
-                                       .build())
-                   .build();
+            synchronized (builderLock) {
+                return responseBuilder
+                        .setId(requestDTO.getId())
+                        .setRegisterRespDTO(successRespBuilder
+                                .setKey(key)
+                                .build())
+                        .build();
+            }
         }, registerExecutor);
     }
 

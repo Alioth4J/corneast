@@ -1,6 +1,6 @@
 /*
  * Corneast
- * Copyright (C) 2025 Alioth Null
+ * Copyright (C) 2025-2026 Alioth Null
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -51,6 +51,8 @@ public class QueryRequestHandlingStrategy implements RequestHandlingStrategy {
     private static final ResponseProto.ResponseDTO.Builder responseBuilder = ResponseProto.ResponseDTO.newBuilder().setType(CorneastOperation.QUERY);
     private static final ResponseProto.QueryRespDTO.Builder queryResponseBuilder = ResponseProto.QueryRespDTO.newBuilder();
 
+    private final Object builderLock = new Object();
+
     private static final String luaScript = """
                                             local current = redis.call('GET', KEYS[1])
                                             if current == nil then
@@ -69,13 +71,15 @@ public class QueryRequestHandlingStrategy implements RequestHandlingStrategy {
             for (RedissonClient redissonClient : redissonClients) {
                 totalTokenCount += (long) redissonClient.getScript().eval(RScript.Mode.READ_ONLY, luaScript, RScript.ReturnType.INTEGER, List.of(key));
             }
-            return responseBuilder
-                   .setId(requestDTO.getId())
-                   .setQueryRespDTO(queryResponseBuilder
-                                    .setKey(key)
-                                    .setRemainingTokenCount(totalTokenCount)
-                                    .build())
-                   .build();
+            synchronized (builderLock) {
+                return responseBuilder
+                        .setId(requestDTO.getId())
+                        .setQueryRespDTO(queryResponseBuilder
+                                .setKey(key)
+                                .setRemainingTokenCount(totalTokenCount)
+                                .build())
+                        .build();
+            }
         }, queryExecutor);
     }
 
