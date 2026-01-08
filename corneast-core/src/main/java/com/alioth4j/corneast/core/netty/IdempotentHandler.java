@@ -52,7 +52,7 @@ public class IdempotentHandler extends SimpleChannelInboundHandler<RequestProto.
 
     private static final String testAndSetLuaScript = """
                                                       local v = redis.call("GET", KEYS[1])
-                                                      if not v then redis.call("SET", KEYS[1], "1") end
+                                                      if not v then redis.call("SET", KEYS[1], "1", "EX", 10) end
                                                       return v
                                                       """;
 
