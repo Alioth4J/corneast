@@ -31,6 +31,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -50,9 +51,12 @@ public class IdempotentHandler extends SimpleChannelInboundHandler<RequestProto.
     @Qualifier("idempotentRedissonClient")
     private RedissonClient idempotentRedissonClient;
 
+    @Value("${idempotent.ttl}")
+    private int ttl;
+
     private static final String testAndSetLuaScript = """
                                                       local v = redis.call("GET", KEYS[1])
-                                                      if not v then redis.call("SET", KEYS[1], "1", "EX", 10) end
+                                                      if not v then redis.call("SET", KEYS[1], "1", "EX", ARGV[1]) end
                                                       return v
                                                       """;
 
@@ -73,7 +77,7 @@ public class IdempotentHandler extends SimpleChannelInboundHandler<RequestProto.
             ctx.fireChannelRead(requestDTO);
             return;
         }
-        String exists = idempotentRedissonClient.getScript(StringCodec.INSTANCE).eval(RScript.Mode.READ_WRITE, testAndSetLuaScript, RScript.ReturnType.VALUE, List.of(id));
+        String exists = idempotentRedissonClient.getScript(StringCodec.INSTANCE).eval(RScript.Mode.READ_WRITE, testAndSetLuaScript, RScript.ReturnType.VALUE, List.of(id), ttl);
         if (exists == null) {
             log.debug("Passed IdempotentHandler, id = {}", id);
             ctx.fireChannelRead(requestDTO);
