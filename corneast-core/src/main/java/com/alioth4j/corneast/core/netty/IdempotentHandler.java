@@ -51,7 +51,7 @@ public class IdempotentHandler extends SimpleChannelInboundHandler<RequestProto.
     @Qualifier("idempotentRedissonClient")
     private RedissonClient idempotentRedissonClient;
 
-    @Value("${idempotent.ttl}")
+    @Value("${idempotent.ttl:10}")
     private int ttl;
 
     private static final String testAndSetLuaScript = """
