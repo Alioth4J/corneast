@@ -18,6 +18,7 @@
 
 package com.alioth4j.corneast.client.eureka;
 
+import com.alioth4j.corneast.client.util.EurekaUtil;
 import com.netflix.appinfo.ApplicationInfoManager;
 import com.netflix.appinfo.DataCenterInfo;
 import com.netflix.appinfo.InstanceInfo;
@@ -29,6 +30,7 @@ import com.netflix.discovery.shared.Application;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 /**
@@ -64,11 +66,22 @@ public class EurekaConsumer {
      * @param serverUrls Eureka server service urls
      */
     public EurekaConsumer(String applicationName, String host, String ip, int nonSecurePort, String... serverUrls) {
-        this.applicationName = applicationName;
+        this.applicationName = Objects.requireNonNull(EurekaUtil.trimToNull(applicationName), "applicationName must not be null or empty");
+        final String finalHost = Objects.requireNonNull(EurekaUtil.trimToNull(host), "host must not be null or empty");
+        if (!EurekaUtil.isValidIp(ip)) {
+            throw new IllegalArgumentException("ip format is not valid: " + ip);
+        }
+        if (nonSecurePort < 0 || nonSecurePort > 65535) {
+            throw new IllegalArgumentException("port is not valid: " + nonSecurePort);
+        }
+        if (serverUrls == null || serverUrls.length < 1) {
+            throw new IllegalArgumentException("serverUrls must not be null or empty");
+        }
+
         MyDataCenterInstanceConfig instanceConfig = new MyDataCenterInstanceConfig() {
             @Override
             public String getAppname() {
-                return applicationName;
+                return EurekaConsumer.this.applicationName;
             }
 
             @Override
@@ -78,7 +91,7 @@ public class EurekaConsumer {
 
             @Override
             public String getHostName(boolean refresh) {
-                return host;
+                return finalHost;
             }
 
             @Override
