@@ -44,14 +44,14 @@ public class EurekaConsumerTests {
     void testGetInstanceInfosSuccessfully() {
         List<InstanceInfo> instanceInfos = new EurekaConsumer().getInstanceInfos();
         Assertions.assertNotNull(instanceInfos);
-        Assertions.assertNotEquals(0, instanceInfos.size());
+        Assertions.assertTrue(instanceInfos.size() > 0);
     }
 
     @Test
     void testGetInstanceInfosWithApplicationNameSuccessfully() {
         List<InstanceInfo> instanceInfos = new EurekaConsumer().getInstanceInfos("corneast-core");
         Assertions.assertNotNull(instanceInfos);
-        Assertions.assertNotEquals(0, instanceInfos.size());
+        Assertions.assertTrue(instanceInfos.size() > 0);
     }
 
 }
