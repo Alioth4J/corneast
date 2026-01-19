@@ -45,18 +45,21 @@ public class CorneastBioClientTests {
         config.setPort(instanceInfo.getPort());
 
         CorneastBioClient corneastBioClient = CorneastBioClient.of(config);
+
         ResponseProto.ResponseDTO responseDTO = null;
         try {
             responseDTO = corneastBioClient.send(registerReqDTO);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+
         Assertions.assertEquals(CorneastOperation.REGISTER, responseDTO.getType());
         Assertions.assertEquals("", responseDTO.getId());
         Assertions.assertEquals("key-register", responseDTO.getRegisterRespDTO().getKey());
         Assertions.assertEquals(true, responseDTO.getRegisterRespDTO().getSuccess());
     }
 
+    // TODO use EurekaConsumer
     @Test
     void testUnknownTypeWithClientAPI() {
         Assertions.assertThrows(RequestBuildException.class, () -> {

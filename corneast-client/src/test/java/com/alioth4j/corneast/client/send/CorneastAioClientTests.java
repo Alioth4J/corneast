@@ -46,6 +46,7 @@ public class CorneastAioClientTests {
         config.setPort(instanceInfo.getPort());
 
         CorneastAioClient corneastAioClient = CorneastAioClient.of(config);
+
         CompletableFuture<ResponseProto.ResponseDTO> responseFuture = null;
         ResponseProto.ResponseDTO responseDTO = null;
         try {
@@ -56,6 +57,7 @@ public class CorneastAioClientTests {
         } catch (ExecutionException e) {
             throw new RuntimeException(e.getCause());
         }
+
         Assertions.assertEquals(CorneastOperation.REGISTER, responseDTO.getType());
         Assertions.assertEquals("", responseDTO.getId());
         Assertions.assertEquals("key-register", responseDTO.getRegisterRespDTO().getKey());

@@ -44,12 +44,14 @@ public class CorneastNioClientTests {
         config.setPort(instanceInfo.getPort());
 
         CorneastNioClient corneastNioClient = CorneastNioClient.of(config);
+
         ResponseProto.ResponseDTO responseDTO = null;
         try {
             responseDTO = corneastNioClient.send(registerReqDTO);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+        
         Assertions.assertEquals(CorneastOperation.REGISTER, responseDTO.getType());
         Assertions.assertEquals("", responseDTO.getId());
         Assertions.assertEquals("key-register", responseDTO.getRegisterRespDTO().getKey());
