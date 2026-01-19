@@ -31,22 +31,41 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * Support Eureka instance infos consumption.
+ *
+ * @author Alioth Null
+ */
 public class EurekaConsumer {
 
     private final EurekaClient eurekaClient;
 
+    private final String applicationName;
+
+    /* default constants */
     private static final String defaultApplicationName = "corneast-core";
     private static final String[] defaultEurekaServerUrls = { "http://localhost:8761/eureka/" };
 
+    /**
+     * Constructs <code>this</code> and <code>EurekaClient</code> with default values.
+     */
     public EurekaConsumer() {
-        this("localhost", "127.0.0.1", 0, defaultEurekaServerUrls);
+        this(defaultApplicationName, "localhost", "127.0.0.1", 0, defaultEurekaServerUrls);
     }
 
-    public EurekaConsumer(String host, String ip, int nonSecurePort, String... serverUrls) {
+    /**
+     * Constructs <code>this</code> and <code>EurekaClient</code>.
+     * @param host client host
+     * @param ip client ip
+     * @param nonSecurePort client port
+     * @param serverUrls Eureka server service urls
+     */
+    public EurekaConsumer(String applicationName, String host, String ip, int nonSecurePort, String... serverUrls) {
+        this.applicationName = applicationName;
         MyDataCenterInstanceConfig instanceConfig = new MyDataCenterInstanceConfig() {
             @Override
             public String getAppname() {
-                return getInstanceId();
+                return applicationName;
             }
 
             @Override
@@ -96,10 +115,19 @@ public class EurekaConsumer {
 //        return eurekaClient;
 //    }
 
+    /**
+     * Gets instance infos from Eureka.
+     * @return instance infos
+     */
     public List<InstanceInfo> getInstanceInfos() {
-        return getInstanceInfos(defaultApplicationName);
+        return getInstanceInfos(applicationName);
     }
 
+    /**
+     * Gets instance infos from Eureka with designated application name.
+     * @param applicationName designated application name
+     * @return instance infos
+     */
     public List<InstanceInfo> getInstanceInfos(String applicationName) {
         Application application = eurekaClient.getApplication(applicationName);
         return application.getInstances();
