@@ -51,7 +51,7 @@ public class CorneastNioClientTests {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        
+
         Assertions.assertEquals(CorneastOperation.REGISTER, responseDTO.getType());
         Assertions.assertEquals("", responseDTO.getId());
         Assertions.assertEquals("key-register", responseDTO.getRegisterRespDTO().getKey());

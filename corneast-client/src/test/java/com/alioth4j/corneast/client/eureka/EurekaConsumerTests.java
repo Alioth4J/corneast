@@ -47,4 +47,11 @@ public class EurekaConsumerTests {
         Assertions.assertNotEquals(0, instanceInfos.size());
     }
 
+    @Test
+    void testGetInstanceInfosWithApplicationNameSuccessfully() {
+        List<InstanceInfo> instanceInfos = new EurekaConsumer().getInstanceInfos("corneast-core");
+        Assertions.assertNotNull(instanceInfos);
+        Assertions.assertNotEquals(0, instanceInfos.size());
+    }
+
 }

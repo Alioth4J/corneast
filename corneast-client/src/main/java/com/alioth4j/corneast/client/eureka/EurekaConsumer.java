@@ -35,6 +35,7 @@ public class EurekaConsumer {
 
     private final EurekaClient eurekaClient;
 
+    private static final String defaultApplicationName = "corneast-core";
     private static final String[] defaultEurekaServerUrls = { "http://localhost:8761/eureka/" };
 
     public EurekaConsumer() {
@@ -96,7 +97,11 @@ public class EurekaConsumer {
 //    }
 
     public List<InstanceInfo> getInstanceInfos() {
-        Application application = eurekaClient.getApplication("corneast-core");
+        return getInstanceInfos(defaultApplicationName);
+    }
+
+    public List<InstanceInfo> getInstanceInfos(String applicationName) {
+        Application application = eurekaClient.getApplication(applicationName);
         return application.getInstances();
     }
 
