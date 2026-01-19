@@ -44,13 +44,16 @@ public class EurekaConsumer {
 
     /* default constants */
     private static final String defaultApplicationName = "corneast-core";
+    private static final String defaultHost = "localhost";
+    private static final String defaultIp = "127.0.0.1";
+    private static final int defaultNonSecurePort = 0;
     private static final String[] defaultEurekaServerUrls = { "http://localhost:8761/eureka/" };
 
     /**
      * Constructs <code>this</code> and <code>EurekaClient</code> with default values.
      */
     public EurekaConsumer() {
-        this(defaultApplicationName, "localhost", "127.0.0.1", 0, defaultEurekaServerUrls);
+        this(defaultApplicationName, defaultHost, defaultIp, defaultNonSecurePort, defaultEurekaServerUrls);
     }
 
     /**
