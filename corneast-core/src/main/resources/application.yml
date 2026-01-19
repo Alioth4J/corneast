@@ -6,6 +6,7 @@ server:
 
 eureka:
   instance:
+    nonSecurePort: 8088
     leaseRenewalIntervalInSeconds: 1
   client:
     service-url:

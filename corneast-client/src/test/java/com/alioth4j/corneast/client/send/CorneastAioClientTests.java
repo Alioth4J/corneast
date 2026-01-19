@@ -1,6 +1,6 @@
 /*
  * Corneast
- * Copyright (C) 2025 Alioth Null
+ * Copyright (C) 2025-2026 Alioth Null
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,10 +19,12 @@
 package com.alioth4j.corneast.client.send;
 
 import com.alioth4j.corneast.client.config.CorneastConfig;
+import com.alioth4j.corneast.client.eureka.EurekaConsumer;
 import com.alioth4j.corneast.client.request.CorneastRequest;
 import com.alioth4j.corneast.common.operation.CorneastOperation;
 import com.alioth4j.corneast.common.proto.RequestProto;
 import com.alioth4j.corneast.common.proto.ResponseProto;
+import com.netflix.appinfo.InstanceInfo;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -35,9 +37,14 @@ public class CorneastAioClientTests {
     @Test
     void testSend() {
         RequestProto.RequestDTO registerReqDTO = new CorneastRequest(CorneastOperation.REGISTER, "", "key-register", 1000).instance;
+
+        EurekaConsumer eurekaConsumer = new EurekaConsumer();
+        InstanceInfo instanceInfo = eurekaConsumer.getInstanceInfos().get(0);
+
         CorneastConfig config = new CorneastConfig();
-        config.setHost("127.0.0.1");
-        config.setPort(8088);
+        config.setHost(instanceInfo.getHostName());
+        config.setPort(instanceInfo.getPort());
+
         CorneastAioClient corneastAioClient = CorneastAioClient.of(config);
         CompletableFuture<ResponseProto.ResponseDTO> responseFuture = null;
         ResponseProto.ResponseDTO responseDTO = null;
