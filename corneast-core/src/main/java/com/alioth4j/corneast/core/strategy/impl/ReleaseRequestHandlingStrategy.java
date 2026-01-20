@@ -54,8 +54,6 @@ public class ReleaseRequestHandlingStrategy implements RequestHandlingStrategy {
         this.nodeSize = redissonClients.size();
     }
 
-    private static final Random random = new Random();
-
     private static final String luaScript = """
                                             local oldValue = redis.call('GET', KEYS[1])
                                             if not oldValue then
