@@ -21,6 +21,8 @@ package com.alioth4j.corneast.core.strategy.impl;
 import com.alioth4j.corneast.common.operation.CorneastOperation;
 import com.alioth4j.corneast.common.proto.RequestProto;
 import com.alioth4j.corneast.common.proto.ResponseProto;
+import com.alioth4j.corneast.core.algo.RandomSelector;
+import com.alioth4j.corneast.core.algo.Selector;
 import com.alioth4j.corneast.core.strategy.RequestHandlingStrategy;
 import jakarta.annotation.PostConstruct;
 import org.redisson.api.RScript;
@@ -68,13 +70,15 @@ public class ReleaseRequestHandlingStrategy implements RequestHandlingStrategy {
     private static final ResponseProto.ReleaseRespDTO.Builder successRespBuilder = ResponseProto.ReleaseRespDTO.newBuilder().setSuccess(true);
 //    private static final ResponseProto.ReleaseRespDTO.Builder failRespBuilder = ResponseProto.ReleaseRespDTO.newBuilder().setSuccess(false);
 
+    private final Selector<RedissonClient> selector = new RandomSelector<>();
+
     private final Object builderLock = new Object();
 
     @Override
     public CompletableFuture<ResponseProto.ResponseDTO> handle(RequestProto.RequestDTO requestDTO) {
         return CompletableFuture.supplyAsync(() -> {
             String key = requestDTO.getReleaseReqDTO().getKey();
-            redissonClients.get(random.nextInt(nodeSize)).getScript().eval(RScript.Mode.READ_WRITE, luaScript, RScript.ReturnType.VALUE, List.of(key));
+            selector.select(redissonClients).getScript().eval(RScript.Mode.READ_WRITE, luaScript, RScript.ReturnType.VALUE, List.of(key));
             synchronized (builderLock) {
                 return responseBuilder
                         .setId(requestDTO.getId())

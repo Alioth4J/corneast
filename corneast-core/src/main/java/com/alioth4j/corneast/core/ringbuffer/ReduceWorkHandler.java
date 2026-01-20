@@ -20,6 +20,8 @@ package com.alioth4j.corneast.core.ringbuffer;
 
 import com.alioth4j.corneast.common.operation.CorneastOperation;
 import com.alioth4j.corneast.common.proto.ResponseProto;
+import com.alioth4j.corneast.core.algo.RandomSelector;
+import com.alioth4j.corneast.core.algo.Selector;
 import com.lmax.disruptor.WorkHandler;
 import jakarta.annotation.PostConstruct;
 import org.redisson.api.RScript;
@@ -72,6 +74,8 @@ public class ReduceWorkHandler implements WorkHandler<ReduceEvent>  {
                                             end
                                             """;
 
+    private final Selector<RedissonClient> selector = new RandomSelector<>();
+
     @Override
     public void onEvent(ReduceEvent reduceEvent) throws Exception {
         String key = reduceEvent.getKey();
@@ -79,7 +83,7 @@ public class ReduceWorkHandler implements WorkHandler<ReduceEvent>  {
 
         ResponseProto.ResponseDTO responseDTO;
         // pick a redissonClient randomly
-        RedissonClient redissonClient = redissonClients.get(random.nextInt(nodeSize));
+        RedissonClient redissonClient = selector.select(redissonClients);
         long result = redissonClient.getScript().eval(RScript.Mode.READ_WRITE, luaScript, RScript.ReturnType.INTEGER, List.of(key));
         if (result == 1) {
             synchronized (builderLock) {
