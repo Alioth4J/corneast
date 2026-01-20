@@ -77,12 +77,11 @@ public class RegisterRequestHandlingStrategy implements RequestHandlingStrategy 
             long remainingTokenCount = totalTokenCount % nodeSize;
             for (int i = 0; i < nodeSize; i++) {
                 RedissonClient redissonClient = redissonClients.get(i);
-                long curTokenCount = averageTokenCount;
-                if (remainingTokenCount > 0) {
-                    curTokenCount++;
-                    remainingTokenCount--;
+                if (remainingTokenCount-- > 0) {
+                    redissonClient.getScript(StringCodec.INSTANCE).eval(RScript.Mode.READ_WRITE, luaScript, RScript.ReturnType.VALUE, List.of(key), averageTokenCount + 1);
+                } else {
+                    redissonClient.getScript(StringCodec.INSTANCE).eval(RScript.Mode.READ_WRITE, luaScript, RScript.ReturnType.VALUE, List.of(key), averageTokenCount);
                 }
-                redissonClient.getScript(StringCodec.INSTANCE).eval(RScript.Mode.READ_WRITE, luaScript, RScript.ReturnType.VALUE, List.of(key), curTokenCount);
             }
             synchronized (builderLock) {
                 return responseBuilder
