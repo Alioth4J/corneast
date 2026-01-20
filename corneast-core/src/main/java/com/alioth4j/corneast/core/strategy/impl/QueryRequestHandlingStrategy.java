@@ -65,6 +65,7 @@ public class QueryRequestHandlingStrategy implements RequestHandlingStrategy {
     @Override
     public CompletableFuture<ResponseProto.ResponseDTO> handle(RequestProto.RequestDTO requestDTO) {
         return CompletableFuture.supplyAsync(() -> {
+            // FIXME currently it is just an estimation, no atomicity warranty
             // sum tokenCount from each node
             String key = requestDTO.getQueryReqDTO().getKey();
             long totalTokenCount = 0;
