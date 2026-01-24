@@ -32,7 +32,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.Random;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
@@ -40,8 +39,8 @@ import java.util.concurrent.Executor;
 public class ReleaseRequestHandlingStrategy implements RequestHandlingStrategy {
 
     @Autowired
-    @Qualifier("releaseExecutor")
-    private Executor releaseExecutor;
+    @Qualifier("unifiedExecutor")
+    private Executor unifiedExecutor;
 
     @Autowired
     @Qualifier("redissonClients")
@@ -83,7 +82,7 @@ public class ReleaseRequestHandlingStrategy implements RequestHandlingStrategy {
                         .setReleaseRespDTO(successRespBuilder.setKey(key).build())
                         .build();
             }
-        }, releaseExecutor);
+        }, unifiedExecutor);
     }
 
     @Override

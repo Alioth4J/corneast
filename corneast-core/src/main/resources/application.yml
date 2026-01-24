@@ -39,24 +39,9 @@ storage:
   connectTimeout: 100
 
 threadpool:
-  register:
-    corePoolSize: 20
-    maximumPoolSize: 40
-    keepAliveTime: 10
-    unit: SECONDS
-  reduce:
+  unified:
     corePoolSize: 1000
-    maximumPoolSize: 1000
-    keepAliveTime: 10
-    unit: SECONDS
-  release:
-    corePoolSize: 20
-    maximumPoolSize: 40
-    keepAliveTime: 10
-    unit: SECONDS
-  query:
-    corePoolSize: 20
-    maximumPoolSize: 40
+    maximumPoolSize: 1500
     keepAliveTime: 10
     unit: SECONDS
 

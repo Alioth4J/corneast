@@ -26,7 +26,7 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import java.util.concurrent.*;
 
 /**
- * Custom thread pool used by async methods.
+ * Thread pool config class.
  *
  * @author Alioth Null
  */
@@ -35,56 +35,14 @@ import java.util.concurrent.*;
 @EnableAsync
 public class ThreadPoolConfig {
 
-    @Bean(value = "reduceExecutor")
-    public Executor reduceExecutor(ThreadPoolConfigProperties configProperties) {
-        ThreadPoolConfigProperties.SingleThreadPoolConfigProperties reduceConfigProperties = configProperties.getReduce();
+    @Bean(value = "unifiedExecutor")
+    public Executor unifiedExecutor(ThreadPoolConfigProperties configProperties) {
+        ThreadPoolConfigProperties.SingleThreadPoolConfigProperties unifiedConfigProperties = configProperties.getUnified();
         return new ThreadPoolExecutor(
-                reduceConfigProperties.getCorePoolSize(),
-                reduceConfigProperties.getMaximumPoolSize(),
-                reduceConfigProperties.getKeepAliveTime(),
-                reduceConfigProperties.getUnit(),
-                new SynchronousQueue<>(),
-                Executors.defaultThreadFactory(),
-                new ThreadPoolExecutor.CallerRunsPolicy()
-        );
-    }
-
-    @Bean(value = "registerExecutor")
-    public Executor registerExecutor(ThreadPoolConfigProperties configProperties) {
-        ThreadPoolConfigProperties.SingleThreadPoolConfigProperties registerConfigProperties = configProperties.getRegister();
-        return new ThreadPoolExecutor(
-                registerConfigProperties.getCorePoolSize(),
-                registerConfigProperties.getMaximumPoolSize(),
-                registerConfigProperties.getKeepAliveTime(),
-                registerConfigProperties.getUnit(),
-                new SynchronousQueue<>(),
-                Executors.defaultThreadFactory(),
-                new ThreadPoolExecutor.CallerRunsPolicy()
-        );
-    }
-
-    @Bean(value = "queryExecutor")
-    public Executor queryExecutor(ThreadPoolConfigProperties configProperties) {
-        ThreadPoolConfigProperties.SingleThreadPoolConfigProperties queryConfigProperties = configProperties.getQuery();
-        return new ThreadPoolExecutor(
-                queryConfigProperties.getCorePoolSize(),
-                queryConfigProperties.getMaximumPoolSize(),
-                queryConfigProperties.getKeepAliveTime(),
-                queryConfigProperties.getUnit(),
-                new SynchronousQueue<>(),
-                Executors.defaultThreadFactory(),
-                new ThreadPoolExecutor.CallerRunsPolicy()
-        );
-    }
-
-    @Bean(value = "releaseExecutor")
-    public Executor releaseExecutor(ThreadPoolConfigProperties configProperties) {
-        ThreadPoolConfigProperties.SingleThreadPoolConfigProperties releaseConfigProperties = configProperties.getRelease();
-        return new ThreadPoolExecutor(
-                releaseConfigProperties.getCorePoolSize(),
-                releaseConfigProperties.getMaximumPoolSize(),
-                releaseConfigProperties.getKeepAliveTime(),
-                releaseConfigProperties.getUnit(),
+                unifiedConfigProperties.getCorePoolSize(),
+                unifiedConfigProperties.getMaximumPoolSize(),
+                unifiedConfigProperties.getKeepAliveTime(),
+                unifiedConfigProperties.getUnit(),
                 new SynchronousQueue<>(),
                 Executors.defaultThreadFactory(),
                 new ThreadPoolExecutor.CallerRunsPolicy()

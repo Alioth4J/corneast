@@ -41,8 +41,8 @@ import java.util.concurrent.Executor;
 public class QueryRequestHandlingStrategy implements RequestHandlingStrategy {
 
     @Autowired
-    @Qualifier("queryExecutor")
-    private Executor queryExecutor;
+    @Qualifier("unifiedExecutor")
+    private Executor unifiedExecutor;
 
     @Autowired
     @Qualifier("redissonClients")
@@ -81,7 +81,7 @@ public class QueryRequestHandlingStrategy implements RequestHandlingStrategy {
                                 .build())
                         .build();
             }
-        }, queryExecutor);
+        }, unifiedExecutor);
     }
 
     @Override

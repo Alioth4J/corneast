@@ -30,44 +30,17 @@ import java.util.concurrent.TimeUnit;
 @ConfigurationProperties("threadpool")
 public class ThreadPoolConfigProperties {
 
-    private SingleThreadPoolConfigProperties register;
-    private SingleThreadPoolConfigProperties reduce;
-    private SingleThreadPoolConfigProperties release;
-    private SingleThreadPoolConfigProperties query;
+    private SingleThreadPoolConfigProperties unified;
 
     public ThreadPoolConfigProperties() {
     }
 
-    public SingleThreadPoolConfigProperties getRegister() {
-        return register;
+    public SingleThreadPoolConfigProperties getUnified() {
+        return unified;
     }
 
-    public void setRegister(SingleThreadPoolConfigProperties register) {
-        this.register = register;
-    }
-
-    public SingleThreadPoolConfigProperties getReduce() {
-        return reduce;
-    }
-
-    public void setReduce(SingleThreadPoolConfigProperties reduce) {
-        this.reduce = reduce;
-    }
-
-    public SingleThreadPoolConfigProperties getRelease() {
-        return release;
-    }
-
-    public void setRelease(SingleThreadPoolConfigProperties release) {
-        this.release = release;
-    }
-
-    public SingleThreadPoolConfigProperties getQuery() {
-        return query;
-    }
-
-    public void setQuery(SingleThreadPoolConfigProperties query) {
-        this.query = query;
+    public void setUnified(SingleThreadPoolConfigProperties unified) {
+        this.unified = unified;
     }
 
     /**

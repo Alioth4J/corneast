@@ -41,7 +41,7 @@ public class ReduceRequestHandlingStrategy implements RequestHandlingStrategy {
     private ReduceDisruptor reduceDisruptor;
 
     @Override
-    @Async("reduceExecutor")
+    @Async("unifiedExecutor")
     public CompletableFuture<ResponseProto.ResponseDTO> handle(RequestProto.RequestDTO requestDTO) {
         return reduceDisruptor.submitRequest(requestDTO);
     }

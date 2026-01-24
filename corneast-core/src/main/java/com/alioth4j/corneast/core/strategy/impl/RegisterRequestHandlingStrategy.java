@@ -43,8 +43,8 @@ import java.util.concurrent.Executor;
 public class RegisterRequestHandlingStrategy implements RequestHandlingStrategy {
 
     @Autowired
-    @Qualifier("registerExecutor")
-    private Executor registerExecutor;
+    @Qualifier("unifiedExecutor")
+    private Executor unifiedExecutor;
 
     @Autowired
     @Qualifier("redissonClients")
@@ -91,7 +91,7 @@ public class RegisterRequestHandlingStrategy implements RequestHandlingStrategy 
                                 .build())
                         .build();
             }
-        }, registerExecutor);
+        }, unifiedExecutor);
     }
 
     @Override
