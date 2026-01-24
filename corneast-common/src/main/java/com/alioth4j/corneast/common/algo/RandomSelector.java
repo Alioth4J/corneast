@@ -16,17 +16,28 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.alioth4j.corneast.core.algo;
+package com.alioth4j.corneast.common.algo;
 
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
- * Selects an element from a <code>java.util.List</code>.
+ * Randomly selects an element from a <code>java.util.List</code>.
  * @param <T> element type
+ * @implSpec keep thread-safe
  * @author Alioth Null
  */
-public interface Selector<T> {
+public final class RandomSelector<T> implements Selector<T> {
 
-    T select(List<T> list);
+    public RandomSelector() {
+    }
+
+    @Override
+    public T select(List<T> list) {
+        if (list == null || list.size() < 1) {
+            throw new IllegalArgumentException("list must not be null or empty");
+        }
+        return list.get(ThreadLocalRandom.current().nextInt(list.size()));
+    }
 
 }

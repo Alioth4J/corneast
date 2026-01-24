@@ -20,8 +20,8 @@ package com.alioth4j.corneast.core.ringbuffer;
 
 import com.alioth4j.corneast.common.operation.CorneastOperation;
 import com.alioth4j.corneast.common.proto.ResponseProto;
-import com.alioth4j.corneast.core.algo.RandomSelector;
-import com.alioth4j.corneast.core.algo.Selector;
+import com.alioth4j.corneast.common.algo.RandomSelector;
+import com.alioth4j.corneast.common.algo.Selector;
 import com.lmax.disruptor.WorkHandler;
 import jakarta.annotation.PostConstruct;
 import org.redisson.api.RScript;
@@ -32,7 +32,6 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.Random;
 import java.util.concurrent.CompletableFuture;
 
 /**

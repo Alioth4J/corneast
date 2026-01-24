@@ -22,6 +22,8 @@ import com.alioth4j.corneast.client.config.CorneastConfig;
 import com.alioth4j.corneast.client.eureka.EurekaConsumer;
 import com.alioth4j.corneast.client.exception.RequestBuildException;
 import com.alioth4j.corneast.client.request.CorneastRequest;
+import com.alioth4j.corneast.common.algo.RandomSelector;
+import com.alioth4j.corneast.common.algo.Selector;
 import com.alioth4j.corneast.common.operation.CorneastOperation;
 import com.alioth4j.corneast.common.proto.RequestProto;
 import com.alioth4j.corneast.common.proto.ResponseProto;
@@ -30,6 +32,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
+import java.util.List;
 
 public class CorneastBioClientTests {
 
@@ -38,7 +41,9 @@ public class CorneastBioClientTests {
         RequestProto.RequestDTO registerReqDTO = new CorneastRequest(CorneastOperation.REGISTER, "", "key-register", 1000).instance;
 
         EurekaConsumer eurekaConsumer = new EurekaConsumer();
-        InstanceInfo instanceInfo = eurekaConsumer.getInstanceInfos().get(0);
+        List<InstanceInfo> instanceInfoList = eurekaConsumer.getInstanceInfos();
+        Selector<InstanceInfo> selector = new RandomSelector<>();
+        InstanceInfo instanceInfo = selector.select(instanceInfoList);
 
         CorneastConfig config = new CorneastConfig();
         config.setHost(instanceInfo.getHostName());
