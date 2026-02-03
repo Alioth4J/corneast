@@ -18,7 +18,9 @@
 
 package com.alioth4j.corneast.eureka;
 
-import com.alioth4j.corneast.common.common.CorneastBanner;
+import com.alioth4j.corneast.common.misc.Banner;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.netflix.eureka.server.EnableEurekaServer;
@@ -27,8 +29,10 @@ import org.springframework.cloud.netflix.eureka.server.EnableEurekaServer;
 @EnableEurekaServer
 public class CorneastEurekaApplication {
 
+	private static final Logger log = LoggerFactory.getLogger(CorneastEurekaApplication.class);
+
 	public static void main(String[] args) {
-        System.out.println(CorneastBanner.instance);
+		new Banner().print(log);
 		SpringApplication.run(CorneastEurekaApplication.class, args);
 	}
 

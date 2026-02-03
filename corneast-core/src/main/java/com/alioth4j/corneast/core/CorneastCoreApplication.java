@@ -18,7 +18,9 @@
 
 package com.alioth4j.corneast.core;
 
-import com.alioth4j.corneast.common.common.CorneastBanner;
+import com.alioth4j.corneast.common.misc.Banner;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
@@ -34,8 +36,10 @@ import org.springframework.scheduling.annotation.EnableAsync;
 @EnableAspectJAutoProxy(proxyTargetClass = true)
 public class CorneastCoreApplication {
 
+	private static final Logger log = LoggerFactory.getLogger(CorneastCoreApplication.class);
+
 	public static void main(String[] args) {
-        System.out.println(CorneastBanner.instance);
+		new Banner().print(log);
 		SpringApplication.run(CorneastCoreApplication.class, args);
 	}
 
