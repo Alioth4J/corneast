@@ -18,7 +18,9 @@
 
 package com.alioth4j.corneast.eureka;
 
-import com.alioth4j.corneast.common.misc.Banner;
+import com.alioth4j.corneast.common.misc.BannerPrinter;
+import com.alioth4j.corneast.common.misc.LoggerBannerPrinter;
+import com.alioth4j.corneast.common.misc.PrintStreamBannerPrinter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
@@ -32,8 +34,13 @@ public class CorneastEurekaApplication {
 	private static final Logger log = LoggerFactory.getLogger(CorneastEurekaApplication.class);
 
 	public static void main(String[] args) {
-		new Banner().print(log);
+		printBanner();
 		SpringApplication.run(CorneastEurekaApplication.class, args);
+	}
+
+	private static void printBanner() {
+		BannerPrinter bannerPrinter = new LoggerBannerPrinter(log);
+		bannerPrinter.print();
 	}
 
 }
