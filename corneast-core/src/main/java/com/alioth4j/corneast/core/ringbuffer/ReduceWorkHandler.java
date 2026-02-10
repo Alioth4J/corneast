@@ -26,6 +26,8 @@ import com.lmax.disruptor.WorkHandler;
 import jakarta.annotation.PostConstruct;
 import org.redisson.api.RScript;
 import org.redisson.api.RedissonClient;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Scope;
@@ -43,6 +45,8 @@ import java.util.concurrent.CompletableFuture;
 @Scope("prototype")
 public class ReduceWorkHandler implements WorkHandler<ReduceEvent>  {
 
+    private static final Logger log = LoggerFactory.getLogger(ReduceWorkHandler.class);
+
     @Autowired
     @Qualifier("redissonClients")
     private List<RedissonClient> redissonClients;
@@ -52,6 +56,9 @@ public class ReduceWorkHandler implements WorkHandler<ReduceEvent>  {
     @PostConstruct
     public void init() {
         this.nodeSize = redissonClients.size();
+        if (log.isDebugEnabled()) {
+            log.debug("Initialized {} redissionClients", nodeSize);
+        }
     }
 
     // reused objects

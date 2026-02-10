@@ -37,7 +37,7 @@ import java.util.List;
 public class CorneastBioClientTests {
 
     @Test
-    void testSend() {
+    void testSendRegister() {
         RequestProto.RequestDTO registerReqDTO = new CorneastRequest(CorneastOperation.REGISTER, "", "key-register", 1000).instance;
 
         EurekaConsumer eurekaConsumer = new EurekaConsumer();
@@ -64,6 +64,33 @@ public class CorneastBioClientTests {
         Assertions.assertEquals(true, responseDTO.getRegisterRespDTO().getSuccess());
     }
 
+    @Test
+    void testSendReduce() {
+        RequestProto.RequestDTO registerReqDTO = new CorneastRequest(CorneastOperation.REDUCE, "", "key-register").instance;
+
+        EurekaConsumer eurekaConsumer = new EurekaConsumer();
+        List<InstanceInfo> instanceInfoList = eurekaConsumer.getInstanceInfos();
+        Selector<InstanceInfo> selector = new RandomSelector<>();
+        InstanceInfo instanceInfo = selector.select(instanceInfoList);
+
+        CorneastConfig config = new CorneastConfig();
+        config.setHost(instanceInfo.getHostName());
+        config.setPort(instanceInfo.getPort());
+
+        CorneastBioClient corneastBioClient = CorneastBioClient.of(config);
+
+        ResponseProto.ResponseDTO responseDTO = null;
+        try {
+            responseDTO = corneastBioClient.send(registerReqDTO);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        Assertions.assertEquals(CorneastOperation.REDUCE, responseDTO.getType());
+        Assertions.assertEquals("", responseDTO.getId());
+        Assertions.assertEquals("key-register", responseDTO.getReduceRespDTO().getKey());
+        Assertions.assertEquals(true, responseDTO.getReduceRespDTO().getSuccess());
+    }
     // TODO use EurekaConsumer
     @Test
     void testUnknownTypeWithClientAPI() {
