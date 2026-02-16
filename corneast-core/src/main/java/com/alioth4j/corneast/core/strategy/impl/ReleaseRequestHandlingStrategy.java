@@ -48,9 +48,12 @@ public class ReleaseRequestHandlingStrategy implements RequestHandlingStrategy {
 
     private int nodeSize;
 
+    private Selector<RedissonClient> selector;
+
     @PostConstruct
     public void init() {
         this.nodeSize = redissonClients.size();
+        selector = new RandomSelector<>(redissonClients);
     }
 
     private static final String luaScript = """
@@ -67,15 +70,13 @@ public class ReleaseRequestHandlingStrategy implements RequestHandlingStrategy {
     private static final ResponseProto.ReleaseRespDTO.Builder successRespBuilder = ResponseProto.ReleaseRespDTO.newBuilder().setSuccess(true);
 //    private static final ResponseProto.ReleaseRespDTO.Builder failRespBuilder = ResponseProto.ReleaseRespDTO.newBuilder().setSuccess(false);
 
-    private final Selector<RedissonClient> selector = new RandomSelector<>();
-
     private final Object builderLock = new Object();
 
     @Override
     public CompletableFuture<ResponseProto.ResponseDTO> handle(RequestProto.RequestDTO requestDTO) {
         return CompletableFuture.supplyAsync(() -> {
             String key = requestDTO.getReleaseReqDTO().getKey();
-            selector.select(redissonClients).getScript().eval(RScript.Mode.READ_WRITE, luaScript, RScript.ReturnType.VALUE, List.of(key));
+            selector.select().getScript().eval(RScript.Mode.READ_WRITE, luaScript, RScript.ReturnType.VALUE, List.of(key));
             synchronized (builderLock) {
                 return responseBuilder
                         .setId(requestDTO.getId())

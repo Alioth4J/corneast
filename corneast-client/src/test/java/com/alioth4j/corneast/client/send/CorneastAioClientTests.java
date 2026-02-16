@@ -43,8 +43,8 @@ public class CorneastAioClientTests {
 
         EurekaConsumer eurekaConsumer = new EurekaConsumer();
         List<InstanceInfo> instanceInfoList = eurekaConsumer.getInstanceInfos();
-        Selector<InstanceInfo> selector = new RandomSelector<>();
-        InstanceInfo instanceInfo = selector.select(instanceInfoList);
+        Selector<InstanceInfo> selector = new RandomSelector<>(instanceInfoList);
+        InstanceInfo instanceInfo = selector.select();
 
 
         CorneastConfig config = new CorneastConfig();

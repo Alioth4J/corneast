@@ -21,19 +21,22 @@ package com.alioth4j.corneast.common.algo;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class RoundRobinSelector<T> implements Selector<T> {
+/**
+ * Round robin algo implementation of <code>Selector</code>.
+ * @param <T> element type
+ * @author Alioth Null
+ */
+public final class RoundRobinSelector<T> extends AbstractSelector<T> {
 
     private final AtomicInteger cursor = new AtomicInteger(-1);
 
-    public RoundRobinSelector() {
+    public RoundRobinSelector(List<T> list) {
+        super(list);
     }
 
     @Override
-    public T select(final List<T> list) {
-        if (list == null || list.isEmpty()) {
-            throw new IllegalArgumentException("list must not be null or empty");
-        }
-        int index = cursor.updateAndGet(i -> (i + 1) % list.size());
+    public T select() {
+        int index = cursor.updateAndGet(i -> (i + 1) % size);
         return list.get(index);
     }
 

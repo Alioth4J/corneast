@@ -25,8 +25,9 @@ import java.util.List;
  * @param <T> element type
  * @author Alioth Null
  */
+@FunctionalInterface
 public interface Selector<T> {
 
-    T select(List<T> list);
+    T select();
 
 }

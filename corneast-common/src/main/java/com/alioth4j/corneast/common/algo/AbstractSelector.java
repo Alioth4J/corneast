@@ -19,23 +19,23 @@
 package com.alioth4j.corneast.common.algo;
 
 import java.util.List;
-import java.util.concurrent.ThreadLocalRandom;
 
 /**
- * Randomly selects an element from a <code>java.util.List</code>.
+ * Abstract class for common fields and methods.
  * @param <T> element type
- * @implSpec keep thread-safe
  * @author Alioth Null
  */
-public final class RandomSelector<T> extends AbstractSelector<T> {
+public abstract class AbstractSelector<T> implements Selector<T> {
 
-    public RandomSelector(List<T> list) {
-        super(list);
-    }
+    protected final List<T> list;
+    protected final int size;
 
-    @Override
-    public T select() {
-        return list.get(ThreadLocalRandom.current().nextInt(size));
+    protected AbstractSelector(List<T> list) {
+        if (list == null || list.isEmpty()) {
+            throw new IllegalArgumentException("list must not be null or empty");
+        }
+        this.list = list;
+        this.size = list.size();
     }
 
 }

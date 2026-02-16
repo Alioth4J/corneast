@@ -53,12 +53,15 @@ public class ReduceWorkHandler implements WorkHandler<ReduceEvent>  {
 
     private int nodeSize;
 
+    private Selector<RedissonClient> selector;
+
     @PostConstruct
     public void init() {
         this.nodeSize = redissonClients.size();
         if (log.isDebugEnabled()) {
             log.debug("Initialized {} redissionClients", nodeSize);
         }
+        selector = new RandomSelector<>(redissonClients);
     }
 
     // reused objects
@@ -78,8 +81,6 @@ public class ReduceWorkHandler implements WorkHandler<ReduceEvent>  {
                                             end
                                             """;
 
-    private final Selector<RedissonClient> selector = new RandomSelector<>();
-
     @Override
     public void onEvent(ReduceEvent reduceEvent) throws Exception {
         String key = reduceEvent.getKey();
@@ -87,7 +88,7 @@ public class ReduceWorkHandler implements WorkHandler<ReduceEvent>  {
 
         ResponseProto.ResponseDTO responseDTO;
         // pick a redissonClient randomly
-        RedissonClient redissonClient = selector.select(redissonClients);
+        RedissonClient redissonClient = selector.select();
         long result = redissonClient.getScript().eval(RScript.Mode.READ_WRITE, luaScript, RScript.ReturnType.INTEGER, List.of(key));
         if (result == 1) {
             synchronized (builderLock) {
