@@ -36,7 +36,7 @@ import java.util.List;
 public class CorneastNioClientTests {
 
     @Test
-    void testSend() {
+    void testSendRegister() {
         RequestProto.RequestDTO registerReqDTO = new CorneastRequest(CorneastOperation.REGISTER, "", "key-register", 1000).instance;
 
         EurekaConsumer eurekaConsumer = new EurekaConsumer();
@@ -48,10 +48,9 @@ public class CorneastNioClientTests {
         config.setHost(instanceInfo.getHostName());
         config.setPort(instanceInfo.getPort());
 
-        CorneastNioClient corneastNioClient = CorneastNioClient.of(config);
-
         ResponseProto.ResponseDTO responseDTO = null;
         try {
+            CorneastNioClient corneastNioClient = CorneastNioClient.of(config);
             responseDTO = corneastNioClient.send(registerReqDTO);
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -61,6 +60,35 @@ public class CorneastNioClientTests {
         Assertions.assertEquals("", responseDTO.getId());
         Assertions.assertEquals("key-register", responseDTO.getRegisterRespDTO().getKey());
         Assertions.assertEquals(true, responseDTO.getRegisterRespDTO().getSuccess());
+    }
+
+    @Test
+    void testSendReduce() {
+        RequestProto.RequestDTO reduceReqDTO = new CorneastRequest(CorneastOperation.REDUCE, "", "key-register").instance;
+
+        EurekaConsumer eurekaConsumer = new EurekaConsumer();
+        List<InstanceInfo> instanceInfoList = eurekaConsumer.getInstanceInfos();
+        Selector<InstanceInfo> selector = new RandomSelector<>(instanceInfoList);
+        InstanceInfo instanceInfo = selector.select();
+
+        CorneastConfig config = new CorneastConfig();
+        config.setHost(instanceInfo.getHostName());
+        config.setPort(instanceInfo.getPort());
+
+        try {
+            CorneastNioClient corneastNioClient = CorneastNioClient.of(config);
+            for (int i = 0; i < 100; i++) {
+                ResponseProto.ResponseDTO responseDTO = corneastNioClient.send(reduceReqDTO);
+
+                Assertions.assertEquals(CorneastOperation.REDUCE, responseDTO.getType());
+                Assertions.assertEquals("", responseDTO.getId());
+                Assertions.assertEquals("key-register", responseDTO.getReduceRespDTO().getKey());
+                Assertions.assertEquals(true, responseDTO.getReduceRespDTO().getSuccess());
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 
 }

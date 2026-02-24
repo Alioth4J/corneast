@@ -1,6 +1,6 @@
 /*
  * Corneast
- * Copyright (C) 2025 Alioth Null
+ * Copyright (C) 2025-2026 Alioth Null
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,7 +23,10 @@ import com.alioth4j.corneast.client.serialize.NioDeserializer;
 import com.alioth4j.corneast.client.serialize.ProtobufSerializer;
 import com.alioth4j.corneast.common.proto.RequestProto;
 import com.alioth4j.corneast.common.proto.ResponseProto;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.io.Closeable;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
@@ -34,36 +37,88 @@ import java.nio.channels.SocketChannel;
  *
  * @author Alioth Null
  */
-public class CorneastNioClient {
+public class CorneastNioClient implements Closeable {
+
+    private static final Logger log = LoggerFactory.getLogger(CorneastNioClient.class);
 
     private final String host;
     private final int port;
+
+    private SocketChannel socketChannel;
+
+    private volatile boolean closed = false;
+
+    private final Object ioLock = new Object();
 
     private CorneastNioClient(String host, int port) {
         this.host = host;
         this.port = port;
     }
 
-    public static CorneastNioClient of(CorneastConfig config) {
+    public static CorneastNioClient of(CorneastConfig config) throws IOException {
         if (!config.validate()) {
             throw new IllegalArgumentException("CorneastConfig has not been completely set, current config: " + config);
         }
-        return new CorneastNioClient(config.getHost(), config.getPort());
+        CorneastNioClient instance = new CorneastNioClient(config.getHost(), config.getPort());
+        instance.openConnection();
+        log.info("SocketChannel has been initialized");
+        return instance;
     }
     
     public ResponseProto.ResponseDTO send(RequestProto.RequestDTO requestDTO) throws IOException {
         byte[] requestBinary = ProtobufSerializer.getInstance().serialize(requestDTO);
-        try (SocketChannel channel = SocketChannel.open()) {
-            // TODO
-            channel.configureBlocking(true);
-            channel.connect(new InetSocketAddress(host, port));
-
+        synchronized (ioLock) {
+            ensureConnected();
             ByteBuffer writeBuf = ByteBuffer.wrap(requestBinary);
             while (writeBuf.hasRemaining()) {
-                channel.write(writeBuf);
+                socketChannel.write(writeBuf);
             }
+            return NioDeserializer.getInstance().deserialize(socketChannel);
+        }
+    }
 
-            return NioDeserializer.getInstance().deserialize(channel);
+    private void ensureConnected() throws IOException {
+        if (closed) {
+            throw new IOException("SocketChannel has been closed");
+        }
+        if (socketChannel != null && socketChannel.isConnected()) {
+            return;
+        }
+        resetConnection();
+    }
+
+    private void resetConnection() throws IOException {
+        closeConnection();
+        openConnection();
+    }
+
+    private void closeConnection() {
+        closeQuietly(socketChannel);
+        socketChannel = null;
+    }
+
+    private void closeQuietly(Closeable closeable) {
+        if (closeable != null) {
+            try {
+                closeable.close();
+            } catch (IOException ignored) {
+            }
+        }
+    }
+
+    private void openConnection() throws IOException {
+        socketChannel = SocketChannel.open();
+        socketChannel.configureBlocking(true);
+        socketChannel.socket().setKeepAlive(true);
+        socketChannel.socket().setTcpNoDelay(true);
+        socketChannel.socket().connect(new InetSocketAddress(host, port));
+    }
+
+    @Override
+    public void close() {
+        synchronized (ioLock) {
+            closed = true;
+            closeConnection();
         }
     }
 
