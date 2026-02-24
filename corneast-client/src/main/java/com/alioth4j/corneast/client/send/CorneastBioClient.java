@@ -21,6 +21,7 @@ package com.alioth4j.corneast.client.send;
 import com.alioth4j.corneast.client.config.CorneastConfig;
 import com.alioth4j.corneast.client.serialize.BioDeserializer;
 import com.alioth4j.corneast.client.serialize.ProtobufSerializer;
+import com.alioth4j.corneast.client.util.IOUtil;
 import com.alioth4j.corneast.common.proto.RequestProto;
 import com.alioth4j.corneast.common.proto.ResponseProto;
 import org.slf4j.Logger;
@@ -107,22 +108,12 @@ public class CorneastBioClient implements Closeable {
     }
 
     private void closeConnection() {
-        closeQuietly(outputStream);
-        closeQuietly(inputStream);
-        closeQuietly(socket);
+        IOUtil.closeQuietly(outputStream);
+        IOUtil.closeQuietly(inputStream);
+        IOUtil.closeQuietly(socket);
         outputStream = null;
         inputStream = null;
         socket = null;
-    }
-
-    private void closeQuietly(Closeable closeable) {
-        if (closeable == null) {
-            return;
-        }
-        try {
-            closeable.close();
-        } catch (IOException ignored) {
-        }
     }
 
     private void openConnection() throws IOException {

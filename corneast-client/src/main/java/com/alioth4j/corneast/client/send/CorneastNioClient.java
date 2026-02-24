@@ -21,6 +21,7 @@ package com.alioth4j.corneast.client.send;
 import com.alioth4j.corneast.client.config.CorneastConfig;
 import com.alioth4j.corneast.client.serialize.NioDeserializer;
 import com.alioth4j.corneast.client.serialize.ProtobufSerializer;
+import com.alioth4j.corneast.client.util.IOUtil;
 import com.alioth4j.corneast.common.proto.RequestProto;
 import com.alioth4j.corneast.common.proto.ResponseProto;
 import org.slf4j.Logger;
@@ -93,17 +94,8 @@ public class CorneastNioClient implements Closeable {
     }
 
     private void closeConnection() {
-        closeQuietly(socketChannel);
+        IOUtil.closeQuietly(socketChannel);
         socketChannel = null;
-    }
-
-    private void closeQuietly(Closeable closeable) {
-        if (closeable != null) {
-            try {
-                closeable.close();
-            } catch (IOException ignored) {
-            }
-        }
     }
 
     private void openConnection() throws IOException {
