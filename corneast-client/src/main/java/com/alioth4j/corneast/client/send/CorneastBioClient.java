@@ -27,6 +27,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
+import java.net.InetSocketAddress;
 import java.net.Socket;
 
 /**
@@ -36,20 +37,24 @@ import java.net.Socket;
  *
  * @author Alioth Null
  */
-public class CorneastBioClient {
+public class CorneastBioClient implements Closeable {
 
     private static final Logger log = LoggerFactory.getLogger(CorneastBioClient.class);
 
-    /* server host */
     private final String host;
-
-    /* server port */
     private final int port;
+
+    // keep-alive socket
+    private Socket socket;
+    private OutputStream outputStream;
+    private InputStream inputStream;
+
+    private final Object ioLock = new Object();
+
+    private volatile boolean closed = false;
 
     /**
      * Private constructor, invoked by <code>of()</code>.
-     * @param host server host
-     * @param port server port
      */
     private CorneastBioClient(String host, int port) {
         this.host = host;
@@ -61,38 +66,79 @@ public class CorneastBioClient {
      * @param config config object
      * @return instance of <code>CorneastBioClient</code>
      */
-    public static CorneastBioClient of(CorneastConfig config) {
+    public static CorneastBioClient of(CorneastConfig config) throws IOException {
         if (!config.validate()) {
             throw new IllegalArgumentException("CorneastConfig has not been completely set, current config: " + config);
         }
-        return new CorneastBioClient(config.getHost(), config.getPort());
+
+        CorneastBioClient instance = new CorneastBioClient(config.getHost(), config.getPort());
+        instance.openConnection();
+        log.info("Initialized CorneastBioClient instance");
+        return instance;
     }
 
     /**
      * Sends requests to corneast-core, receiving responses.
-     * @param requestDTO request object
-     * @return response object
-     * @throws IOException if socket read or write fails
      */
     public ResponseProto.ResponseDTO send(RequestProto.RequestDTO requestDTO) throws IOException {
         byte[] binaryRequest = ProtobufSerializer.getInstance().serialize(requestDTO);
+        synchronized (ioLock) {
+            ensureConnected();
 
-        try (Socket socket = new Socket(host, port)) {
-//            // debug
-//            socket.setSoTimeout(5000);
+            outputStream.write(binaryRequest);
+            outputStream.flush();
+            return BioDeserializer.getInstance().deserialize(inputStream);
+        }
+    }
 
-            OutputStream out = socket.getOutputStream();
-            out.write(binaryRequest);
-            out.flush();
+    private void ensureConnected() throws IOException {
+        if (closed) {
+            throw new IOException("Socket has been closed");
+        }
+        if (socket != null && !socket.isClosed()) {
+            return;
+        }
+        resetConnection();
+    }
 
-            InputStream in = socket.getInputStream();
-            return BioDeserializer.getInstance().deserialize(in);
-        } catch (IOException e) {
-            log.error("I/O failure: {}", e.getMessage(), e);
-            throw e;
-        } catch (Exception e) {
-            log.error("Unexpected error: {}", e.getMessage(), e);
-            throw e;
+    private void resetConnection() throws IOException {
+        closeConnection();
+        openConnection();
+    }
+
+    private void closeConnection() {
+        closeQuietly(outputStream);
+        closeQuietly(inputStream);
+        closeQuietly(socket);
+        outputStream = null;
+        inputStream = null;
+        socket = null;
+    }
+
+    private void closeQuietly(Closeable closeable) {
+        if (closeable == null) {
+            return;
+        }
+        try {
+            closeable.close();
+        } catch (IOException ignored) {
+        }
+    }
+
+    private void openConnection() throws IOException {
+        socket = new Socket();
+        socket.setKeepAlive(true);
+        socket.setTcpNoDelay(true);
+        socket.connect(new InetSocketAddress(host, port));
+        outputStream = new BufferedOutputStream(socket.getOutputStream());
+        inputStream = socket.getInputStream();
+    }
+
+    @Override
+    public void close() {
+        synchronized (ioLock) {
+            closed = true;
+            closeConnection();
         }
     }
 
