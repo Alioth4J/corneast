@@ -1,6 +1,6 @@
 /*
  * Corneast
- * Copyright (C) 2025 Alioth Null
+ * Copyright (C) 2025-2026 Alioth Null
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -66,7 +66,6 @@ public final class AioDeserializer extends AbstractDeserializer {
             @Override
             public void completed(Integer bytesRead, Void att) {
                 if (bytesRead == -1) {
-                    closeQuietly(channel);
                     response.completeExceptionally(new IOException("Stream closed while reading length prefix"));
                     return;
                 }
@@ -80,7 +79,6 @@ public final class AioDeserializer extends AbstractDeserializer {
                 } else {
                     int length = state[0];
                     if (length < 0 || length > MAX_PAYLOAD_SIZE) {
-                        closeQuietly(channel);
                         response.completeExceptionally(new IOException("Invalid payload length: " + length));
                         return;
                     }
@@ -90,7 +88,6 @@ public final class AioDeserializer extends AbstractDeserializer {
 
             @Override
             public void failed(Throwable t, Void att) {
-                closeQuietly(channel);
                 response.completeExceptionally(t);
             }
         });
@@ -110,7 +107,6 @@ public final class AioDeserializer extends AbstractDeserializer {
             @Override
             public void completed(Integer bytesRead, Void att) {
                 if (bytesRead == -1) {
-                    closeQuietly(channel);
                     response.completeExceptionally(new IOException("Stream closed before full payload received"));
                     return;
                 }
@@ -123,29 +119,15 @@ public final class AioDeserializer extends AbstractDeserializer {
                         response.complete(resp);
                     } catch (Exception e) {
                         response.completeExceptionally(e);
-                    } finally {
-                        closeQuietly(channel);
                     }
                 }
             }
 
             @Override
             public void failed(Throwable t, Void att) {
-                closeQuietly(channel);
                 response.completeExceptionally(t);
             }
         });
-    }
-
-    /**
-     * Closes AIO channel quietly.
-     * @param channel AIO channel
-     */
-    private void closeQuietly(AsynchronousSocketChannel channel) {
-        try {
-            channel.close();
-        } catch (IOException ignored) {
-        }
     }
 
 }

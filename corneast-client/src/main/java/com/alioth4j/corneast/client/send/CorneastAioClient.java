@@ -1,6 +1,6 @@
 /*
  * Corneast
- * Copyright (C) 2025 Alioth Null
+ * Copyright (C) 2025-2026 Alioth Null
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,95 +26,160 @@ import com.alioth4j.corneast.common.proto.ResponseProto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.Closeable;
 import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.net.StandardSocketOptions;
 import java.nio.ByteBuffer;
 import java.nio.channels.AsynchronousSocketChannel;
 import java.nio.channels.CompletionHandler;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 /**
  * AIO client for sending requests and receiving responses.
  *
  * @author Alioth Null
  */
-public class CorneastAioClient {
+public class CorneastAioClient implements Closeable {
 
     private static final Logger log = LoggerFactory.getLogger(CorneastAioClient.class);
 
     private final String host;
     private final int port;
 
+    private volatile boolean closed = false;
+    private volatile boolean connected = false;
+
+    private AsynchronousSocketChannel aSocketChannel;
+    private CompletableFuture<Void> chainTail = CompletableFuture.completedFuture(null);
+
+    private final Object chainLock = new Object();
+    private final Object lifecycleLock = new Object();
+
     private CorneastAioClient(String host, int port) {
         this.host = host;
         this.port = port;
     }
 
-    public static CorneastAioClient of(CorneastConfig config) {
+    public static CorneastAioClient of(CorneastConfig config) throws IOException {
         if (!config.validate()) {
             throw new IllegalArgumentException("CorneastConfig has not been completely set, current config: " + config);
         }
-        return new CorneastAioClient(config.getHost(), config.getPort());
+        CorneastAioClient instance = new CorneastAioClient(config.getHost(), config.getPort());
+        instance.ensureConnected();
+        return instance;
     }
 
     public CompletableFuture<ResponseProto.ResponseDTO> send(RequestProto.RequestDTO requestDTO) throws IOException {
         byte[] requestBinary = ProtobufSerializer.getInstance().serialize(requestDTO);
-        ByteBuffer writeBuf = ByteBuffer.wrap(requestBinary);
+        CompletableFuture<ResponseProto.ResponseDTO> responseFuture = new CompletableFuture<>();
 
-        CompletableFuture<ResponseProto.ResponseDTO> outerResponse = new CompletableFuture<>();
-        try {
-            AsynchronousSocketChannel channel = AsynchronousSocketChannel.open();
-            CompletionHandler<Integer, Void> writeHandler = new CompletionHandler<>() {
-                @Override
-                public void completed(Integer integer, Void unused) {
-                    // write
-                    if (writeBuf.hasRemaining()) {
-                        channel.write(writeBuf, null, this);
-                        return;
-                    }
-
-                    // read
-                    CompletableFuture<ResponseProto.ResponseDTO> innerResponse = AioDeserializer.getInstance().deserialize(channel);
-                    innerResponse.whenComplete((responseDTO, throwable) -> {
-                        if (throwable != null) {
-                            closeQuietly(channel);
-                            outerResponse.completeExceptionally(throwable);
-                        } else {
-                            outerResponse.complete(responseDTO);
-                        }
-                    });
-                }
-
-                @Override
-                public void failed(Throwable t, Void unused) {
-                    closeQuietly(channel);
-                    outerResponse.completeExceptionally(t);
-                }
-            };
-            channel.connect(new InetSocketAddress(host, port), null, new CompletionHandler<Void, Void>() {
-                @Override
-                public void completed(Void unusedRes, Void unusedAtt) {
-                    // write
-                    channel.write(writeBuf, null, writeHandler);
-                }
-
-                @Override
-                public void failed(Throwable t, Void unusedAtt) {
-                    closeQuietly(channel);
-                    outerResponse.completeExceptionally(t);
-                }
-            });
-        } catch (IOException e) {
-            log.error("Error occurs during sending or receiving", e);
-            outerResponse.completeExceptionally(e);
+        synchronized (chainLock) {
+            chainTail = chainTail.thenCompose(ignored -> doSend(requestBinary, responseFuture));
         }
-        return outerResponse;
+        return responseFuture;
     }
 
-    private void closeQuietly(AsynchronousSocketChannel channel) {
+    private CompletableFuture<Void> doSend(byte[] requestBinary, CompletableFuture<ResponseProto.ResponseDTO> responseFuture) {
+        CompletableFuture<Void> marker = new CompletableFuture<>();
+
+        AsynchronousSocketChannel connectedASocketChannel;
         try {
-            channel.close();
-        } catch (IOException igonred) {
+            connectedASocketChannel = ensureConnected();
+        } catch (IOException e) {
+            responseFuture.completeExceptionally(e);
+            marker.complete(null);
+            handleChannelException(e);
+            return marker;
+        }
+
+        ByteBuffer writeBuf = ByteBuffer.wrap(requestBinary);
+        connectedASocketChannel.write(writeBuf, null, new CompletionHandler<Integer, Void>() {
+            @Override
+            public void completed(Integer result, Void attachment) {
+                if (writeBuf.hasRemaining()) {
+                    connectedASocketChannel.write(writeBuf, null, null);
+                } else {
+                    AioDeserializer.getInstance().deserialize(connectedASocketChannel)
+                            .whenComplete((responseDTO, throwable) -> {
+                                if (throwable != null) {
+                                    responseFuture.completeExceptionally(throwable);
+                                    handleChannelException(throwable);
+                                } else {
+                                    responseFuture.complete(responseDTO);
+                                }
+                                marker.complete(null);
+                            });
+                }
+            }
+
+            @Override
+            public void failed(Throwable t, Void attachment) {
+                responseFuture.completeExceptionally(t);
+                handleChannelException(t);
+                marker.complete(null);
+            }
+        });
+
+        return marker;
+    }
+
+    private AsynchronousSocketChannel ensureConnected() throws IOException {
+        synchronized (lifecycleLock) {
+            if (closed) {
+                throw new IOException("CorneastAioClient has been closed");
+            }
+            if (aSocketChannel != null && aSocketChannel.isOpen() && connected) {
+                return aSocketChannel;
+            }
+            resetChannel();
+
+            try {
+                aSocketChannel = AsynchronousSocketChannel.open();
+                aSocketChannel.setOption(StandardSocketOptions.SO_KEEPALIVE, true);
+                aSocketChannel.setOption(StandardSocketOptions.TCP_NODELAY, true);
+                aSocketChannel.connect(new InetSocketAddress(host, port)).get();
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                resetChannel();
+                throw new IOException("Interrupted while connecting", e);
+            } catch (ExecutionException e) {
+                resetChannel();
+                Throwable cause = e.getCause() == null ? e : e.getCause();
+                throw new IOException("Failed to connect", cause);
+            } finally {
+                connected = true;
+            }
+            return aSocketChannel;
+        }
+    }
+
+    private void handleChannelException(Throwable t) {
+        log.warn("AIO fails: {}", t.getMessage());
+        log.warn("Resetting AsynchronousSocketChannel...");
+        synchronized (lifecycleLock) {
+            resetChannel();
+        }
+    }
+
+    private void resetChannel() {
+        AsynchronousSocketChannel current = aSocketChannel;
+        aSocketChannel = null;
+        connected = false;
+        if (current != null) {
+            try {
+                current.close();
+            } catch (IOException ignored) {
+            }
+        }
+    }
+
+    @Override
+    public void close() {
+        synchronized (lifecycleLock) {
+            closed = true;
+            resetChannel();
         }
     }
 

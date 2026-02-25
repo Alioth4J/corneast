@@ -38,7 +38,7 @@ import java.util.concurrent.ExecutionException;
 public class CorneastAioClientTests {
 
     @Test
-    void testSend() {
+    void testSendRegister() {
         RequestProto.RequestDTO registerReqDTO = new CorneastRequest(CorneastOperation.REGISTER, "", "key-register", 1000).instance;
 
         EurekaConsumer eurekaConsumer = new EurekaConsumer();
@@ -46,16 +46,13 @@ public class CorneastAioClientTests {
         Selector<InstanceInfo> selector = new RandomSelector<>(instanceInfoList);
         InstanceInfo instanceInfo = selector.select();
 
-
         CorneastConfig config = new CorneastConfig();
         config.setHost(instanceInfo.getHostName());
         config.setPort(instanceInfo.getPort());
 
-        CorneastAioClient corneastAioClient = CorneastAioClient.of(config);
-
         CompletableFuture<ResponseProto.ResponseDTO> responseFuture = null;
         ResponseProto.ResponseDTO responseDTO = null;
-        try {
+        try (CorneastAioClient corneastAioClient = CorneastAioClient.of(config)) {
             responseFuture = corneastAioClient.send(registerReqDTO);
             responseDTO = responseFuture.get();
         } catch (IOException | InterruptedException e) {
@@ -68,6 +65,39 @@ public class CorneastAioClientTests {
         Assertions.assertEquals("", responseDTO.getId());
         Assertions.assertEquals("key-register", responseDTO.getRegisterRespDTO().getKey());
         Assertions.assertEquals(true, responseDTO.getRegisterRespDTO().getSuccess());
+    }
+
+    @Test
+    void testSendReduce() {
+        RequestProto.RequestDTO reduceReqDTO = new CorneastRequest(CorneastOperation.REDUCE, "", "key-register").instance;
+
+        EurekaConsumer eurekaConsumer = new EurekaConsumer();
+        List<InstanceInfo> instanceInfoList = eurekaConsumer.getInstanceInfos();
+        Selector<InstanceInfo> selector = new RandomSelector<>(instanceInfoList);
+        InstanceInfo instanceInfo = selector.select();
+
+        CorneastConfig config = new CorneastConfig();
+        config.setHost(instanceInfo.getHostName());
+        config.setPort(instanceInfo.getPort());
+
+        CompletableFuture<ResponseProto.ResponseDTO> responseFuture = null;
+        ResponseProto.ResponseDTO responseDTO = null;
+        try (CorneastAioClient corneastAioClient = CorneastAioClient.of(config)) {
+            for (int i = 0; i < 100; i++) {
+                responseFuture = corneastAioClient.send(reduceReqDTO);
+                responseDTO = responseFuture.get();
+
+                Assertions.assertEquals(CorneastOperation.REDUCE, responseDTO.getType());
+                Assertions.assertEquals("", responseDTO.getId());
+                Assertions.assertEquals("key-register", responseDTO.getReduceRespDTO().getKey());
+                Assertions.assertEquals(true, responseDTO.getReduceRespDTO().getSuccess());
+            }
+        } catch (IOException | InterruptedException e) {
+            throw new RuntimeException(e);
+        } catch (ExecutionException e) {
+            throw new RuntimeException(e.getCause());
+        }
+
     }
 
 }
