@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>com.alioth4j</groupId>
+    <artifactId>corneast</artifactId>
+    <version>3.15.0</version>
+    <relativePath>../pom.xml</relativePath>
+  </parent>
+
+  <groupId>com.alioth4j</groupId>
+  <artifactId>corneast-test-jmeter</artifactId>
+  <packaging>jar</packaging>
+  <version>3.15.0</version>
+
+  <dependencies>
+    <dependency>
+      <groupId>com.alioth4j</groupId>
+      <artifactId>corneast-client</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.jmeter</groupId>
+      <artifactId>ApacheJMeter_core</artifactId>
+      <version>5.1.1</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.jmeter</groupId>
+      <artifactId>ApacheJMeter_java</artifactId>
+      <version>5.1.1</version>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-maven-plugin</artifactId>
+        <configuration>
+          <skip>true</skip>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+</project>
