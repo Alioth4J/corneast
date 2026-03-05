@@ -17,9 +17,6 @@
     <description>corneast client module</description>
     <packaging>jar</packaging>
 
-    <properties>
-    </properties>
-
     <dependencies>
         <dependency>
             <groupId>com.alioth4j</groupId>
