@@ -8,7 +8,7 @@ Corneast is a distributed token middleware.
 - corneast-deploy
 - corneast-docs
 - corneast-eureka
-- corneast-test
+- corneast-test-jmeter
 
 ## Building
 Run `./mvnw clean install -DskipTests` from the root directory of the project.  
