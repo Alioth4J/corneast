@@ -31,30 +31,30 @@ import org.springframework.stereotype.Component;
  *
  * @author Alioth Null
  */
-@Aspect
-@Component
+//@Aspect
+//@Component
 public class RequestLoggingAspect {
 
-    private static final Logger log = LoggerFactory.getLogger(RequestLoggingAspect.class);
-
-    @Around("execution(* com.alioth4j.corneast_core.strategy.impl.RegisterRequestHandlingStrategy.handle(..)) || " +
-            "execution(* com.alioth4j.corneast_core.strategy.impl.ReduceRequestHandlingStrategy.handle(..)) || " +
-            "execution(* com.alioth4j.corneast_core.strategy.impl.QueryRequestHandlingStrategy.handle(..)) || " +
-            "execution(* com.alioth4j.corneast_core.strategy.impl.ReleaseRequestHandlingStrategy.handle(..))")
-    public Object logRequest(ProceedingJoinPoint joinPoint) throws Throwable {
-        Object[] args = joinPoint.getArgs();
-        RequestProto.RequestDTO requestDTO = (RequestProto.RequestDTO) args[0];
-        if (log.isInfoEnabled()) {
-            log.info("Received request: id = {}", requestDTO.getId());
-        }
-        Object result;
-        try {
-            result = joinPoint.proceed();
-        } catch (Throwable t) {
-            log.error("Error processing request: id = {}", requestDTO.getId(), t);
-            throw t;
-        }
-        return result;
-    }
+//    private static final Logger log = LoggerFactory.getLogger(RequestLoggingAspect.class);
+//
+//    @Around("execution(* com.alioth4j.corneast_core.strategy.impl.RegisterRequestHandlingStrategy.handle(..)) || " +
+//            "execution(* com.alioth4j.corneast_core.strategy.impl.ReduceRequestHandlingStrategy.handle(..)) || " +
+//            "execution(* com.alioth4j.corneast_core.strategy.impl.QueryRequestHandlingStrategy.handle(..)) || " +
+//            "execution(* com.alioth4j.corneast_core.strategy.impl.ReleaseRequestHandlingStrategy.handle(..))")
+//    public Object logRequest(ProceedingJoinPoint joinPoint) throws Throwable {
+//        Object[] args = joinPoint.getArgs();
+//        RequestProto.RequestDTO requestDTO = (RequestProto.RequestDTO) args[0];
+//        if (log.isInfoEnabled()) {
+//            log.info("Received request: id = {}", requestDTO.getId());
+//        }
+//        Object result;
+//        try {
+//            result = joinPoint.proceed();
+//        } catch (Throwable t) {
+//            log.error("Error processing request: id = {}", requestDTO.getId(), t);
+//            throw t;
+//        }
+//        return result;
+//    }
 
 }

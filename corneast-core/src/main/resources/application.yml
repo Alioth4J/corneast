@@ -53,7 +53,7 @@ netty:
     nThreads: 1
     soBacklog: 1024
     soReuseAddr: true
-    logLevel: INFO
+    logLevel: WARN
   workerGroup:
     nThreads: 80
     keepAlive: false

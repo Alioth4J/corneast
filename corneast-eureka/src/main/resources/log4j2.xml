@@ -9,7 +9,7 @@
 <!--        </File>-->
     </Appenders>
     <Loggers>
-        <AsyncRoot level="info">
+        <AsyncRoot level="warn">
             <AppenderRef ref="Console" />
         </AsyncRoot>
     </Loggers>

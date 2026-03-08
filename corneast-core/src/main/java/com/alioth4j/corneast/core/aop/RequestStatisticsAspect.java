@@ -31,32 +31,32 @@ import org.springframework.stereotype.Component;
  *
  * @author Alioth Null
  */
-@Aspect
-@Component
+//@Aspect
+//@Component
 public class RequestStatisticsAspect {
 
-    private static final Logger log = LoggerFactory.getLogger(RequestStatisticsAspect.class);
-
-    @Around("execution(* com.alioth4j.corneast_core.strategy.impl.RegisterRequestHandlingStrategy.handle(..)) || " +
-            "execution(* com.alioth4j.corneast_core.strategy.impl.ReduceRequestHandlingStrategy.handle(..)) || " +
-            "execution(* com.alioth4j.corneast_core.strategy.impl.QueryRequestHandlingStrategy.handle(..)) || " +
-            "execution(* com.alioth4j.corneast_core.strategy.impl.ReleaseRequestHandlingStrategy.handle(..))")
-    public Object statRequest(ProceedingJoinPoint joinPoint) throws Throwable {
-        Object[] args = joinPoint.getArgs();
-        RequestProto.RequestDTO requestDTO = (RequestProto.RequestDTO) args[0];
-
-        long startTime = System.nanoTime();
-        Object result;
-        try {
-            result = joinPoint.proceed();
-            if (log.isInfoEnabled()) {
-                log.info("Stated Request: id = {}; processedTime = {}ns", requestDTO.getId(), System.nanoTime() - startTime);
-            }
-        } catch (Throwable t) {
-            log.error("Error stat request: id = {},", requestDTO.getId(), t);
-            throw t;
-        }
-        return result;
-    }
+//    private static final Logger log = LoggerFactory.getLogger(RequestStatisticsAspect.class);
+//
+//    @Around("execution(* com.alioth4j.corneast_core.strategy.impl.RegisterRequestHandlingStrategy.handle(..)) || " +
+//            "execution(* com.alioth4j.corneast_core.strategy.impl.ReduceRequestHandlingStrategy.handle(..)) || " +
+//            "execution(* com.alioth4j.corneast_core.strategy.impl.QueryRequestHandlingStrategy.handle(..)) || " +
+//            "execution(* com.alioth4j.corneast_core.strategy.impl.ReleaseRequestHandlingStrategy.handle(..))")
+//    public Object statRequest(ProceedingJoinPoint joinPoint) throws Throwable {
+//        Object[] args = joinPoint.getArgs();
+//        RequestProto.RequestDTO requestDTO = (RequestProto.RequestDTO) args[0];
+//
+//        long startTime = System.nanoTime();
+//        Object result;
+//        try {
+//            result = joinPoint.proceed();
+//            if (log.isInfoEnabled()) {
+//                log.info("Stated Request: id = {}; processedTime = {}ns", requestDTO.getId(), System.nanoTime() - startTime);
+//            }
+//        } catch (Throwable t) {
+//            log.error("Error stat request: id = {},", requestDTO.getId(), t);
+//            throw t;
+//        }
+//        return result;
+//    }
 
 }
