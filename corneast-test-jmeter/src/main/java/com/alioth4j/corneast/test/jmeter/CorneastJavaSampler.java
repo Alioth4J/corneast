@@ -19,6 +19,10 @@
 package com.alioth4j.corneast.test.jmeter;
 
 import java.io.IOException;
+import java.util.List;
+
+import com.alioth4j.corneast.common.algo.RandomSelector;
+import com.alioth4j.corneast.common.algo.Selector;
 import org.apache.jmeter.protocol.java.sampler.AbstractJavaSamplerClient;
 import org.apache.jmeter.protocol.java.sampler.JavaSamplerContext;
 import org.apache.jmeter.samplers.SampleResult;
@@ -31,7 +35,19 @@ import com.alioth4j.corneast.common.proto.ResponseProto;
 
 public class CorneastJavaSampler extends AbstractJavaSamplerClient {
 
-    private final RequestProto.RequestDTO reduceReqDTO = new CorneastRequest(CorneastOperation.REDUCE, "", "key-register").instance;
+    private final List<RequestProto.RequestDTO> reduceReqDTOList = List.of(
+            new CorneastRequest(CorneastOperation.REDUCE, "", "key-test-0").instance,
+            new CorneastRequest(CorneastOperation.REDUCE, "", "key-test-1").instance,
+            new CorneastRequest(CorneastOperation.REDUCE, "", "key-test-2").instance,
+            new CorneastRequest(CorneastOperation.REDUCE, "", "key-test-3").instance,
+            new CorneastRequest(CorneastOperation.REDUCE, "", "key-test-4").instance,
+            new CorneastRequest(CorneastOperation.REDUCE, "", "key-test-5").instance,
+            new CorneastRequest(CorneastOperation.REDUCE, "", "key-test-6").instance,
+            new CorneastRequest(CorneastOperation.REDUCE, "", "key-test-7").instance,
+            new CorneastRequest(CorneastOperation.REDUCE, "", "key-test-8").instance,
+            new CorneastRequest(CorneastOperation.REDUCE, "", "key-test-9").instance);
+
+    private final Selector<RequestProto.RequestDTO> selector = new RandomSelector<>(reduceReqDTOList);
 
     private final CorneastNioClient corneastNioClient;
 
@@ -52,7 +68,7 @@ public class CorneastJavaSampler extends AbstractJavaSamplerClient {
         result.sampleStart();
 
         try {
-            ResponseProto.ResponseDTO responseDTO = corneastNioClient.send(reduceReqDTO);
+            ResponseProto.ResponseDTO responseDTO = corneastNioClient.send(selector.select());
 
             if (responseDTO.getReduceRespDTO().getSuccess()) {
                 result.setResponseData("Success", "UTF-8");
