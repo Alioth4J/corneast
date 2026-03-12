@@ -3,22 +3,33 @@ Working directory: `corneast/corneast-deploy`
 
 > Note: Use custom configurations.  
 
-## Idempotent
+## All in One / Rebuild
+```bash
+sudo sh docker-rebuild.sh
+```
+
+## Deploy Parts
+### Idempotent
 ```bash
 ./deploy-idempotent.sh <N>
 ```
 
-## Storage
+### Storage
 Create network manually:  
 ```bash
 docker network create corneast-storage-network
 ```
-### Master-slave
+#### Master-slave
 ```bash
 ./deploy-storage-clusters.sh <CLUSTER_COUNT> <SLAVE_COUNT>
 ```
 
-### Sentinel
+#### Sentinel
 ```bash
 ./deploy-storage-sentinels.sh <SENTINEL_COUNT>
+```
+
+## Startup
+```bash
+sudo sh docker-startup.sh
 ```
