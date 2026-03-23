@@ -91,4 +91,31 @@ public class CorneastNioClientTests {
 
     }
 
+    @Test
+    void testSendQuery() {
+        RequestProto.RequestDTO registerReqDTO = new CorneastRequest(CorneastOperation.QUERY, "", "key-register").instance;
+
+        EurekaConsumer eurekaConsumer = new EurekaConsumer();
+        List<InstanceInfo> instanceInfoList = eurekaConsumer.getInstanceInfos();
+        Selector<InstanceInfo> selector = new RandomSelector<>(instanceInfoList);
+        InstanceInfo instanceInfo = selector.select();
+
+        CorneastConfig config = new CorneastConfig();
+        config.setHost(instanceInfo.getHostName());
+        config.setPort(instanceInfo.getPort());
+
+        ResponseProto.ResponseDTO responseDTO = null;
+        try {
+            CorneastNioClient corneastNioClient = CorneastNioClient.of(config);
+            responseDTO = corneastNioClient.send(registerReqDTO);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        Assertions.assertEquals(CorneastOperation.QUERY, responseDTO.getType());
+        Assertions.assertEquals("", responseDTO.getId());
+        Assertions.assertEquals("key-register", responseDTO.getQueryRespDTO().getKey());
+//        Assertions.assertEquals(1000L, responseDTO.getQueryRespDTO().getRemainingTokenCount());
+    }
+
 }

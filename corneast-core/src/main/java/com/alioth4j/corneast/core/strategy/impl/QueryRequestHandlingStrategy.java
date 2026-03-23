@@ -22,8 +22,8 @@ import com.alioth4j.corneast.common.operation.CorneastOperation;
 import com.alioth4j.corneast.common.proto.RequestProto;
 import com.alioth4j.corneast.common.proto.ResponseProto;
 import com.alioth4j.corneast.core.strategy.RequestHandlingStrategy;
-import org.redisson.api.RScript;
 import org.redisson.api.RedissonClient;
+import org.redisson.client.codec.StringCodec;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
@@ -53,15 +53,6 @@ public class QueryRequestHandlingStrategy implements RequestHandlingStrategy {
 
     private final Object builderLock = new Object();
 
-    private static final String luaScript = """
-                                            local current = redis.call('GET', KEYS[1])
-                                            if current == nil then
-                                                return 0
-                                            else
-                                                return tonumber(current)
-                                            end
-                                            """;
-
     @Override
     public CompletableFuture<ResponseProto.ResponseDTO> handle(RequestProto.RequestDTO requestDTO) {
         return CompletableFuture.supplyAsync(() -> {
@@ -70,7 +61,8 @@ public class QueryRequestHandlingStrategy implements RequestHandlingStrategy {
             String key = requestDTO.getQueryReqDTO().getKey();
             long totalTokenCount = 0;
             for (RedissonClient redissonClient : redissonClients) {
-                totalTokenCount += (long) redissonClient.getScript().eval(RScript.Mode.READ_ONLY, luaScript, RScript.ReturnType.INTEGER, List.of(key));
+                String value = redissonClient.<String>getBucket(key, StringCodec.INSTANCE).get();
+                totalTokenCount += value == null ? 0L : Long.parseLong(value);
             }
             synchronized (builderLock) {
                 return responseBuilder
