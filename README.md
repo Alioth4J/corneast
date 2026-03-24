@@ -1,5 +1,5 @@
 # Corneast
-Corneast is a distributed token middleware.  
+Corneast is an AP distributed token middleware.  
 
 ## Modules
 - corneast-client
