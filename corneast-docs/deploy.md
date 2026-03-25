@@ -122,7 +122,31 @@ sudo docker exec -it corneast-idempotent-6000 \
   corneast-idempotent-6000:6379 \
   corneast-idempotent-6001:6379 \
   corneast-idempotent-6002:6379 \
+  corneast-idempotent-6003:6379 \
+  corneast-idempotent-6004:6379 \
+  corneast-idempotent-6005:6379 \
+  --cluster-replicas 1
+```
+
+or  
+
+```bash
+sudo docker exec -it corneast-idempotent-6000 \
+  redis-cli --cluster create \
+  corneast-idempotent-6000:6379 \
+  corneast-idempotent-6001:6379 \
+  corneast-idempotent-6002:6379 \
   --cluster-replicas 0
+```
+
+```bash
+redis-cli --cluster add-node <slave-ip>:<slave-port> <master-ip>:<master-port> --cluster-slave
+```
+
+#### Check Cluster Status
+```bash
+sudo docker exec -it corneast-idempotent-6000 \
+  redis-cli -c cluster info
 ```
 
 ### Start/Stop/Remove Commands

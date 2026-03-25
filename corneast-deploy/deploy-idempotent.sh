@@ -23,5 +23,4 @@ done
 HOSTS=$(for i in $(seq 0 $((N-1))); do PORT=$((BASE+i)); echo -n "corneast-idempotent-$PORT:6379 "; done)
 
 docker exec corneast-idempotent-$BASE \
-    redis-cli --cluster create $HOSTS --cluster-replicas 0 --cluster-yes
-
+    redis-cli --cluster create $HOSTS --cluster-replicas 1 --cluster-yes
