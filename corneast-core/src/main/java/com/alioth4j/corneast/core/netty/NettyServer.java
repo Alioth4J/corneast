@@ -1,6 +1,6 @@
 /*
  * Corneast
- * Copyright (C) 2025 Alioth Null
+ * Copyright (C) 2025-2026 Alioth Null
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -71,6 +71,9 @@ public class NettyServer {
     @Autowired
     private IdempotentHandler idempotentHandler;
 
+    @Autowired
+    private BackPressureHandler backPressureHandler;
+
     private List<NettyCustomHandler> customHandlers;
 
     @Autowired
@@ -84,6 +87,7 @@ public class NettyServer {
         final NettyConfigProperties.WorkerGroup workerGroupConfigProperties = configProperties.getWorkerGroup();
         final NettyConfigProperties.WorkerGroup.Allocator allocator = workerGroupConfigProperties.getAllocator();
         final NettyConfigProperties.WorkerGroup.RcvBufAllocator rcvBufAllocator = workerGroupConfigProperties.getRcvBufAllocator();
+        final NettyConfigProperties.WorkerGroup.WriteBufferWaterMark writeBufferWaterMarkConfig = workerGroupConfigProperties.getWriteBufferWaterMark();
         serverThread = new Thread(() -> {
             bossGroup = new NioEventLoopGroup(bossGroupConfigProperties.getNThreads());
             workerGroup = new NioEventLoopGroup(workerGroupConfigProperties.getNThreads());
@@ -96,6 +100,7 @@ public class NettyServer {
                         .handler(new LoggingHandler(bossGroupConfigProperties.getLogLevel()))
                         .childOption(ChannelOption.SO_KEEPALIVE, workerGroupConfigProperties.isKeepAlive())
                         .childOption(ChannelOption.TCP_NODELAY, workerGroupConfigProperties.isTcpNodelay())
+                        .childOption(ChannelOption.AUTO_READ, false)
                         .childOption(ChannelOption.ALLOCATOR,
                                 new PooledByteBufAllocator(allocator.isPreferDirect(),
                                                            allocator.getNHeapArena(),
@@ -106,12 +111,13 @@ public class NettyServer {
                                 new AdaptiveRecvByteBufAllocator(rcvBufAllocator.getMinimum(),
                                                                  rcvBufAllocator.getInitial(),
                                                                  rcvBufAllocator.getMaximum()))
+                        .childOption(ChannelOption.WRITE_BUFFER_WATER_MARK,
+                                new WriteBufferWaterMark(writeBufferWaterMarkConfig.getLow(), writeBufferWaterMarkConfig.getHigh()))
                         .childHandler(new ChannelInitializer<SocketChannel>() {
                             @Override
                             protected void initChannel(SocketChannel ch) {
-                                // outbound protobuf serializers
-                                ch.pipeline().addLast(new ProtobufVarint32LengthFieldPrepender());
-                                ch.pipeline().addLast(new ProtobufEncoder());
+                                // back pressure handler
+                                ch.pipeline().addLast(backPressureHandler);
 
                                 // rate limiting
                                 ch.pipeline().addLast(rateLimitingHandler);
@@ -119,6 +125,10 @@ public class NettyServer {
                                 // inbound protobuf deserializer
                                 ch.pipeline().addLast(new ProtobufVarint32FrameDecoder());
                                 ch.pipeline().addLast(new ProtobufDecoder(RequestProto.RequestDTO.getDefaultInstance()));
+
+                                // outbound protobuf serializers
+                                ch.pipeline().addLast(new ProtobufVarint32LengthFieldPrepender());
+                                ch.pipeline().addLast(new ProtobufEncoder());
 
                                 // idempotent handler
                                 ch.pipeline().addLast(idempotentHandler);

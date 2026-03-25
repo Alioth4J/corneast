@@ -71,3 +71,6 @@ netty:
       minimum: 64
       initial: 8192
       maximum: 65535
+    writeBufferWaterMark:
+      low: 8388608
+      high: 16777216

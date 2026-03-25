@@ -1,6 +1,6 @@
 /*
  * Corneast
- * Copyright (C) 2025 Alioth Null
+ * Copyright (C) 2025-2026 Alioth Null
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -127,6 +127,7 @@ public class NettyConfigProperties {
         private boolean tcpNodelay = true;
         private Allocator allocator;
         private RcvBufAllocator rcvBufAllocator;
+        private WriteBufferWaterMark writeBufferWaterMark;
 
         public WorkerGroup() {
         }
@@ -169,6 +170,14 @@ public class NettyConfigProperties {
 
         public void setRcvBufAllocator(RcvBufAllocator rcvBufAllocator) {
             this.rcvBufAllocator = rcvBufAllocator;
+        }
+
+        public WriteBufferWaterMark getWriteBufferWaterMark() {
+            return writeBufferWaterMark;
+        }
+
+        public void setWriteBufferWaterMark(WriteBufferWaterMark writeBufferWaterMark) {
+            this.writeBufferWaterMark = writeBufferWaterMark;
         }
 
         public static class Allocator {
@@ -255,6 +264,32 @@ public class NettyConfigProperties {
 
             public void setMaximum(int maximum) {
                 this.maximum = maximum;
+            }
+
+        }
+
+        public static class WriteBufferWaterMark {
+
+            private int low = 8 * 1024 * 1024;
+            private int high = 16 * 1024 * 1024;
+
+            public WriteBufferWaterMark() {
+            }
+
+            public int getLow() {
+                return low;
+            }
+
+            public void setLow(int low) {
+                this.low = low;
+            }
+
+            public int getHigh() {
+                return high;
+            }
+
+            public void setHigh(int high) {
+                this.high = high;
             }
 
         }
