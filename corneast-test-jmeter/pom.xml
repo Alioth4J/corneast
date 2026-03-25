@@ -5,13 +5,13 @@
   <parent>
     <groupId>com.alioth4j</groupId>
     <artifactId>corneast</artifactId>
-    <version>3.17.0</version>
+    <version>3.18.0</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
   <groupId>com.alioth4j</groupId>
   <artifactId>corneast-test-jmeter</artifactId>
-  <version>3.17.0</version>
+  <version>3.18.0</version>
   <name>corneast-test-jmeter</name>
   <description>corneast jmeter test module</description>
   <packaging>jar</packaging>
