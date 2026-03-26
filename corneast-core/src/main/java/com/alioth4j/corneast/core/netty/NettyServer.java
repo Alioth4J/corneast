@@ -79,6 +79,9 @@ public class NettyServer {
     @Autowired
     private RequestRouteHandler requestRouteHandler;
 
+    @Autowired
+    private GlobalExceptionHandler globalExceptionHandler;
+
     @PostConstruct
     public void start() {
         log.info("Netty server is starting...");
@@ -140,6 +143,9 @@ public class NettyServer {
 
                                 // route handler
                                 ch.pipeline().addLast(requestRouteHandler);
+
+                                // global exception handler
+                                ch.pipeline().addLast(globalExceptionHandler);
                             }
                         });
                 channelFuture = bootstrap.bind(configProperties.getPort()).sync();
