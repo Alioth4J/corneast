@@ -65,6 +65,7 @@ public class NettyServer {
 
     private Thread serverThread;
 
+    /* Handlers start */
     @Autowired
     private RateLimitingHandler rateLimitingHandler;
 
@@ -81,6 +82,7 @@ public class NettyServer {
 
     @Autowired
     private GlobalExceptionHandler globalExceptionHandler;
+    /* Handlers end */
 
     @PostConstruct
     public void start() {
@@ -96,7 +98,7 @@ public class NettyServer {
             workerGroup = new NioEventLoopGroup(workerGroupConfigProperties.getNThreads());
             try {
                 ServerBootstrap bootstrap = new ServerBootstrap();
-                bootstrap.group(this.bossGroup, workerGroup)
+                bootstrap.group(bossGroup, workerGroup)
                         .channel(NioServerSocketChannel.class)
                         .option(ChannelOption.SO_BACKLOG, bossGroupConfigProperties.getSoBacklog())
                         .option(ChannelOption.SO_REUSEADDR, bossGroupConfigProperties.isSoReuseAddr())
@@ -119,32 +121,32 @@ public class NettyServer {
                         .childHandler(new ChannelInitializer<SocketChannel>() {
                             @Override
                             protected void initChannel(SocketChannel ch) {
-                                // back pressure handler
+                                // back pressure handler (inbound)
                                 ch.pipeline().addLast(backPressureHandler);
 
-                                // rate limiting
+                                // rate limiting handler (inbound)
                                 ch.pipeline().addLast(rateLimitingHandler);
 
-                                // inbound protobuf deserializer
+                                // protobuf deserializers (inbound)
                                 ch.pipeline().addLast(new ProtobufVarint32FrameDecoder());
                                 ch.pipeline().addLast(new ProtobufDecoder(RequestProto.RequestDTO.getDefaultInstance()));
 
-                                // outbound protobuf serializers
+                                // protobuf serializers (outbound)
                                 ch.pipeline().addLast(new ProtobufVarint32LengthFieldPrepender());
                                 ch.pipeline().addLast(new ProtobufEncoder());
 
-                                // idempotent handler
+                                // idempotent handler (inbound)
                                 ch.pipeline().addLast(idempotentHandler);
 
-                                // custom handlers
+                                // custom handlers (inbound and outbound)
                                 for (ChannelHandler customHandler : customHandlers) {
                                     ch.pipeline().addLast(customHandler);
                                 }
 
-                                // route handler
+                                // route handler (inbound)
                                 ch.pipeline().addLast(requestRouteHandler);
 
-                                // global exception handler
+                                // global exception handler (inbound)
                                 ch.pipeline().addLast(globalExceptionHandler);
                             }
                         });
