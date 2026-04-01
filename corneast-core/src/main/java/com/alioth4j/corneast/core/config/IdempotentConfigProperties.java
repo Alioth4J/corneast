@@ -1,6 +1,6 @@
 /*
  * Corneast
- * Copyright (C) 2025 Alioth Null
+ * Copyright (C) 2025-2026 Alioth Null
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,6 +27,9 @@ public class IdempotentConfigProperties {
 
     private List<String> redisEndpoints;
 
+    private int masterConnectionPoolSize;
+    private int slaveConnectionPoolSize;
+
     public IdempotentConfigProperties() {
     }
 
@@ -40,6 +43,22 @@ public class IdempotentConfigProperties {
 
     public void setRedisEndpoints(List<String> redisEndpoints) {
         this.redisEndpoints = redisEndpoints;
+    }
+
+    public int getMasterConnectionPoolSize() {
+        return masterConnectionPoolSize;
+    }
+
+    public void setMasterConnectionPoolSize(int masterConnectionPoolSize) {
+        this.masterConnectionPoolSize = masterConnectionPoolSize;
+    }
+
+    public int getSlaveConnectionPoolSize() {
+        return slaveConnectionPoolSize;
+    }
+
+    public void setSlaveConnectionPoolSize(int slaveConnectionPoolSize) {
+        this.slaveConnectionPoolSize = slaveConnectionPoolSize;
     }
 
 }

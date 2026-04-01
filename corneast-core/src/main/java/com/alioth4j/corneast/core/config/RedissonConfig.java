@@ -1,6 +1,6 @@
 /*
  * Corneast
- * Copyright (C) 2025 Alioth Null
+ * Copyright (C) 2025-2026 Alioth Null
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -48,6 +48,8 @@ public class RedissonConfig {
         int database = storageConfigProperties.getDatabase();
         int timeout = storageConfigProperties.getTimeout();
         int connectTimeout = storageConfigProperties.getConnectTimeout();
+        int masterConnectionPoolSize = storageConfigProperties.getMasterConnectionPoolSize();
+        int slaveConnectionPoolSize = storageConfigProperties.getSlaveConnectionPoolSize();
         List<RedissonClient> redissonClients = new ArrayList<>();
         for (String master : masters) {
             Config config = new Config();
@@ -57,7 +59,11 @@ public class RedissonConfig {
                     .setDatabase(database)
                     .setTimeout(timeout)
                     .setConnectTimeout(connectTimeout)
-                    .setReadMode(ReadMode.SLAVE);
+                    .setReadMode(ReadMode.SLAVE)
+                    .setMasterConnectionPoolSize(masterConnectionPoolSize)
+                    .setMasterConnectionMinimumIdleSize(masterConnectionPoolSize / 10)
+                    .setSlaveConnectionPoolSize(slaveConnectionPoolSize)
+                    .setSlaveConnectionMinimumIdleSize(slaveConnectionPoolSize / 10);
             RedissonClient redissonClient = Redisson.create(config);
             redissonClients.add(redissonClient);
         }
@@ -71,8 +77,14 @@ public class RedissonConfig {
     public RedissonClient idempotentRedissonClient(IdempotentConfigProperties idempotentConfigProperties) {
         Config config = new Config();
         List<String> redisEndpoints = idempotentConfigProperties.getRedisEndpoints();
+        int masterConnectionPoolSize = idempotentConfigProperties.getMasterConnectionPoolSize();
+        int slaveConnectionPoolSize = idempotentConfigProperties.getSlaveConnectionPoolSize();
         config.useClusterServers()
-              .addNodeAddress(redisEndpoints.toArray(new String[redisEndpoints.size()]));
+              .addNodeAddress(redisEndpoints.toArray(new String[redisEndpoints.size()]))
+              .setMasterConnectionPoolSize(masterConnectionPoolSize)
+              .setMasterConnectionMinimumIdleSize(masterConnectionPoolSize / 10)
+              .setSlaveConnectionPoolSize(slaveConnectionPoolSize)
+              .setSlaveConnectionMinimumIdleSize(slaveConnectionPoolSize / 10);
         return Redisson.create(config);
     }
 

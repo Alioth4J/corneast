@@ -1,6 +1,6 @@
 /*
  * Corneast
- * Copyright (C) 2025 Alioth Null
+ * Copyright (C) 2025-2026 Alioth Null
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,6 +34,9 @@ public class StorageConfigProperties {
     private int timeout;
 
     private int connectTimeout;
+
+    private int masterConnectionPoolSize;
+    private int slaveConnectionPoolSize;
 
     public StorageConfigProperties() {
     }
@@ -76,6 +79,22 @@ public class StorageConfigProperties {
 
     public void setConnectTimeout(int connectTimeout) {
         this.connectTimeout = connectTimeout;
+    }
+
+    public int getMasterConnectionPoolSize() {
+        return masterConnectionPoolSize;
+    }
+
+    public void setMasterConnectionPoolSize(int masterConnectionPoolSize) {
+        this.masterConnectionPoolSize = masterConnectionPoolSize;
+    }
+
+    public int getSlaveConnectionPoolSize() {
+        return slaveConnectionPoolSize;
+    }
+
+    public void setSlaveConnectionPoolSize(int slaveConnectionPoolSize) {
+        this.slaveConnectionPoolSize = slaveConnectionPoolSize;
     }
 
 }

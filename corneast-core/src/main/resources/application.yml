@@ -28,6 +28,8 @@ idempotent:
     - "redis://127.0.0.1:6004"
     - "redis://127.0.0.1:6005"
   ttl: 10
+  masterConnectionPoolSize: 2000
+  slaveConnectionPoolSize: 1000
 
 storage:
   masters:
@@ -40,6 +42,8 @@ storage:
   database: 0
   timeout: 1000
   connectTimeout: 100
+  masterConnectionPoolSize: 2000
+  slaveConnectionPoolSize: 1000
 
 threadpool:
   unified:
