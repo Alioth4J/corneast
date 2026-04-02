@@ -64,7 +64,7 @@ public class RegisterRequestHandlingStrategy implements RequestHandlingStrategy 
     private final Object builderLock = new Object();
 
     private static final String luaScript = """
-                                            redis.call('SET', KEYS[1], ARGV[1])
+                                            redis.call('SET', KEYS[1], ARGV[1], 'EX', 3600)
                                             """;
 
     @Override
