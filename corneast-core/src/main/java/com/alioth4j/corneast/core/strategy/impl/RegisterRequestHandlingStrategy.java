@@ -23,7 +23,6 @@ import com.alioth4j.corneast.common.proto.RequestProto;
 import com.alioth4j.corneast.common.proto.ResponseProto;
 import com.alioth4j.corneast.core.strategy.RequestHandlingStrategy;
 import jakarta.annotation.PostConstruct;
-import org.redisson.api.RScript;
 import org.redisson.api.RedissonClient;
 import org.redisson.client.codec.StringCodec;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +32,7 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Register request handling strategy.
@@ -63,10 +63,6 @@ public class RegisterRequestHandlingStrategy implements RequestHandlingStrategy 
 
     private final Object builderLock = new Object();
 
-    private static final String luaScript = """
-                                            redis.call('SET', KEYS[1], ARGV[1], 'EX', 3600)
-                                            """;
-
     @Override
     public CompletableFuture<ResponseProto.ResponseDTO> handle(RequestProto.RequestDTO requestDTO) {
         return CompletableFuture.supplyAsync(() -> {
@@ -78,9 +74,9 @@ public class RegisterRequestHandlingStrategy implements RequestHandlingStrategy 
             for (int i = 0; i < nodeSize; i++) {
                 RedissonClient redissonClient = redissonClients.get(i);
                 if (remainingTokenCount-- > 0) {
-                    redissonClient.getScript(StringCodec.INSTANCE).eval(RScript.Mode.READ_WRITE, luaScript, RScript.ReturnType.VALUE, List.of(key), averageTokenCount + 1);
+                    redissonClient.getBucket(key, StringCodec.INSTANCE).set(averageTokenCount + 1, 3600, TimeUnit.SECONDS);
                 } else {
-                    redissonClient.getScript(StringCodec.INSTANCE).eval(RScript.Mode.READ_WRITE, luaScript, RScript.ReturnType.VALUE, List.of(key), averageTokenCount);
+                    redissonClient.getBucket(key, StringCodec.INSTANCE).set(averageTokenCount, 3600, TimeUnit.SECONDS);
                 }
             }
             synchronized (builderLock) {
