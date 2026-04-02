@@ -43,7 +43,9 @@ public class BackPressureHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
-        read(ctx, "normal read failed");
+        if (ctx.channel().isActive()) {
+            read(ctx, "normal read failed");
+        }
         super.channelReadComplete(ctx);
     }
 
