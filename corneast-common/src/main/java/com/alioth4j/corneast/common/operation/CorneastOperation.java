@@ -1,6 +1,6 @@
 /*
  * Corneast
- * Copyright (C) 2025 Alioth Null
+ * Copyright (C) 2025-2026 Alioth Null
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,15 +20,6 @@ package com.alioth4j.corneast.common.operation;
 
 /**
  * Constants of operation types.
- *
- * - register
- * - reduce
- * - release
- * - query
- *
- * - idempotent
- * - unknown
- *
  * @author Alioth Null
  */
 public class CorneastOperation {
