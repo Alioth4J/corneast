@@ -18,6 +18,7 @@
 
 package com.alioth4j.corneast.core.netty;
 
+import com.alioth4j.corneast.common.operation.CorneastOperation;
 import com.alioth4j.corneast.common.proto.ResponseProto;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
@@ -40,7 +41,7 @@ public class GlobalExceptionHandler extends ChannelInboundHandlerAdapter {
     private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
     private static final ResponseProto.ResponseDTO errorResponse = ResponseProto.ResponseDTO.newBuilder()
-                                                                                            .setType("error")
+                                                                                            .setType(CorneastOperation.ERROR)
                                                                                             .build();
 
     @Override
