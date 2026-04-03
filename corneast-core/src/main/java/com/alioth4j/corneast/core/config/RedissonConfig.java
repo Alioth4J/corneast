@@ -46,6 +46,8 @@ public class RedissonConfig {
         List<String> sentinels = storageConfigProperties.getSentinels();
         String[] sentinelArray = sentinels.toArray(new String[sentinels.size()]);
         int database = storageConfigProperties.getDatabase();
+        int retryAttempts = storageConfigProperties.getRetryAttempts();
+        int retryInterval = storageConfigProperties.getRetryInterval();
         int timeout = storageConfigProperties.getTimeout();
         int connectTimeout = storageConfigProperties.getConnectTimeout();
         int masterConnectionPoolSize = storageConfigProperties.getMasterConnectionPoolSize();
@@ -57,6 +59,8 @@ public class RedissonConfig {
                     .setMasterName(master)
                     .addSentinelAddress(sentinelArray)
                     .setDatabase(database)
+                    .setRetryAttempts(retryAttempts)
+                    .setRetryInterval(retryInterval)
                     .setTimeout(timeout)
                     .setConnectTimeout(connectTimeout)
                     .setReadMode(ReadMode.SLAVE)
@@ -77,10 +81,14 @@ public class RedissonConfig {
     public RedissonClient idempotentRedissonClient(IdempotentConfigProperties idempotentConfigProperties) {
         Config config = new Config();
         List<String> redisEndpoints = idempotentConfigProperties.getRedisEndpoints();
+        int retryAttempts = idempotentConfigProperties.getRetryAttempts();
+        int retryInterval = idempotentConfigProperties.getRetryInterval();
         int masterConnectionPoolSize = idempotentConfigProperties.getMasterConnectionPoolSize();
         int slaveConnectionPoolSize = idempotentConfigProperties.getSlaveConnectionPoolSize();
         config.useClusterServers()
               .addNodeAddress(redisEndpoints.toArray(new String[redisEndpoints.size()]))
+              .setRetryAttempts(retryAttempts)
+              .setRetryInterval(retryInterval)
               .setMasterConnectionPoolSize(masterConnectionPoolSize)
               .setMasterConnectionMinimumIdleSize(masterConnectionPoolSize / 10)
               .setSlaveConnectionPoolSize(slaveConnectionPoolSize)

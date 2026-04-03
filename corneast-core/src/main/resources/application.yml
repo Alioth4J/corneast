@@ -28,6 +28,8 @@ idempotent:
     - "redis://127.0.0.1:6004"
     - "redis://127.0.0.1:6005"
   ttl: 10
+  retryAttempts: 1
+  retryInterval: 1000
   masterConnectionPoolSize: 2000
   slaveConnectionPoolSize: 1000
 
@@ -40,6 +42,8 @@ storage:
     - "redis://172.19.0.11:26379"
     - "redis://172.19.0.12:26379"
   database: 0
+  retryAttempts: 1
+  retryInterval: 1000
   timeout: 1000
   connectTimeout: 100
   masterConnectionPoolSize: 2000

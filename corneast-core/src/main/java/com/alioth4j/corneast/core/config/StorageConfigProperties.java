@@ -31,6 +31,9 @@ public class StorageConfigProperties {
 
     private int database;
 
+    private int retryAttempts;
+    private int retryInterval;
+
     private int timeout;
 
     private int connectTimeout;
@@ -63,6 +66,22 @@ public class StorageConfigProperties {
 
     public void setDatabase(int database) {
         this.database = database;
+    }
+
+    public int getRetryAttempts() {
+        return retryAttempts;
+    }
+
+    public void setRetryAttempts(int retryAttempts) {
+        this.retryAttempts = retryAttempts;
+    }
+
+    public int getRetryInterval() {
+        return retryInterval;
+    }
+
+    public void setRetryInterval(int retryInterval) {
+        this.retryInterval = retryInterval;
     }
 
     public int getTimeout() {

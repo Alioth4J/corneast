@@ -27,6 +27,9 @@ public class IdempotentConfigProperties {
 
     private List<String> redisEndpoints;
 
+    private int retryAttempts;
+    private int retryInterval;
+
     private int masterConnectionPoolSize;
     private int slaveConnectionPoolSize;
 
@@ -43,6 +46,22 @@ public class IdempotentConfigProperties {
 
     public void setRedisEndpoints(List<String> redisEndpoints) {
         this.redisEndpoints = redisEndpoints;
+    }
+
+    public int getRetryAttempts() {
+        return retryAttempts;
+    }
+
+    public void setRetryAttempts(int retryAttempts) {
+        this.retryAttempts = retryAttempts;
+    }
+
+    public int getRetryInterval() {
+        return retryInterval;
+    }
+
+    public void setRetryInterval(int retryInterval) {
+        this.retryInterval = retryInterval;
     }
 
     public int getMasterConnectionPoolSize() {
