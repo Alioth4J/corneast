@@ -23,6 +23,7 @@ import com.alioth4j.corneast.common.proto.RequestProto;
 import com.alioth4j.corneast.common.proto.ResponseProto;
 import com.alioth4j.corneast.common.algo.RandomSelector;
 import com.alioth4j.corneast.common.algo.Selector;
+import com.alioth4j.corneast.core.exception.CorneastHandleException;
 import com.alioth4j.corneast.core.strategy.RequestHandlingStrategy;
 import jakarta.annotation.PostConstruct;
 import org.redisson.api.RScript;
@@ -76,7 +77,11 @@ public class ReleaseRequestHandlingStrategy implements RequestHandlingStrategy {
     public CompletableFuture<ResponseProto.ResponseDTO> handle(RequestProto.RequestDTO requestDTO) {
         return CompletableFuture.supplyAsync(() -> {
             String key = requestDTO.getReleaseReqDTO().getKey();
-            selector.select().getScript().eval(RScript.Mode.READ_WRITE, luaScript, RScript.ReturnType.VALUE, List.of(key));
+            try {
+                selector.select().getScript().eval(RScript.Mode.READ_WRITE, luaScript, RScript.ReturnType.VALUE, List.of(key));
+            } catch (Exception e) {
+                throw new CorneastHandleException("Error executing lua script during [release]", e);
+            }
             synchronized (builderLock) {
                 return responseBuilder
                         .setId(requestDTO.getId())

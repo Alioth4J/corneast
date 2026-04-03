@@ -21,6 +21,7 @@ package com.alioth4j.corneast.core.strategy.impl;
 import com.alioth4j.corneast.common.operation.CorneastOperation;
 import com.alioth4j.corneast.common.proto.RequestProto;
 import com.alioth4j.corneast.common.proto.ResponseProto;
+import com.alioth4j.corneast.core.exception.CorneastHandleException;
 import com.alioth4j.corneast.core.strategy.RequestHandlingStrategy;
 import jakarta.annotation.PostConstruct;
 import org.redisson.api.RedissonClient;
@@ -71,13 +72,17 @@ public class RegisterRequestHandlingStrategy implements RequestHandlingStrategy 
             long totalTokenCount = requestDTO.getRegisterReqDTO().getTokenCount();
             long averageTokenCount = totalTokenCount / nodeSize;
             long remainingTokenCount = totalTokenCount % nodeSize;
-            for (int i = 0; i < nodeSize; i++) {
-                RedissonClient redissonClient = redissonClients.get(i);
-                if (remainingTokenCount-- > 0) {
-                    redissonClient.getBucket(key, StringCodec.INSTANCE).set(averageTokenCount + 1, 3600, TimeUnit.SECONDS);
-                } else {
-                    redissonClient.getBucket(key, StringCodec.INSTANCE).set(averageTokenCount, 3600, TimeUnit.SECONDS);
+            try {
+                for (int i = 0; i < nodeSize; i++) {
+                    RedissonClient redissonClient = redissonClients.get(i);
+                    if (remainingTokenCount-- > 0) {
+                        redissonClient.getBucket(key, StringCodec.INSTANCE).set(averageTokenCount + 1, 3600, TimeUnit.SECONDS);
+                    } else {
+                        redissonClient.getBucket(key, StringCodec.INSTANCE).set(averageTokenCount, 3600, TimeUnit.SECONDS);
+                    }
                 }
+            } catch (Exception e) {
+                throw new CorneastHandleException("Error executing redis commands during [register]", e);
             }
             synchronized (builderLock) {
                 return responseBuilder

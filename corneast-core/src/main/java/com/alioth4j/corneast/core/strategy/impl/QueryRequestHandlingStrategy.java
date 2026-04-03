@@ -21,6 +21,7 @@ package com.alioth4j.corneast.core.strategy.impl;
 import com.alioth4j.corneast.common.operation.CorneastOperation;
 import com.alioth4j.corneast.common.proto.RequestProto;
 import com.alioth4j.corneast.common.proto.ResponseProto;
+import com.alioth4j.corneast.core.exception.CorneastHandleException;
 import com.alioth4j.corneast.core.strategy.RequestHandlingStrategy;
 import org.redisson.api.RedissonClient;
 import org.redisson.client.codec.StringCodec;
@@ -60,9 +61,13 @@ public class QueryRequestHandlingStrategy implements RequestHandlingStrategy {
             // sum tokenCount from each node
             String key = requestDTO.getQueryReqDTO().getKey();
             long totalTokenCount = 0;
-            for (RedissonClient redissonClient : redissonClients) {
-                String value = redissonClient.<String>getBucket(key, StringCodec.INSTANCE).get();
-                totalTokenCount += value == null ? 0L : Long.parseLong(value);
+            try {
+                for (RedissonClient redissonClient : redissonClients) {
+                    String value = redissonClient.<String>getBucket(key, StringCodec.INSTANCE).get();
+                    totalTokenCount += value == null ? 0L : Long.parseLong(value);
+                }
+            } catch (NumberFormatException e) {
+                throw new CorneastHandleException("Error executing redis commands during [query]", e);
             }
             synchronized (builderLock) {
                 return responseBuilder

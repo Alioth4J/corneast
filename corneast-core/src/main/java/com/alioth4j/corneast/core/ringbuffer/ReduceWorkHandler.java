@@ -22,6 +22,7 @@ import com.alioth4j.corneast.common.operation.CorneastOperation;
 import com.alioth4j.corneast.common.proto.ResponseProto;
 import com.alioth4j.corneast.common.algo.RandomSelector;
 import com.alioth4j.corneast.common.algo.Selector;
+import com.alioth4j.corneast.core.exception.CorneastHandleException;
 import com.lmax.disruptor.WorkHandler;
 import jakarta.annotation.PostConstruct;
 import org.redisson.api.RScript;
@@ -89,7 +90,12 @@ public class ReduceWorkHandler implements WorkHandler<ReduceEvent>  {
         ResponseProto.ResponseDTO responseDTO;
         // pick a redissonClient randomly
         RedissonClient redissonClient = selector.select();
-        long result = redissonClient.getScript().eval(RScript.Mode.READ_WRITE, luaScript, RScript.ReturnType.INTEGER, List.of(key));
+        long result = 0;
+        try {
+            result = redissonClient.getScript().eval(RScript.Mode.READ_WRITE, luaScript, RScript.ReturnType.INTEGER, List.of(key));
+        } catch (Exception e) {
+            throw new CorneastHandleException("Error executing lua script when [reduce]", e);
+        }
         if (result == 1) {
             synchronized (builderLock) {
                 responseDTO = responseBuilder.setId(reduceEvent.getId())
