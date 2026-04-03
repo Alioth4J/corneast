@@ -42,7 +42,7 @@ storage:
     - "redis://172.19.0.11:26379"
     - "redis://172.19.0.12:26379"
   database: 0
-  retryAttempts: 1
+  retryAttempts: 0
   retryInterval: 1000
   timeout: 1000
   connectTimeout: 100
