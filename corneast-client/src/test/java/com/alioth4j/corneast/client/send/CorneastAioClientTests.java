@@ -83,6 +83,11 @@ public class CorneastAioClientTests {
         CompletableFuture<ResponseProto.ResponseDTO> responseFuture = null;
         ResponseProto.ResponseDTO responseDTO = null;
         try (CorneastAioClient corneastAioClient = CorneastAioClient.of(config)) {
+
+            // register first to prevent token insufficient
+            RequestProto.RequestDTO registerReqDTO = new CorneastRequest(CorneastOperation.REGISTER, "", "key-register", 1000).instance;
+            corneastAioClient.send(registerReqDTO);
+
             for (int i = 0; i < 100; i++) {
                 responseFuture = corneastAioClient.send(reduceReqDTO);
                 responseDTO = responseFuture.get();
