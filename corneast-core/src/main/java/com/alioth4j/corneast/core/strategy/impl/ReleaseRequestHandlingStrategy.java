@@ -57,16 +57,6 @@ public class ReleaseRequestHandlingStrategy implements RequestHandlingStrategy {
         selector = new RandomSelector<>(redissonClients);
     }
 
-    private static final String luaScript = """
-                                            local oldValue = redis.call('GET', KEYS[1])
-                                            if not oldValue then
-                                                oldValue = 0
-                                            else
-                                                oldValue = tonumber(oldValue)
-                                            end
-                                            redis.call('SET', KEYS[1], oldValue + 1)
-                                            """;
-
     private static final ResponseProto.ResponseDTO.Builder responseBuilder = ResponseProto.ResponseDTO.newBuilder().setType(CorneastOperation.RELEASE);
     private static final ResponseProto.ReleaseRespDTO.Builder successRespBuilder = ResponseProto.ReleaseRespDTO.newBuilder().setSuccess(true);
 //    private static final ResponseProto.ReleaseRespDTO.Builder failRespBuilder = ResponseProto.ReleaseRespDTO.newBuilder().setSuccess(false);
@@ -78,7 +68,7 @@ public class ReleaseRequestHandlingStrategy implements RequestHandlingStrategy {
         return CompletableFuture.supplyAsync(() -> {
             String key = requestDTO.getReleaseReqDTO().getKey();
             try {
-                selector.select().getScript().eval(RScript.Mode.READ_WRITE, luaScript, RScript.ReturnType.VALUE, List.of(key));
+                selector.select().getAtomicLong(key).incrementAndGet();
             } catch (Exception e) {
                 throw new CorneastHandleException("Error executing lua script during [release]", e);
             }

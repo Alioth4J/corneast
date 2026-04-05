@@ -93,6 +93,33 @@ public class CorneastBioClientTests {
 
     }
 
+    @Test
+    void testSendRelease() {
+        RequestProto.RequestDTO registerReqDTO = new CorneastRequest(CorneastOperation.RELEASE, "", "key-register").instance;
+
+        EurekaConsumer eurekaConsumer = new EurekaConsumer();
+        List<InstanceInfo> instanceInfoList = eurekaConsumer.getInstanceInfos();
+        Selector<InstanceInfo> selector = new RandomSelector<>(instanceInfoList);
+        InstanceInfo instanceInfo = selector.select();
+
+        CorneastConfig config = new CorneastConfig();
+        config.setHost(instanceInfo.getHostName());
+        config.setPort(instanceInfo.getPort());
+
+        try {
+            CorneastBioClient corneastBioClient = CorneastBioClient.of(config);
+            for (int i = 0; i < 100; i++) {
+                ResponseProto.ResponseDTO responseDTO = corneastBioClient.send(registerReqDTO);
+                Assertions.assertEquals(CorneastOperation.RELEASE, responseDTO.getType());
+                Assertions.assertEquals("", responseDTO.getId());
+                Assertions.assertEquals("key-register", responseDTO.getReleaseRespDTO().getKey());
+                Assertions.assertEquals(true, responseDTO.getReleaseRespDTO().getSuccess());
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     // TODO use EurekaConsumer
     @Test
     void testUnknownTypeWithClientAPI() {
