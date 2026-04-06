@@ -37,7 +37,7 @@ public class CorneastNioClientTests {
 
     @Test
     void testSendRegister() {
-        RequestProto.RequestDTO registerReqDTO = new CorneastRequest(CorneastOperation.REGISTER, "", "key-register", 1000).instance;
+        RequestProto.RequestDTO registerReqDTO = new CorneastRequest(CorneastOperation.REGISTER, "", "CorneastNioClient#testSendRegister", 1000).instance;
 
         EurekaConsumer eurekaConsumer = new EurekaConsumer();
         List<InstanceInfo> instanceInfoList = eurekaConsumer.getInstanceInfos();
@@ -58,13 +58,14 @@ public class CorneastNioClientTests {
 
         Assertions.assertEquals(CorneastOperation.REGISTER, responseDTO.getType());
         Assertions.assertEquals("", responseDTO.getId());
-        Assertions.assertEquals("key-register", responseDTO.getRegisterRespDTO().getKey());
+        Assertions.assertEquals("CorneastNioClient#testSendRegister", responseDTO.getRegisterRespDTO().getKey());
         Assertions.assertEquals(true, responseDTO.getRegisterRespDTO().getSuccess());
     }
 
     @Test
     void testSendReduce() {
-        RequestProto.RequestDTO reduceReqDTO = new CorneastRequest(CorneastOperation.REDUCE, "", "key-register").instance;
+        RequestProto.RequestDTO registerReqDTO = new CorneastRequest(CorneastOperation.REGISTER, "", "CorneastNioClient#testSendReduce", 1000).instance;
+        RequestProto.RequestDTO reduceReqDTO = new CorneastRequest(CorneastOperation.REDUCE, "", "CorneastNioClient#testSendReduce").instance;
 
         EurekaConsumer eurekaConsumer = new EurekaConsumer();
         List<InstanceInfo> instanceInfoList = eurekaConsumer.getInstanceInfos();
@@ -77,23 +78,24 @@ public class CorneastNioClientTests {
 
         try {
             CorneastNioClient corneastNioClient = CorneastNioClient.of(config);
+            corneastNioClient.send(registerReqDTO);
             for (int i = 0; i < 100; i++) {
                 ResponseProto.ResponseDTO responseDTO = corneastNioClient.send(reduceReqDTO);
 
                 Assertions.assertEquals(CorneastOperation.REDUCE, responseDTO.getType());
                 Assertions.assertEquals("", responseDTO.getId());
-                Assertions.assertEquals("key-register", responseDTO.getReduceRespDTO().getKey());
+                Assertions.assertEquals("CorneastNioClient#testSendReduce", responseDTO.getReduceRespDTO().getKey());
                 Assertions.assertEquals(true, responseDTO.getReduceRespDTO().getSuccess());
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
     }
 
     @Test
     void testIdempotent() {
-        RequestProto.RequestDTO reduceReqDTO = new CorneastRequest(CorneastOperation.REDUCE, "test-idempotent", "key-register").instance;
+        RequestProto.RequestDTO registerReqDTO = new CorneastRequest(CorneastOperation.REGISTER, "", "CorneastNioClient#testIdempotent", 1000).instance;
+        RequestProto.RequestDTO reduceReqDTO = new CorneastRequest(CorneastOperation.REDUCE, "test-idempotent", "CorneastNioClient#testIdempotent").instance;
 
         EurekaConsumer eurekaConsumer = new EurekaConsumer();
         List<InstanceInfo> instanceInfoList = eurekaConsumer.getInstanceInfos();
@@ -106,12 +108,13 @@ public class CorneastNioClientTests {
 
         try {
             CorneastNioClient corneastNioClient = CorneastNioClient.of(config);
+            corneastNioClient.send(registerReqDTO);
             // first
             ResponseProto.ResponseDTO responseDTO = corneastNioClient.send(reduceReqDTO);
 
             Assertions.assertEquals(CorneastOperation.REDUCE, responseDTO.getType());
             Assertions.assertEquals("test-idempotent", responseDTO.getId());
-            Assertions.assertEquals("key-register", responseDTO.getReduceRespDTO().getKey());
+            Assertions.assertEquals("CorneastNioClient#testIdempotent", responseDTO.getReduceRespDTO().getKey());
             Assertions.assertEquals(true, responseDTO.getReduceRespDTO().getSuccess());
 
             // second
@@ -122,12 +125,12 @@ public class CorneastNioClientTests {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
     }
 
     @Test
     void testSendQuery() {
-        RequestProto.RequestDTO registerReqDTO = new CorneastRequest(CorneastOperation.QUERY, "", "key-register").instance;
+        RequestProto.RequestDTO registerReqDTO = new CorneastRequest(CorneastOperation.REGISTER, "", "CorneastNioClient#testSendQuery", 1000).instance;
+        RequestProto.RequestDTO releaseReqDTO = new CorneastRequest(CorneastOperation.QUERY, "", "CorneastNioClient#testSendQuery").instance;
 
         EurekaConsumer eurekaConsumer = new EurekaConsumer();
         List<InstanceInfo> instanceInfoList = eurekaConsumer.getInstanceInfos();
@@ -141,15 +144,16 @@ public class CorneastNioClientTests {
         ResponseProto.ResponseDTO responseDTO = null;
         try {
             CorneastNioClient corneastNioClient = CorneastNioClient.of(config);
-            responseDTO = corneastNioClient.send(registerReqDTO);
+            corneastNioClient.send(registerReqDTO);
+            responseDTO = corneastNioClient.send(releaseReqDTO);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
         Assertions.assertEquals(CorneastOperation.QUERY, responseDTO.getType());
         Assertions.assertEquals("", responseDTO.getId());
-        Assertions.assertEquals("key-register", responseDTO.getQueryRespDTO().getKey());
-//        Assertions.assertEquals(1000L, responseDTO.getQueryRespDTO().getRemainingTokenCount());
+        Assertions.assertEquals("CorneastNioClient#testSendQuery", responseDTO.getQueryRespDTO().getKey());
+        Assertions.assertEquals(1000L, responseDTO.getQueryRespDTO().getRemainingTokenCount());
     }
 
 }

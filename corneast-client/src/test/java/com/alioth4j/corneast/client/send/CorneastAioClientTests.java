@@ -39,7 +39,7 @@ public class CorneastAioClientTests {
 
     @Test
     void testSendRegister() {
-        RequestProto.RequestDTO registerReqDTO = new CorneastRequest(CorneastOperation.REGISTER, "", "key-register", 1000).instance;
+        RequestProto.RequestDTO registerReqDTO = new CorneastRequest(CorneastOperation.REGISTER, "", "CorneastAioClient#testSendRegister", 1000).instance;
 
         EurekaConsumer eurekaConsumer = new EurekaConsumer();
         List<InstanceInfo> instanceInfoList = eurekaConsumer.getInstanceInfos();
@@ -63,13 +63,14 @@ public class CorneastAioClientTests {
 
         Assertions.assertEquals(CorneastOperation.REGISTER, responseDTO.getType());
         Assertions.assertEquals("", responseDTO.getId());
-        Assertions.assertEquals("key-register", responseDTO.getRegisterRespDTO().getKey());
+        Assertions.assertEquals("CorneastAioClient#testSendRegister", responseDTO.getRegisterRespDTO().getKey());
         Assertions.assertEquals(true, responseDTO.getRegisterRespDTO().getSuccess());
     }
 
     @Test
     void testSendReduce() {
-        RequestProto.RequestDTO reduceReqDTO = new CorneastRequest(CorneastOperation.REDUCE, "", "key-register").instance;
+        RequestProto.RequestDTO registerReqDTO = new CorneastRequest(CorneastOperation.REGISTER, "", "CorneastAioClient#testSendReduce", 1000).instance;
+        RequestProto.RequestDTO reduceReqDTO = new CorneastRequest(CorneastOperation.REDUCE, "", "CorneastAioClient#testSendReduce").instance;
 
         EurekaConsumer eurekaConsumer = new EurekaConsumer();
         List<InstanceInfo> instanceInfoList = eurekaConsumer.getInstanceInfos();
@@ -85,7 +86,6 @@ public class CorneastAioClientTests {
         try (CorneastAioClient corneastAioClient = CorneastAioClient.of(config)) {
 
             // register first to prevent token insufficient
-            RequestProto.RequestDTO registerReqDTO = new CorneastRequest(CorneastOperation.REGISTER, "", "key-register", 1000).instance;
             corneastAioClient.send(registerReqDTO);
 
             for (int i = 0; i < 100; i++) {
@@ -94,7 +94,7 @@ public class CorneastAioClientTests {
 
                 Assertions.assertEquals(CorneastOperation.REDUCE, responseDTO.getType());
                 Assertions.assertEquals("", responseDTO.getId());
-                Assertions.assertEquals("key-register", responseDTO.getReduceRespDTO().getKey());
+                Assertions.assertEquals("CorneastAioClient#testSendReduce", responseDTO.getReduceRespDTO().getKey());
                 Assertions.assertEquals(true, responseDTO.getReduceRespDTO().getSuccess());
             }
         } catch (IOException | InterruptedException e) {
@@ -102,7 +102,6 @@ public class CorneastAioClientTests {
         } catch (ExecutionException e) {
             throw new RuntimeException(e.getCause());
         }
-
     }
 
 }

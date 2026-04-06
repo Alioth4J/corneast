@@ -38,7 +38,7 @@ public class CorneastBioClientTests {
 
     @Test
     void testSendRegister() {
-        RequestProto.RequestDTO registerReqDTO = new CorneastRequest(CorneastOperation.REGISTER, "", "key-register", 1000).instance;
+        RequestProto.RequestDTO registerReqDTO = new CorneastRequest(CorneastOperation.REGISTER, "", "CorneastBioClient#testSendRegister", 1000).instance;
 
         EurekaConsumer eurekaConsumer = new EurekaConsumer();
         List<InstanceInfo> instanceInfoList = eurekaConsumer.getInstanceInfos();
@@ -60,13 +60,14 @@ public class CorneastBioClientTests {
 
         Assertions.assertEquals(CorneastOperation.REGISTER, responseDTO.getType());
         Assertions.assertEquals("", responseDTO.getId());
-        Assertions.assertEquals("key-register", responseDTO.getRegisterRespDTO().getKey());
+        Assertions.assertEquals("CorneastBioClient#testSendRegister", responseDTO.getRegisterRespDTO().getKey());
         Assertions.assertEquals(true, responseDTO.getRegisterRespDTO().getSuccess());
     }
 
     @Test
     void testSendReduce() {
-        RequestProto.RequestDTO registerReqDTO = new CorneastRequest(CorneastOperation.REDUCE, "", "key-register").instance;
+        RequestProto.RequestDTO registerReqDTO = new CorneastRequest(CorneastOperation.REGISTER, "", "CorneastBioClient#testSendReduce", 1000).instance;
+        RequestProto.RequestDTO reduceReqDTO = new CorneastRequest(CorneastOperation.REDUCE, "", "CorneastBioClient#testSendReduce").instance;
 
         EurekaConsumer eurekaConsumer = new EurekaConsumer();
         List<InstanceInfo> instanceInfoList = eurekaConsumer.getInstanceInfos();
@@ -79,23 +80,22 @@ public class CorneastBioClientTests {
 
         try {
             CorneastBioClient corneastBioClient = CorneastBioClient.of(config);
+            corneastBioClient.send(registerReqDTO);
             for (int i = 0; i < 100; i++) {
-                ResponseProto.ResponseDTO responseDTO = corneastBioClient.send(registerReqDTO);
+                ResponseProto.ResponseDTO responseDTO = corneastBioClient.send(reduceReqDTO);
                 Assertions.assertEquals(CorneastOperation.REDUCE, responseDTO.getType());
                 Assertions.assertEquals("", responseDTO.getId());
-                Assertions.assertEquals("key-register", responseDTO.getReduceRespDTO().getKey());
+                Assertions.assertEquals("CorneastBioClient#testSendReduce", responseDTO.getReduceRespDTO().getKey());
                 Assertions.assertEquals(true, responseDTO.getReduceRespDTO().getSuccess());
-
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
     }
 
     @Test
     void testSendRelease() {
-        RequestProto.RequestDTO registerReqDTO = new CorneastRequest(CorneastOperation.RELEASE, "", "key-register").instance;
+        RequestProto.RequestDTO registerReqDTO = new CorneastRequest(CorneastOperation.RELEASE, "", "CorneastBioClient#testSendRelease").instance;
 
         EurekaConsumer eurekaConsumer = new EurekaConsumer();
         List<InstanceInfo> instanceInfoList = eurekaConsumer.getInstanceInfos();
@@ -112,7 +112,7 @@ public class CorneastBioClientTests {
                 ResponseProto.ResponseDTO responseDTO = corneastBioClient.send(registerReqDTO);
                 Assertions.assertEquals(CorneastOperation.RELEASE, responseDTO.getType());
                 Assertions.assertEquals("", responseDTO.getId());
-                Assertions.assertEquals("key-register", responseDTO.getReleaseRespDTO().getKey());
+                Assertions.assertEquals("CorneastBioClient#testSendRelease", responseDTO.getReleaseRespDTO().getKey());
                 Assertions.assertEquals(true, responseDTO.getReleaseRespDTO().getSuccess());
             }
         } catch (IOException e) {
@@ -124,7 +124,7 @@ public class CorneastBioClientTests {
     @Test
     void testUnknownTypeWithClientAPI() {
         Assertions.assertThrows(RequestBuildException.class, () -> {
-            RequestProto.RequestDTO requestDTO = new CorneastRequest("abcdefg", "", "key-unknown").instance;
+            RequestProto.RequestDTO requestDTO = new CorneastRequest("abcdefg", "", "CorneastBioClient#testUnknownTypeWithClientAPI").instance;
             CorneastConfig config = new CorneastConfig();
             config.setHost("127.0.0.1");
             config.setPort(8088);
