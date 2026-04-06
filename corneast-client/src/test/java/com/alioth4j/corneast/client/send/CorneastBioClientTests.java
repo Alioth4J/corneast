@@ -95,7 +95,7 @@ public class CorneastBioClientTests {
 
     @Test
     void testSendRelease() {
-        RequestProto.RequestDTO registerReqDTO = new CorneastRequest(CorneastOperation.RELEASE, "", "CorneastBioClient#testSendRelease").instance;
+        RequestProto.RequestDTO releaseReqDTO = new CorneastRequest(CorneastOperation.RELEASE, "", "CorneastBioClient#testSendRelease").instance;
 
         EurekaConsumer eurekaConsumer = new EurekaConsumer();
         List<InstanceInfo> instanceInfoList = eurekaConsumer.getInstanceInfos();
@@ -109,12 +109,76 @@ public class CorneastBioClientTests {
         try {
             CorneastBioClient corneastBioClient = CorneastBioClient.of(config);
             for (int i = 0; i < 100; i++) {
-                ResponseProto.ResponseDTO responseDTO = corneastBioClient.send(registerReqDTO);
+                ResponseProto.ResponseDTO responseDTO = corneastBioClient.send(releaseReqDTO);
                 Assertions.assertEquals(CorneastOperation.RELEASE, responseDTO.getType());
                 Assertions.assertEquals("", responseDTO.getId());
                 Assertions.assertEquals("CorneastBioClient#testSendRelease", responseDTO.getReleaseRespDTO().getKey());
                 Assertions.assertEquals(true, responseDTO.getReleaseRespDTO().getSuccess());
             }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Test
+    void testSendQuery() {
+        RequestProto.RequestDTO registerReqDTO = new CorneastRequest(CorneastOperation.REGISTER, "", "CorneastBioClient#testSendQuery", 1000).instance;
+        RequestProto.RequestDTO queryReqDTO = new CorneastRequest(CorneastOperation.QUERY, "", "CorneastBioClient#testSendQuery").instance;
+
+        EurekaConsumer eurekaConsumer = new EurekaConsumer();
+        List<InstanceInfo> instanceInfoList = eurekaConsumer.getInstanceInfos();
+        Selector<InstanceInfo> selector = new RandomSelector<>(instanceInfoList);
+        InstanceInfo instanceInfo = selector.select();
+
+        CorneastConfig config = new CorneastConfig();
+        config.setHost(instanceInfo.getHostName());
+        config.setPort(instanceInfo.getPort());
+
+        ResponseProto.ResponseDTO responseDTO = null;
+        try {
+            CorneastNioClient corneastNioClient = CorneastNioClient.of(config);
+            corneastNioClient.send(registerReqDTO);
+            responseDTO = corneastNioClient.send(queryReqDTO);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        Assertions.assertEquals(CorneastOperation.QUERY, responseDTO.getType());
+        Assertions.assertEquals("", responseDTO.getId());
+        Assertions.assertEquals("CorneastBioClient#testSendQuery", responseDTO.getQueryRespDTO().getKey());
+        Assertions.assertEquals(1000L, responseDTO.getQueryRespDTO().getRemainingTokenCount());
+    }
+
+    @Test
+    void testIdempotent() {
+        RequestProto.RequestDTO registerReqDTO = new CorneastRequest(CorneastOperation.REGISTER, "", "CorneastBioClient#testIdempotent", 1000).instance;
+        RequestProto.RequestDTO reduceReqDTO = new CorneastRequest(CorneastOperation.REDUCE, "CorneastBioClient#testIdempotent", "CorneastBioClient#testIdempotent").instance;
+
+        EurekaConsumer eurekaConsumer = new EurekaConsumer();
+        List<InstanceInfo> instanceInfoList = eurekaConsumer.getInstanceInfos();
+        Selector<InstanceInfo> selector = new RandomSelector<>(instanceInfoList);
+        InstanceInfo instanceInfo = selector.select();
+
+        CorneastConfig config = new CorneastConfig();
+        config.setHost(instanceInfo.getHostName());
+        config.setPort(instanceInfo.getPort());
+
+        try {
+            CorneastNioClient corneastNioClient = CorneastNioClient.of(config);
+            corneastNioClient.send(registerReqDTO);
+            // first
+            ResponseProto.ResponseDTO responseDTO = corneastNioClient.send(reduceReqDTO);
+
+            Assertions.assertEquals(CorneastOperation.REDUCE, responseDTO.getType());
+            Assertions.assertEquals("CorneastBioClient#testIdempotent", responseDTO.getId());
+            Assertions.assertEquals("CorneastBioClient#testIdempotent", responseDTO.getReduceRespDTO().getKey());
+            Assertions.assertEquals(true, responseDTO.getReduceRespDTO().getSuccess());
+
+            // second
+            ResponseProto.ResponseDTO idempotentedResponseDTO = corneastNioClient.send(reduceReqDTO);
+
+            Assertions.assertEquals(CorneastOperation.IDEMPOTENT, idempotentedResponseDTO.getType());
+
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
