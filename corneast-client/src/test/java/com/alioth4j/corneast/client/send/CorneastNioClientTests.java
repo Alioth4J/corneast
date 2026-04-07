@@ -49,8 +49,7 @@ public class CorneastNioClientTests {
         config.setPort(instanceInfo.getPort());
 
         ResponseProto.ResponseDTO responseDTO = null;
-        try {
-            CorneastNioClient corneastNioClient = CorneastNioClient.of(config);
+        try (CorneastNioClient corneastNioClient = CorneastNioClient.of(config)) {
             responseDTO = corneastNioClient.send(registerReqDTO);
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -76,8 +75,7 @@ public class CorneastNioClientTests {
         config.setHost(instanceInfo.getHostName());
         config.setPort(instanceInfo.getPort());
 
-        try {
-            CorneastNioClient corneastNioClient = CorneastNioClient.of(config);
+        try (CorneastNioClient corneastNioClient = CorneastNioClient.of(config)) {
             corneastNioClient.send(registerReqDTO);
             for (int i = 0; i < 100; i++) {
                 ResponseProto.ResponseDTO responseDTO = corneastNioClient.send(reduceReqDTO);
@@ -106,8 +104,7 @@ public class CorneastNioClientTests {
         config.setHost(instanceInfo.getHostName());
         config.setPort(instanceInfo.getPort());
 
-        try {
-            CorneastNioClient corneastNioClient = CorneastNioClient.of(config);
+        try (CorneastNioClient corneastNioClient = CorneastNioClient.of(config)) {
             corneastNioClient.send(registerReqDTO);
             // first
             ResponseProto.ResponseDTO responseDTO = corneastNioClient.send(reduceReqDTO);
@@ -140,10 +137,9 @@ public class CorneastNioClientTests {
         config.setHost(instanceInfo.getHostName());
         config.setPort(instanceInfo.getPort());
 
-        try {
-            CorneastBioClient corneastBioClient = CorneastBioClient.of(config);
+        try (CorneastNioClient corneastNioClient = CorneastNioClient.of(config)) {
             for (int i = 0; i < 100; i++) {
-                ResponseProto.ResponseDTO responseDTO = corneastBioClient.send(releaseReqDTO);
+                ResponseProto.ResponseDTO responseDTO = corneastNioClient.send(releaseReqDTO);
                 Assertions.assertEquals(CorneastOperation.RELEASE, responseDTO.getType());
                 Assertions.assertEquals("", responseDTO.getId());
                 Assertions.assertEquals("CorneastNioClient#testSendRelease", responseDTO.getReleaseRespDTO().getKey());
@@ -169,8 +165,7 @@ public class CorneastNioClientTests {
         config.setPort(instanceInfo.getPort());
 
         ResponseProto.ResponseDTO responseDTO = null;
-        try {
-            CorneastNioClient corneastNioClient = CorneastNioClient.of(config);
+        try (CorneastNioClient corneastNioClient = CorneastNioClient.of(config)) {
             corneastNioClient.send(registerReqDTO);
             responseDTO = corneastNioClient.send(queryReqDTO);
         } catch (IOException e) {

@@ -49,10 +49,8 @@ public class CorneastBioClientTests {
         config.setHost(instanceInfo.getHostName());
         config.setPort(instanceInfo.getPort());
 
-
         ResponseProto.ResponseDTO responseDTO = null;
-        try {
-            CorneastBioClient corneastBioClient = CorneastBioClient.of(config);
+        try (CorneastBioClient corneastBioClient = CorneastBioClient.of(config)) {
             responseDTO = corneastBioClient.send(registerReqDTO);
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -78,8 +76,7 @@ public class CorneastBioClientTests {
         config.setHost(instanceInfo.getHostName());
         config.setPort(instanceInfo.getPort());
 
-        try {
-            CorneastBioClient corneastBioClient = CorneastBioClient.of(config);
+        try (CorneastBioClient corneastBioClient = CorneastBioClient.of(config)) {
             corneastBioClient.send(registerReqDTO);
             for (int i = 0; i < 100; i++) {
                 ResponseProto.ResponseDTO responseDTO = corneastBioClient.send(reduceReqDTO);
@@ -106,8 +103,7 @@ public class CorneastBioClientTests {
         config.setHost(instanceInfo.getHostName());
         config.setPort(instanceInfo.getPort());
 
-        try {
-            CorneastBioClient corneastBioClient = CorneastBioClient.of(config);
+        try (CorneastBioClient corneastBioClient = CorneastBioClient.of(config)) {
             for (int i = 0; i < 100; i++) {
                 ResponseProto.ResponseDTO responseDTO = corneastBioClient.send(releaseReqDTO);
                 Assertions.assertEquals(CorneastOperation.RELEASE, responseDTO.getType());
@@ -135,10 +131,9 @@ public class CorneastBioClientTests {
         config.setPort(instanceInfo.getPort());
 
         ResponseProto.ResponseDTO responseDTO = null;
-        try {
-            CorneastNioClient corneastNioClient = CorneastNioClient.of(config);
-            corneastNioClient.send(registerReqDTO);
-            responseDTO = corneastNioClient.send(queryReqDTO);
+        try (CorneastBioClient corneastBioClient = CorneastBioClient.of(config)) {
+            corneastBioClient.send(registerReqDTO);
+            responseDTO = corneastBioClient.send(queryReqDTO);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -163,11 +158,10 @@ public class CorneastBioClientTests {
         config.setHost(instanceInfo.getHostName());
         config.setPort(instanceInfo.getPort());
 
-        try {
-            CorneastNioClient corneastNioClient = CorneastNioClient.of(config);
-            corneastNioClient.send(registerReqDTO);
+        try (CorneastBioClient corneastBioClient = CorneastBioClient.of(config)) {
+            corneastBioClient.send(registerReqDTO);
             // first
-            ResponseProto.ResponseDTO responseDTO = corneastNioClient.send(reduceReqDTO);
+            ResponseProto.ResponseDTO responseDTO = corneastBioClient.send(reduceReqDTO);
 
             Assertions.assertEquals(CorneastOperation.REDUCE, responseDTO.getType());
             Assertions.assertEquals("CorneastBioClient#testIdempotent", responseDTO.getId());
@@ -175,7 +169,7 @@ public class CorneastBioClientTests {
             Assertions.assertEquals(true, responseDTO.getReduceRespDTO().getSuccess());
 
             // second
-            ResponseProto.ResponseDTO idempotentedResponseDTO = corneastNioClient.send(reduceReqDTO);
+            ResponseProto.ResponseDTO idempotentedResponseDTO = corneastBioClient.send(reduceReqDTO);
 
             Assertions.assertEquals(CorneastOperation.IDEMPOTENT, idempotentedResponseDTO.getType());
 
@@ -192,9 +186,8 @@ public class CorneastBioClientTests {
             CorneastConfig config = new CorneastConfig();
             config.setHost("127.0.0.1");
             config.setPort(8088);
-            CorneastBioClient corneastBioClient = CorneastBioClient.of(config);
             ResponseProto.ResponseDTO responseDTO = null;
-            try {
+            try (CorneastBioClient corneastBioClient = CorneastBioClient.of(config)) {
                 responseDTO = corneastBioClient.send(requestDTO);
             } catch (IOException e) {
                 throw new RuntimeException(e);
@@ -214,8 +207,7 @@ public class CorneastBioClientTests {
         config.setHost("127.0.0.1");
         config.setPort(8088);
         ResponseProto.ResponseDTO responseDTO = null;
-        try {
-            CorneastBioClient corneastBioClient = CorneastBioClient.of(config);
+        try (CorneastBioClient corneastBioClient = CorneastBioClient.of(config)) {
             responseDTO = corneastBioClient.send(requestDTO);
         } catch (IOException e) {
             throw new RuntimeException(e);

@@ -117,14 +117,18 @@ public class CorneastAioClientTests {
         config.setHost(instanceInfo.getHostName());
         config.setPort(instanceInfo.getPort());
 
-        try {
-            CorneastBioClient corneastBioClient = CorneastBioClient.of(config);
+        try (CorneastAioClient corneastAioClient = CorneastAioClient.of(config)) {
             for (int i = 0; i < 100; i++) {
-                ResponseProto.ResponseDTO responseDTO = corneastBioClient.send(releaseReqDTO);
-                Assertions.assertEquals(CorneastOperation.RELEASE, responseDTO.getType());
-                Assertions.assertEquals("", responseDTO.getId());
-                Assertions.assertEquals("CorneastAioClient#testSendRelease", responseDTO.getReleaseRespDTO().getKey());
-                Assertions.assertEquals(true, responseDTO.getReleaseRespDTO().getSuccess());
+                CompletableFuture<ResponseProto.ResponseDTO> responseDTOFuture = corneastAioClient.send(releaseReqDTO);
+                responseDTOFuture.whenComplete((responseDTO, ex) -> {
+                    if (ex != null) {
+                        throw new RuntimeException(ex);
+                    }
+                    Assertions.assertEquals(CorneastOperation.RELEASE, responseDTO.getType());
+                    Assertions.assertEquals("", responseDTO.getId());
+                    Assertions.assertEquals("CorneastAioClient#testSendRelease", responseDTO.getReleaseRespDTO().getKey());
+                    Assertions.assertEquals(true, responseDTO.getReleaseRespDTO().getSuccess());
+                });
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -145,19 +149,23 @@ public class CorneastAioClientTests {
         config.setHost(instanceInfo.getHostName());
         config.setPort(instanceInfo.getPort());
 
-        ResponseProto.ResponseDTO responseDTO = null;
-        try {
-            CorneastNioClient corneastNioClient = CorneastNioClient.of(config);
-            corneastNioClient.send(registerReqDTO);
-            responseDTO = corneastNioClient.send(queryReqDTO);
+        CompletableFuture<ResponseProto.ResponseDTO> responseDTOFuture = null;
+        try (CorneastAioClient corneastAioClient = CorneastAioClient.of(config)) {
+            corneastAioClient.send(registerReqDTO);
+            responseDTOFuture = corneastAioClient.send(queryReqDTO);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
-        Assertions.assertEquals(CorneastOperation.QUERY, responseDTO.getType());
-        Assertions.assertEquals("", responseDTO.getId());
-        Assertions.assertEquals("CorneastAioClient#testSendQuery", responseDTO.getQueryRespDTO().getKey());
-        Assertions.assertEquals(1000L, responseDTO.getQueryRespDTO().getRemainingTokenCount());
+        responseDTOFuture.whenComplete((responseDTO, throwable) -> {
+            if (throwable != null) {
+                throw new RuntimeException(throwable);
+            }
+            Assertions.assertEquals(CorneastOperation.QUERY, responseDTO.getType());
+            Assertions.assertEquals("", responseDTO.getId());
+            Assertions.assertEquals("CorneastAioClient#testSendQuery", responseDTO.getQueryRespDTO().getKey());
+            Assertions.assertEquals(1000L, responseDTO.getQueryRespDTO().getRemainingTokenCount());
+        });
     }
 
     @Test
@@ -174,21 +182,30 @@ public class CorneastAioClientTests {
         config.setHost(instanceInfo.getHostName());
         config.setPort(instanceInfo.getPort());
 
-        try {
-            CorneastNioClient corneastNioClient = CorneastNioClient.of(config);
-            corneastNioClient.send(registerReqDTO);
+        CompletableFuture<ResponseProto.ResponseDTO> responseDTOFuture = null;
+        CompletableFuture<ResponseProto.ResponseDTO> responseDTOFutureIdempotented = null;
+        try (CorneastAioClient corneastAioClient = CorneastAioClient.of(config)) {
+            corneastAioClient.send(registerReqDTO);
             // first
-            ResponseProto.ResponseDTO responseDTO = corneastNioClient.send(reduceReqDTO);
-
-            Assertions.assertEquals(CorneastOperation.REDUCE, responseDTO.getType());
-            Assertions.assertEquals("CorneastAioClient#testIdempotent", responseDTO.getId());
-            Assertions.assertEquals("CorneastAioClient#testIdempotent", responseDTO.getReduceRespDTO().getKey());
-            Assertions.assertEquals(true, responseDTO.getReduceRespDTO().getSuccess());
+            responseDTOFuture = corneastAioClient.send(reduceReqDTO);
+            responseDTOFuture.whenComplete((responseDTO, throwable) -> {
+                if (throwable != null) {
+                    throw new RuntimeException(throwable);
+                }
+                Assertions.assertEquals(CorneastOperation.REDUCE, responseDTO.getType());
+                Assertions.assertEquals("CorneastAioClient#testIdempotent", responseDTO.getId());
+                Assertions.assertEquals("CorneastAioClient#testIdempotent", responseDTO.getReduceRespDTO().getKey());
+                Assertions.assertEquals(true, responseDTO.getReduceRespDTO().getSuccess());
+            });
 
             // second
-            ResponseProto.ResponseDTO idempotentedResponseDTO = corneastNioClient.send(reduceReqDTO);
-
-            Assertions.assertEquals(CorneastOperation.IDEMPOTENT, idempotentedResponseDTO.getType());
+            responseDTOFutureIdempotented = corneastAioClient.send(reduceReqDTO);
+            responseDTOFutureIdempotented.whenComplete((idempotentedResponseDTO, throwable) -> {
+                if (throwable != null) {
+                    throw new RuntimeException(throwable);
+                }
+                Assertions.assertEquals(CorneastOperation.IDEMPOTENT, idempotentedResponseDTO.getType());
+            });
 
         } catch (IOException e) {
             throw new RuntimeException(e);
