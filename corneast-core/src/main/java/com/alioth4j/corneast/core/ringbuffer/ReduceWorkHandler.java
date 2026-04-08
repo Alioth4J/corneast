@@ -27,6 +27,7 @@ import com.lmax.disruptor.WorkHandler;
 import jakarta.annotation.PostConstruct;
 import org.redisson.api.RScript;
 import org.redisson.api.RedissonClient;
+import org.redisson.client.codec.ByteArrayCodec;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +37,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Processes reduce requests.
@@ -51,6 +53,10 @@ public class ReduceWorkHandler implements WorkHandler<ReduceEvent>  {
     @Autowired
     @Qualifier("redissonClients")
     private List<RedissonClient> redissonClients;
+
+    @Autowired
+    @Qualifier("idempotentRedissonClient")
+    private RedissonClient idempotentRedissonClient;
 
     private int nodeSize;
 
@@ -85,9 +91,9 @@ public class ReduceWorkHandler implements WorkHandler<ReduceEvent>  {
     @Override
     public void onEvent(ReduceEvent reduceEvent) throws Exception {
         String key = reduceEvent.getKey();
+        String id = reduceEvent.getId();
         CompletableFuture<ResponseProto.ResponseDTO> future = reduceEvent.getFuture();
 
-        ResponseProto.ResponseDTO responseDTO;
         // pick a redissonClient randomly
         RedissonClient redissonClient = selector.select();
         long result = 0;
@@ -96,9 +102,11 @@ public class ReduceWorkHandler implements WorkHandler<ReduceEvent>  {
         } catch (Exception e) {
             throw new CorneastHandleException("Error executing lua script when [reduce]", e);
         }
+        // construct response
+        ResponseProto.ResponseDTO responseDTO = null;
         if (result == 1) {
             synchronized (builderLock) {
-                responseDTO = responseBuilder.setId(reduceEvent.getId())
+                responseDTO = responseBuilder.setId(id)
                                              .setReduceRespDTO(successReduceRespBuilder
                                                                .setKey(key)
                                                                .build())
@@ -106,12 +114,16 @@ public class ReduceWorkHandler implements WorkHandler<ReduceEvent>  {
             }
         } else {
             synchronized (builderLock) {
-                responseDTO = responseBuilder.setId(reduceEvent.getId())
+                responseDTO = responseBuilder.setId(id)
                                              .setReduceRespDTO(failReduceRespBuilder
                                                               .setKey(key)
                                                               .build())
                                              .build();
             }
+        }
+        // set to idempotent redis
+        if (!id.isEmpty()) {
+            idempotentRedissonClient.<byte[]>getBucket(id, ByteArrayCodec.INSTANCE).set(responseDTO.toByteArray(), 10, TimeUnit.SECONDS);
         }
         future.complete(responseDTO);
     }

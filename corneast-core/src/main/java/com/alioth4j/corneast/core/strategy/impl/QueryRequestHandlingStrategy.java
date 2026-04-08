@@ -24,6 +24,7 @@ import com.alioth4j.corneast.common.proto.ResponseProto;
 import com.alioth4j.corneast.core.exception.CorneastHandleException;
 import com.alioth4j.corneast.core.strategy.RequestHandlingStrategy;
 import org.redisson.api.RedissonClient;
+import org.redisson.client.codec.ByteArrayCodec;
 import org.redisson.client.codec.StringCodec;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -32,6 +33,7 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Query request handling strategy.
@@ -49,6 +51,10 @@ public class QueryRequestHandlingStrategy implements RequestHandlingStrategy {
     @Qualifier("redissonClients")
     private List<RedissonClient> redissonClients;
 
+    @Autowired
+    @Qualifier("idempotentRedissonClient")
+    private RedissonClient idempotentRedissonClient;
+
     private static final ResponseProto.ResponseDTO.Builder responseBuilder = ResponseProto.ResponseDTO.newBuilder().setType(CorneastOperation.QUERY);
     private static final ResponseProto.QueryRespDTO.Builder queryResponseBuilder = ResponseProto.QueryRespDTO.newBuilder();
 
@@ -60,6 +66,7 @@ public class QueryRequestHandlingStrategy implements RequestHandlingStrategy {
             // FIXME currently it is just an estimation, no atomicity warranty
             // sum tokenCount from each node
             String key = requestDTO.getQueryReqDTO().getKey();
+            String id = requestDTO.getId();
             long totalTokenCount = 0;
             try {
                 for (RedissonClient redissonClient : redissonClients) {
@@ -69,15 +76,22 @@ public class QueryRequestHandlingStrategy implements RequestHandlingStrategy {
             } catch (NumberFormatException e) {
                 throw new CorneastHandleException("Error executing redis commands during [query]", e);
             }
+            // construct response
+            ResponseProto.ResponseDTO responseDTO = null;
             synchronized (builderLock) {
-                return responseBuilder
-                        .setId(requestDTO.getId())
+                responseDTO = responseBuilder
+                        .setId(id)
                         .setQueryRespDTO(queryResponseBuilder
                                 .setKey(key)
                                 .setRemainingTokenCount(totalTokenCount)
                                 .build())
                         .build();
             }
+            // set to idempotent redis
+            if (!id.isEmpty()) {
+                idempotentRedissonClient.<byte[]>getBucket(id, ByteArrayCodec.INSTANCE).set(responseDTO.toByteArray(), 10, TimeUnit.SECONDS);
+            }
+            return responseDTO;
         }, unifiedExecutor);
     }
 

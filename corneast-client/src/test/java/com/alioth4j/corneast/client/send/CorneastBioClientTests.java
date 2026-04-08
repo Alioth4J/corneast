@@ -162,7 +162,6 @@ public class CorneastBioClientTests {
             corneastBioClient.send(registerReqDTO);
             // first
             ResponseProto.ResponseDTO responseDTO = corneastBioClient.send(reduceReqDTO);
-
             Assertions.assertEquals(CorneastOperation.REDUCE, responseDTO.getType());
             Assertions.assertEquals("CorneastBioClient#testIdempotent", responseDTO.getId());
             Assertions.assertEquals("CorneastBioClient#testIdempotent", responseDTO.getReduceRespDTO().getKey());
@@ -170,9 +169,10 @@ public class CorneastBioClientTests {
 
             // second
             ResponseProto.ResponseDTO idempotentedResponseDTO = corneastBioClient.send(reduceReqDTO);
-
-            Assertions.assertEquals(CorneastOperation.IDEMPOTENT, idempotentedResponseDTO.getType());
-
+            Assertions.assertEquals(CorneastOperation.REDUCE, idempotentedResponseDTO.getType());
+            Assertions.assertEquals("CorneastBioClient#testIdempotent", idempotentedResponseDTO.getId());
+            Assertions.assertEquals("CorneastBioClient#testIdempotent", idempotentedResponseDTO.getReduceRespDTO().getKey());
+            Assertions.assertEquals(true, idempotentedResponseDTO.getReduceRespDTO().getSuccess());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

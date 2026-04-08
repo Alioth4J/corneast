@@ -204,7 +204,10 @@ public class CorneastAioClientTests {
                 if (throwable != null) {
                     throw new RuntimeException(throwable);
                 }
-                Assertions.assertEquals(CorneastOperation.IDEMPOTENT, idempotentedResponseDTO.getType());
+                Assertions.assertEquals(CorneastOperation.REDUCE, idempotentedResponseDTO.getType());
+                Assertions.assertEquals("CorneastAioClient#testIdempotent", idempotentedResponseDTO.getId());
+                Assertions.assertEquals("CorneastAioClient#testIdempotent", idempotentedResponseDTO.getReduceRespDTO().getKey());
+                Assertions.assertEquals(true, idempotentedResponseDTO.getReduceRespDTO().getSuccess());
             });
 
         } catch (IOException e) {

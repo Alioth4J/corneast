@@ -21,12 +21,13 @@ package com.alioth4j.corneast.core.netty;
 import com.alioth4j.corneast.common.operation.CorneastOperation;
 import com.alioth4j.corneast.common.proto.RequestProto;
 import com.alioth4j.corneast.common.proto.ResponseProto;
+import com.alioth4j.corneast.core.exception.CorneastHandleException;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import org.redisson.api.RScript;
 import org.redisson.api.RedissonClient;
-import org.redisson.client.codec.StringCodec;
+import org.redisson.client.codec.ByteArrayCodec;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +35,8 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -52,7 +55,7 @@ public class IdempotentHandler extends SimpleChannelInboundHandler<RequestProto.
     private RedissonClient idempotentRedissonClient;
 
     @Value("${idempotent.ttl:10}")
-    private int ttl;
+    private String ttl;
 
     private static final String testAndSetLuaScript = """
                                                       local v = redis.call("GET", KEYS[1])
@@ -64,26 +67,35 @@ public class IdempotentHandler extends SimpleChannelInboundHandler<RequestProto.
                                                                                                  .setType(CorneastOperation.IDEMPOTENT)
                                                                                                  .build();
 
+    private static final byte[] idempotentedValue = new byte[]{'1'};
+
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, RequestProto.RequestDTO requestDTO) throws Exception {
         String id = requestDTO.getId();
         log.debug("Arrived at IdempotentHandler, id = {}", id);
 
-        // id != null because of protobuf
-        // String#intern in compile-time by java
-        if (id == "") {
+        if (id.isEmpty()) {
             // disable idempotence
             log.debug("Disabled idempotent, id = {}", id);
             ctx.fireChannelRead(requestDTO);
             return;
         }
-        String exists = idempotentRedissonClient.getScript(StringCodec.INSTANCE).eval(RScript.Mode.READ_WRITE, testAndSetLuaScript, RScript.ReturnType.VALUE, List.of(id), ttl);
-        if (exists == null) {
+        byte[] existValue = idempotentRedissonClient.getScript(ByteArrayCodec.INSTANCE).eval(RScript.Mode.READ_WRITE, testAndSetLuaScript, RScript.ReturnType.VALUE, List.of(id), ttl.getBytes(StandardCharsets.UTF_8));
+        if (existValue == null) {
             log.debug("Passed IdempotentHandler, id = {}", id);
             ctx.fireChannelRead(requestDTO);
         } else {
             log.debug("Being Idempotented, id = {}", id);
-            ctx.writeAndFlush(idempotentResponse);
+            int maxCount = 3;
+            while (Arrays.equals(idempotentedValue, existValue) && maxCount-- > 0) {
+                Thread.sleep(200);
+                existValue = idempotentRedissonClient.<byte[]>getBucket(id, ByteArrayCodec.INSTANCE).get();
+            }
+            if (Arrays.equals(idempotentedValue, existValue)) {
+                log.error("Unable to get idempotented response, id = {}", id);
+                throw new CorneastHandleException("Unable to get idempotent response, id = " + id);
+            }
+            ctx.writeAndFlush(ResponseProto.ResponseDTO.parseFrom(existValue));
             ctx.close();
         }
     }

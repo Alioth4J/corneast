@@ -117,7 +117,10 @@ public class CorneastNioClientTests {
             // second
             ResponseProto.ResponseDTO idempotentedResponseDTO = corneastNioClient.send(reduceReqDTO);
 
-            Assertions.assertEquals(CorneastOperation.IDEMPOTENT, idempotentedResponseDTO.getType());
+            Assertions.assertEquals(CorneastOperation.REDUCE, idempotentedResponseDTO.getType());
+            Assertions.assertEquals("CorneastNioClient#testIdempotent", idempotentedResponseDTO.getId());
+            Assertions.assertEquals("CorneastNioClient#testIdempotent", idempotentedResponseDTO.getReduceRespDTO().getKey());
+            Assertions.assertEquals(true, idempotentedResponseDTO.getReduceRespDTO().getSuccess());
 
         } catch (IOException e) {
             throw new RuntimeException(e);

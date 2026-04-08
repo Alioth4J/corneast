@@ -25,6 +25,7 @@ import com.alioth4j.corneast.core.exception.CorneastHandleException;
 import com.alioth4j.corneast.core.strategy.RequestHandlingStrategy;
 import jakarta.annotation.PostConstruct;
 import org.redisson.api.RedissonClient;
+import org.redisson.client.codec.ByteArrayCodec;
 import org.redisson.client.codec.StringCodec;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -51,6 +52,10 @@ public class RegisterRequestHandlingStrategy implements RequestHandlingStrategy 
     @Qualifier("redissonClients")
     private List<RedissonClient> redissonClients;
 
+    @Autowired
+    @Qualifier("idempotentRedissonClient")
+    private RedissonClient idempotentRedissonClient;
+
     private int nodeSize;
 
     @PostConstruct
@@ -69,6 +74,7 @@ public class RegisterRequestHandlingStrategy implements RequestHandlingStrategy 
         return CompletableFuture.supplyAsync(() -> {
             // distribute tokenCount to all the nodes evenly
             String key = requestDTO.getRegisterReqDTO().getKey();
+            String id = requestDTO.getId();
             long totalTokenCount = requestDTO.getRegisterReqDTO().getTokenCount();
             long averageTokenCount = totalTokenCount / nodeSize;
             long remainingTokenCount = totalTokenCount % nodeSize;
@@ -84,14 +90,21 @@ public class RegisterRequestHandlingStrategy implements RequestHandlingStrategy 
             } catch (Exception e) {
                 throw new CorneastHandleException("Error executing redis commands during [register]", e);
             }
+            // construct response
+            ResponseProto.ResponseDTO responseDTO = null;
             synchronized (builderLock) {
-                return responseBuilder
-                        .setId(requestDTO.getId())
+                responseDTO = responseBuilder
+                        .setId(id)
                         .setRegisterRespDTO(successRespBuilder
                                 .setKey(key)
                                 .build())
                         .build();
             }
+            // set to idempotent redis
+            if (!id.isEmpty()) {
+                idempotentRedissonClient.<byte[]>getBucket(id, ByteArrayCodec.INSTANCE).set(responseDTO.toByteArray(), 10, TimeUnit.SECONDS);
+            }
+            return responseDTO;
         }, unifiedExecutor);
     }
 

@@ -28,6 +28,8 @@ import com.alioth4j.corneast.core.strategy.RequestHandlingStrategy;
 import jakarta.annotation.PostConstruct;
 import org.redisson.api.RScript;
 import org.redisson.api.RedissonClient;
+import org.redisson.client.codec.ByteArrayCodec;
+import org.redisson.client.codec.StringCodec;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
@@ -35,6 +37,7 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
+import java.util.concurrent.TimeUnit;
 
 @Component(CorneastOperation.RELEASE)
 public class ReleaseRequestHandlingStrategy implements RequestHandlingStrategy {
@@ -46,6 +49,10 @@ public class ReleaseRequestHandlingStrategy implements RequestHandlingStrategy {
     @Autowired
     @Qualifier("redissonClients")
     private List<RedissonClient> redissonClients;
+
+    @Autowired
+    @Qualifier("idempotentRedissonClient")
+    private RedissonClient idempotentRedissonClient;
 
     private int nodeSize;
 
@@ -67,17 +74,25 @@ public class ReleaseRequestHandlingStrategy implements RequestHandlingStrategy {
     public CompletableFuture<ResponseProto.ResponseDTO> handle(RequestProto.RequestDTO requestDTO) {
         return CompletableFuture.supplyAsync(() -> {
             String key = requestDTO.getReleaseReqDTO().getKey();
+            String id = requestDTO.getId();
             try {
                 selector.select().getAtomicLong(key).incrementAndGet();
             } catch (Exception e) {
                 throw new CorneastHandleException("Error executing lua script during [release]", e);
             }
+            // construct response
+            ResponseProto.ResponseDTO responseDTO = null;
             synchronized (builderLock) {
-                return responseBuilder
-                        .setId(requestDTO.getId())
+                responseDTO = responseBuilder
+                        .setId(id)
                         .setReleaseRespDTO(successRespBuilder.setKey(key).build())
                         .build();
             }
+            // set to idempotent redis
+            if (!id.isEmpty()) {
+                idempotentRedissonClient.<byte[]>getBucket(id, ByteArrayCodec.INSTANCE).set(responseDTO.toByteArray(), 10, TimeUnit.SECONDS);
+            }
+            return responseDTO;
         }, unifiedExecutor);
     }
 
