@@ -27,10 +27,10 @@ Corneast is an AP distributed token middleware.
       │        │          tcp, protobuf              │ │ netty   │ │     ┌─────────┼─────────┐    │ │     │                              │       
       │ client ┼─────────────────────────────────────► │         │ │ ┌───▼──┐  ┌───▼──┐  ┌───▼──┐ │ │     └──────────────────────────────┘       
       │        │                                     │ │bossGroup│ │ │      │  │      │  │      │ │ │     ┌──────────────────────────────┐       
-      │        │                                     │ │         │ │ │      │  │      │  │      │ │ │     │                              │       
-      │        │                                     │ │         │ │ │stra- │  │stra- │  │stra- │ │ │     │                              │       
-      │        │                                     │ │         │ │ │tegy  │  │tegy  │  │tegy  │ │ │     │      storage redis           │       
-      │        │                                     │ │         │ │ │      │  │      │  │      │ │ │     │                              │       
+      │        │                                     │ │         │ │ │      │  │ring- │  │      │ │ │     │                              │       
+      │        │                                     │ │         │ │ │stra- │  │buffer│  │stra- │ │ │     │                              │       
+      │        │                                     │ │         │ │ │tegy  │  │if    │  │tegy  │ │ │     │      storage redis           │       
+      │        │                                     │ │         │ │ │      │  │reduce│  │      │ │ │     │                              │       
       │        │                                     │ │         │ │ │      │  │      │  │      │ │ │     │      horizontal scaling      │       
       │        │                                     │ │         │ │ └──┬───┘  └───┬──┘  └───┬──┘ │ │     │                              │       
       │        │                                     │ │         │ │    │          │         │    │ │     │      master-slave            │       
