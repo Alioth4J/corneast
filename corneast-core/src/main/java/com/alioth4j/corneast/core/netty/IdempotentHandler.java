@@ -18,7 +18,6 @@
 
 package com.alioth4j.corneast.core.netty;
 
-import com.alioth4j.corneast.common.operation.CorneastOperation;
 import com.alioth4j.corneast.common.proto.RequestProto;
 import com.alioth4j.corneast.common.proto.ResponseProto;
 import com.alioth4j.corneast.core.exception.CorneastHandleException;
@@ -62,10 +61,6 @@ public class IdempotentHandler extends SimpleChannelInboundHandler<RequestProto.
                                                       if not v then redis.call("SET", KEYS[1], "1", "EX", ARGV[1]) end
                                                       return v
                                                       """;
-
-    private static final ResponseProto.ResponseDTO idempotentResponse = ResponseProto.ResponseDTO.newBuilder()
-                                                                                                 .setType(CorneastOperation.IDEMPOTENT)
-                                                                                                 .build();
 
     private static final byte[] idempotentedValue = new byte[]{'1'};
 
