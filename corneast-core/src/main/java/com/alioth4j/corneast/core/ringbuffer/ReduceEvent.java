@@ -56,6 +56,9 @@ public class ReduceEvent {
     }
 
     public void setKey(String key) {
+        if (key == null) {
+            throw new IllegalStateException("key is null");
+        }
         this.key = key;
     }
 
@@ -71,7 +74,8 @@ public class ReduceEvent {
     public String toString() {
         return "ReduceEvent{" +
                 "key='" + key + '\'' +
-                ", future=" + future +
+                ",id='" + id + '\'' +
+                ",future='" + future + '\'' +
                 '}';
     }
 
