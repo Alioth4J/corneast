@@ -20,7 +20,6 @@ package com.alioth4j.corneast.core.netty;
 
 import com.alioth4j.corneast.common.operation.CorneastOperation;
 import com.alioth4j.corneast.common.proto.ResponseProto;
-import com.esotericsoftware.kryo.serializers.TaggedFieldSerializer;
 import io.netty.channel.ChannelHandlerContext;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -30,8 +29,6 @@ import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(MockitoExtension.class)
 class GlobalExceptionHandlerTests {
