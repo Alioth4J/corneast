@@ -35,7 +35,7 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
-public class CorneastAioClientTests {
+public class CorneastAioClientIT {
 
     @Test
     void testSendRegister() {

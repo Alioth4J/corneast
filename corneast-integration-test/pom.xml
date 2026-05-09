@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.alioth4j</groupId>
+        <artifactId>corneast</artifactId>
+        <version>3.20.0</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+
+    <groupId>com.alioth4j</groupId>
+    <artifactId>corneast-integration-test</artifactId>
+    <version>3.20.0</version>
+    <name>corneast-integration-test</name>
+    <description>corneast integration test module</description>
+    <packaging>jar</packaging>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.alioth4j</groupId>
+            <artifactId>corneast-client</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.netflix.eureka</groupId>
+            <artifactId>eureka-client</artifactId>
+            <version>1.10.18</version>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>integration-test</goal>
+                            <goal>verify</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>3.1.0</version>
+                <executions>
+                    <execution>
+                        <id>start-services</id>
+                        <phase>pre-integration-test</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <executable>bash</executable>
+                            <arguments>
+                                <argument>-c</argument>
+                                <argument><![CDATA[
+                                    set -e
+                                    PID_DIR="${project.build.directory}/it-logs/pids"
+                                    LOG_DIR="${project.build.directory}/it-logs"
+                                    mkdir -p "$PID_DIR"
+
+                                    # Wait for service health; fail if the process dies
+                                    wait_for() {
+                                        local mname=$1 url=$2 pidfile=$3 attempts=30 interval=2
+                                        echo "--- Starting ${mname} ---"
+                                        for i in $(seq 1 $attempts); do
+                                            if ! kill -0 $(cat "$pidfile") 2>/dev/null; then
+                                                echo "--- ${mname} process died during startup. ---"
+                                                return 1
+                                            fi
+                                            if curl -sf "$url" > /dev/null 2>&1; then
+                                                echo "${mname} is ready"
+                                                return 0
+                                            fi
+                                            echo "Waiting for ${mname}... attempt $i/$attempts"
+                                            sleep $interval
+                                        done
+                                        echo "${mname} did not become ready within $(( attempts * interval ))s"
+                                        return 1
+                                    }
+
+                                    java -jar "${project.basedir}/../corneast-eureka/target/corneast-eureka-${project.version}.jar" \
+                                        > "${LOG_DIR}/corneast-eureka.log" 2>&1 &
+                                    echo $! > "$PID_DIR/corneast-eureka.pid"
+                                    wait_for "corneast-eureka" "http://localhost:8761/eureka/apps" "$PID_DIR/corneast-eureka.pid"
+
+                                    java -jar "${project.basedir}/../corneast-core/target/corneast-core-${project.version}.jar" \
+                                        > "${LOG_DIR}/corneast-core.log" 2>&1 &
+                                    echo $! > "$PID_DIR/corneast-core.pid"
+                                    wait_for "corneast-core" "http://localhost:8761/eureka/apps/CORNEAST-CORE" "$PID_DIR/corneast-core.pid"
+                                ]]></argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>stop-services</id>
+                        <phase>post-integration-test</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <executable>bash</executable>
+                            <arguments>
+                                <argument>-c</argument>
+                                <argument><![CDATA[
+                                    PID_DIR="${project.build.directory}/it-logs/pids"
+                                    echo "--- Stopping corneast-core ---"
+                                    if [ -f "$PID_DIR/corneast-core.pid" ]; then
+                                        kill $(cat "$PID_DIR/corneast-core.pid") 2>/dev/null && echo "corneast-core stopped" || echo "Failed to stop corneast-core"
+                                    fi
+                                    echo "--- Stopping corneast-eureka ---"
+                                    if [ -f "$PID_DIR/corneast-eureka.pid" ]; then
+                                        kill $(cat "$PID_DIR/corneast-eureka.pid") 2>/dev/null && echo "corneast-eureka stopped" || echo "Failed to stop corneast-eureka"
+                                    fi
+                                ]]></argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>

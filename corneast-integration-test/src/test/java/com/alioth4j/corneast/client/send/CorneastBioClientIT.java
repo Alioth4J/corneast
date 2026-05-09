@@ -34,7 +34,7 @@ import org.junit.jupiter.api.Test;
 import java.io.IOException;
 import java.util.List;
 
-public class CorneastBioClientTests {
+public class CorneastBioClientIT {
 
     @Test
     void testSendRegister() {

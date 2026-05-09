@@ -24,7 +24,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-public class EurekaConsumerTests {
+public class EurekaConsumerIT {
 
 //    // for debug
 //    @Test
