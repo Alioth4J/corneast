@@ -10,10 +10,10 @@
   </parent>
 
   <groupId>com.alioth4j</groupId>
-  <artifactId>corneast-test-jmeter</artifactId>
+  <artifactId>corneast-performance-test</artifactId>
   <version>3.20.0</version>
-  <name>corneast-test-jmeter</name>
-  <description>corneast jmeter test module</description>
+  <name>corneast-performance-test</name>
+  <description>corneast performance test module</description>
   <packaging>jar</packaging>
 
   <dependencies>

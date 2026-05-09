@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.alioth4j.corneast.test.jmeter;
+package com.alioth4j.corneast.pt;
 
 import java.io.IOException;
 import java.util.List;

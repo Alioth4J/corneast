@@ -22,7 +22,7 @@
         <module>corneast-client</module>
         <module>corneast-common</module>
         <module>corneast-integration-test</module>
-        <module>corneast-test-jmeter</module>
+        <module>corneast-performance-test</module>
     </modules>
 
 	<properties>
