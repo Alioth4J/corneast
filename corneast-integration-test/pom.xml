@@ -91,6 +91,11 @@
                                     LOG_DIR="${project.build.directory}/it-logs"
                                     mkdir -p "$PID_DIR"
 
+                                    echo "--- Starting redis servers ---"
+                                    sh "${project.basedir}/../corneast-deploy/docker-rebuild.sh"
+                                    docker ps -q -f "name=^corneast" | xargs -r docker stop
+                                    sh "${project.basedir}/../corneast-deploy/docker-startup.sh"
+
                                     # Wait for service health; fail if the process dies
                                     wait_for() {
                                         local mname=$1 url=$2 pidfile=$3 attempts=30 interval=2
@@ -136,14 +141,19 @@
                                 <argument>-c</argument>
                                 <argument><![CDATA[
                                     PID_DIR="${project.build.directory}/it-logs/pids"
+
                                     echo "--- Stopping corneast-core ---"
                                     if [ -f "$PID_DIR/corneast-core.pid" ]; then
                                         kill $(cat "$PID_DIR/corneast-core.pid") 2>/dev/null && echo "corneast-core stopped" || echo "Failed to stop corneast-core"
                                     fi
+
                                     echo "--- Stopping corneast-eureka ---"
                                     if [ -f "$PID_DIR/corneast-eureka.pid" ]; then
                                         kill $(cat "$PID_DIR/corneast-eureka.pid") 2>/dev/null && echo "corneast-eureka stopped" || echo "Failed to stop corneast-eureka"
                                     fi
+
+                                    echo "--- Stopping redis servers ---"
+                                    docker ps -q -f "name=^corneast" | xargs -r docker stop
                                 ]]></argument>
                             </arguments>
                         </configuration>
