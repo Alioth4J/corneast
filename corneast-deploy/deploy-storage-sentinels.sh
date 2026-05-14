@@ -3,11 +3,11 @@
 
 set -euo pipefail
 
+SCRIPT_DIR="$(dirname "$(readlink -f "$0")")"
 SENTINEL_COUNT=$1
 
 NETWORK="corneast-storage-network"
-BASE_DIR="/var/home/alioth4j/code/corneast/corneast-deploy/storage-sentinel"
-IMAGE="redis:latest"
+IMAGE=redis:latest
 
 BASE_PORT=27000
 
@@ -16,7 +16,7 @@ for ((i = 1; i <= SENTINEL_COUNT; i++)); do
     PORT=$((BASE_PORT + i))
 
     CONTAINER_NAME="corneast-storage-sentinel-${SENTINEL_ID}"
-    CONFIG_PATH="${BASE_DIR}/${SENTINEL_ID}.conf"
+    CONFIG_PATH="${SCRIPT_DIR}/storage-sentinel/${SENTINEL_ID}.conf"
 
     docker run -d \
         --name "${CONTAINER_NAME}" \

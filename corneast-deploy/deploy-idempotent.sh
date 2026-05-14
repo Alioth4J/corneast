@@ -1,10 +1,12 @@
 #!/usr/bin/env bash
 # Usage: ./deploy-idempotent.sh N
 
+set -euo pipefail
+
+SCRIPT_DIR="$(dirname "$(readlink -f "$0")")"
 N=$1
 BASE=6000
 NETWORK=corneast-idempotent-network
-DIR=/var/home/alioth4j/code/corneast/corneast-deploy/idempotent
 IMAGE=redis:latest
 
 docker network create $NETWORK >/dev/null 2>&1
@@ -15,7 +17,7 @@ for i in $(seq 0 $((N-1))); do
         --name corneast-idempotent-$PORT \
         --network $NETWORK \
         -p $PORT:6379 \
-        -v $DIR/$PORT.conf:/usr/local/etc/redis/redis.conf \
+        -v "${SCRIPT_DIR}/idempotent/${PORT}.conf":/usr/local/etc/redis/redis.conf \
         $IMAGE \
         redis-server /usr/local/etc/redis/redis.conf
 done

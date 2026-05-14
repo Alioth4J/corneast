@@ -3,19 +3,19 @@
 
 set -euo pipefail
 
+SCRIPT_DIR="$(dirname "$(readlink -f "$0")")"
 CLUSTER_COUNT=$1
 SLAVE_COUNT=$2
 
 NETWORK="corneast-storage-network"
-BASE_DIR="/var/home/alioth4j/code/corneast/corneast-deploy"
-IMAGE="redis:latest"
+IMAGE=redis:latest
 
 for ((i = 1; i <= CLUSTER_COUNT; i++)); do
     CLUSTER_ID=$(printf "%03d" "$i")
     PORT_BASE=$((7000 + i * 100))
 
     MASTER_NAME="corneast-storage-${CLUSTER_ID}-master"
-    MASTER_CONF="${BASE_DIR}/storage-${CLUSTER_ID}/master.conf"
+    MASTER_CONF="${SCRIPT_DIR}/storage-${CLUSTER_ID}/master.conf"
     MASTER_PORT=$((PORT_BASE + 0))
 
     docker run -d \
@@ -28,7 +28,7 @@ for ((i = 1; i <= CLUSTER_COUNT; i++)); do
 
     for ((s = 1; s <= SLAVE_COUNT; s++)); do
         SLAVE_NAME="corneast-storage-${CLUSTER_ID}-slave-${s}"
-        SLAVE_CONF="${BASE_DIR}/storage-${CLUSTER_ID}/slave-${s}.conf"
+        SLAVE_CONF="${SCRIPT_DIR}/storage-${CLUSTER_ID}/slave-${s}.conf"
         SLAVE_PORT=$((PORT_BASE + s))
 
         docker run -d \

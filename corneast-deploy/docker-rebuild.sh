@@ -1,16 +1,19 @@
 #!/bin/bash
 
-sudo docker stop $(sudo docker ps -q -f "name=^corneast")
+set -euo pipefail
 
-sudo docker rm $(sudo docker ps -a -q -f "name=^corneast")
+SCRIPT_DIR="$(dirname "$(readlink -f "$0")")"
 
-sudo docker network rm corneast-storage-network corneast-idempotent-network
+docker stop $(sudo docker ps -q -f "name=^corneast")
+
+docker rm $(sudo docker ps -a -q -f "name=^corneast")
+
+docker network rm corneast-storage-network corneast-idempotent-network
 
 # create idempotent instances
-sudo sh deploy-idempotent.sh 6
+sh "${SCRIPT_DIR}/deploy-idempotent.sh" 6
 
 # create storage instances
-sudo docker network create corneast-storage-network
-sudo sh deploy-storage-clusters.sh 2 3
-sudo sh deploy-storage-sentinels.sh 3
-
+docker network create corneast-storage-network
+sh "${SCRIPT_DIR}/deploy-storage-clusters.sh" 2 3
+sh "${SCRIPT_DIR}/deploy-storage-sentinels.sh" 3
