@@ -155,6 +155,7 @@
                                     echo "--- Stopping redis servers ---"
                                     docker ps -q -f "name=^corneast" | xargs -r docker stop
                                     docker ps -a -q -f "name=^corneast" | xargs -r docker rm
+                                    docker network rm corneast-storage-network corneast-idempotent-network
                                 ]]></argument>
                             </arguments>
                         </configuration>
