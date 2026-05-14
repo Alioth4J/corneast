@@ -154,6 +154,7 @@
 
                                     echo "--- Stopping redis servers ---"
                                     docker ps -q -f "name=^corneast" | xargs -r docker stop
+                                    docker ps -a -q -f "name=^corneast" | xargs -r docker rm
                                 ]]></argument>
                             </arguments>
                         </configuration>

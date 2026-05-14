@@ -6,7 +6,7 @@ SCRIPT_DIR="$(dirname "$(readlink -f "$0")")"
 
 docker ps -q -f "name=^corneast" | xargs -r docker stop
 
-docker rm $(sudo docker ps -a -q -f "name=^corneast")
+docker ps -a -q -f "name=^corneast" | xargs -r docker rm
 
 docker network rm corneast-storage-network corneast-idempotent-network
 
