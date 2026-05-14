@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 docker start corneast-idempotent-600{0..5}
 docker start corneast-storage-00{1,2}-master
