@@ -18,3 +18,15 @@ jobs:
           distribution: 'temurin'
           cache: maven
       - run: ./mvnw clean test -B -ntp
+  verify:
+    name: Integration Tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: maven
+      - uses: docker/setup-buildx-action@v2
+      - run: ./mvnw clean -DskipTests=true verify -B -ntp
