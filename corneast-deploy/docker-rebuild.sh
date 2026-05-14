@@ -8,7 +8,8 @@ docker ps -q -f "name=^corneast" | xargs -r docker stop
 
 docker ps -a -q -f "name=^corneast" | xargs -r docker rm
 
-docker network rm corneast-storage-network corneast-idempotent-network
+{ docker network ls -q -f name='corneast-storage-network' | grep -q . && docker network rm corneast-storage-network; } || true
+{ docker network ls -q -f name='corneast-idempotent-network' | grep -q . && docker network rm corneast-idempotent-network; } || true
 
 # create idempotent instances
 sh "${SCRIPT_DIR}/deploy-idempotent.sh" 6
