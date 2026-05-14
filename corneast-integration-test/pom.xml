@@ -92,9 +92,9 @@
                                     mkdir -p "$PID_DIR"
 
                                     echo "--- Starting redis servers ---"
-                                    sh "${project.basedir}/../corneast-deploy/docker-rebuild.sh"
+                                    bash "${project.basedir}/../corneast-deploy/docker-rebuild.sh"
                                     docker ps -q -f "name=^corneast" | xargs -r docker stop
-                                    sh "${project.basedir}/../corneast-deploy/docker-startup.sh"
+                                    bash "${project.basedir}/../corneast-deploy/docker-startup.sh"
 
                                     # Wait for service health; fail if the process dies
                                     wait_for() {
