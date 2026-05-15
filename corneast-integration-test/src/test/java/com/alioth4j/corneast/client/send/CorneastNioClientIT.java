@@ -83,7 +83,7 @@ public class CorneastNioClientIT {
                 Assertions.assertEquals(CorneastOperation.REDUCE, responseDTO.getType());
                 Assertions.assertEquals("", responseDTO.getId());
                 Assertions.assertEquals("CorneastNioClient#testSendReduce", responseDTO.getReduceRespDTO().getKey());
-                Assertions.assertEquals(true, responseDTO.getReduceRespDTO().getSuccess());
+                Assertions.assertEquals(true, responseDTO.getReduceRespDTO().getSuccess(), "Failure i = " + i);
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -112,7 +112,7 @@ public class CorneastNioClientIT {
             Assertions.assertEquals(CorneastOperation.REDUCE, responseDTO.getType());
             Assertions.assertEquals("CorneastNioClient#testIdempotent", responseDTO.getId());
             Assertions.assertEquals("CorneastNioClient#testIdempotent", responseDTO.getReduceRespDTO().getKey());
-            Assertions.assertEquals(true, responseDTO.getReduceRespDTO().getSuccess());
+            Assertions.assertEquals(true, responseDTO.getReduceRespDTO().getSuccess(), "The first request failed");
 
             // second
             ResponseProto.ResponseDTO idempotentedResponseDTO = corneastNioClient.send(reduceReqDTO);
@@ -120,7 +120,7 @@ public class CorneastNioClientIT {
             Assertions.assertEquals(CorneastOperation.REDUCE, idempotentedResponseDTO.getType());
             Assertions.assertEquals("CorneastNioClient#testIdempotent", idempotentedResponseDTO.getId());
             Assertions.assertEquals("CorneastNioClient#testIdempotent", idempotentedResponseDTO.getReduceRespDTO().getKey());
-            Assertions.assertEquals(true, idempotentedResponseDTO.getReduceRespDTO().getSuccess());
+            Assertions.assertEquals(true, idempotentedResponseDTO.getReduceRespDTO().getSuccess(), "The second request failed");
 
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -146,7 +146,7 @@ public class CorneastNioClientIT {
                 Assertions.assertEquals(CorneastOperation.RELEASE, responseDTO.getType());
                 Assertions.assertEquals("", responseDTO.getId());
                 Assertions.assertEquals("CorneastNioClient#testSendRelease", responseDTO.getReleaseRespDTO().getKey());
-                Assertions.assertEquals(true, responseDTO.getReleaseRespDTO().getSuccess());
+                Assertions.assertEquals(true, responseDTO.getReleaseRespDTO().getSuccess(), "Failure i = " + i);
             }
         } catch (IOException e) {
             throw new RuntimeException(e);

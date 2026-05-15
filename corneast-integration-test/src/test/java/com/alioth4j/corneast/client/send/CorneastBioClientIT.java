@@ -83,7 +83,7 @@ public class CorneastBioClientIT {
                 Assertions.assertEquals(CorneastOperation.REDUCE, responseDTO.getType());
                 Assertions.assertEquals("", responseDTO.getId());
                 Assertions.assertEquals("CorneastBioClient#testSendReduce", responseDTO.getReduceRespDTO().getKey());
-                Assertions.assertEquals(true, responseDTO.getReduceRespDTO().getSuccess());
+                Assertions.assertEquals(true, responseDTO.getReduceRespDTO().getSuccess(), "Failed i = " + i);
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -109,7 +109,7 @@ public class CorneastBioClientIT {
                 Assertions.assertEquals(CorneastOperation.RELEASE, responseDTO.getType());
                 Assertions.assertEquals("", responseDTO.getId());
                 Assertions.assertEquals("CorneastBioClient#testSendRelease", responseDTO.getReleaseRespDTO().getKey());
-                Assertions.assertEquals(true, responseDTO.getReleaseRespDTO().getSuccess());
+                Assertions.assertEquals(true, responseDTO.getReleaseRespDTO().getSuccess(), "Failed i = " + i);
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -165,14 +165,14 @@ public class CorneastBioClientIT {
             Assertions.assertEquals(CorneastOperation.REDUCE, responseDTO.getType());
             Assertions.assertEquals("CorneastBioClient#testIdempotent", responseDTO.getId());
             Assertions.assertEquals("CorneastBioClient#testIdempotent", responseDTO.getReduceRespDTO().getKey());
-            Assertions.assertEquals(true, responseDTO.getReduceRespDTO().getSuccess());
+            Assertions.assertEquals(true, responseDTO.getReduceRespDTO().getSuccess(), "The first request failed");
 
             // second
             ResponseProto.ResponseDTO idempotentedResponseDTO = corneastBioClient.send(reduceReqDTO);
             Assertions.assertEquals(CorneastOperation.REDUCE, idempotentedResponseDTO.getType());
             Assertions.assertEquals("CorneastBioClient#testIdempotent", idempotentedResponseDTO.getId());
             Assertions.assertEquals("CorneastBioClient#testIdempotent", idempotentedResponseDTO.getReduceRespDTO().getKey());
-            Assertions.assertEquals(true, idempotentedResponseDTO.getReduceRespDTO().getSuccess());
+            Assertions.assertEquals(true, idempotentedResponseDTO.getReduceRespDTO().getSuccess(), "The second request failed");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

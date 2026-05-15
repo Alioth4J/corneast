@@ -95,7 +95,7 @@ public class CorneastAioClientIT {
                 Assertions.assertEquals(CorneastOperation.REDUCE, responseDTO.getType());
                 Assertions.assertEquals("", responseDTO.getId());
                 Assertions.assertEquals("CorneastAioClient#testSendReduce", responseDTO.getReduceRespDTO().getKey());
-                Assertions.assertEquals(true, responseDTO.getReduceRespDTO().getSuccess());
+                Assertions.assertEquals(true, responseDTO.getReduceRespDTO().getSuccess(), "Failed i = " + i);
             }
         } catch (IOException | InterruptedException e) {
             throw new RuntimeException(e);
@@ -120,6 +120,7 @@ public class CorneastAioClientIT {
         try (CorneastAioClient corneastAioClient = CorneastAioClient.of(config)) {
             for (int i = 0; i < 100; i++) {
                 CompletableFuture<ResponseProto.ResponseDTO> responseDTOFuture = corneastAioClient.send(releaseReqDTO);
+                final int i2 = i;
                 responseDTOFuture.whenComplete((responseDTO, ex) -> {
                     if (ex != null) {
                         throw new RuntimeException(ex);
@@ -127,7 +128,7 @@ public class CorneastAioClientIT {
                     Assertions.assertEquals(CorneastOperation.RELEASE, responseDTO.getType());
                     Assertions.assertEquals("", responseDTO.getId());
                     Assertions.assertEquals("CorneastAioClient#testSendRelease", responseDTO.getReleaseRespDTO().getKey());
-                    Assertions.assertEquals(true, responseDTO.getReleaseRespDTO().getSuccess());
+                    Assertions.assertEquals(true, responseDTO.getReleaseRespDTO().getSuccess(), "Failed i = " + i2);
                 });
             }
         } catch (IOException e) {
@@ -195,7 +196,7 @@ public class CorneastAioClientIT {
                 Assertions.assertEquals(CorneastOperation.REDUCE, responseDTO.getType());
                 Assertions.assertEquals("CorneastAioClient#testIdempotent", responseDTO.getId());
                 Assertions.assertEquals("CorneastAioClient#testIdempotent", responseDTO.getReduceRespDTO().getKey());
-                Assertions.assertEquals(true, responseDTO.getReduceRespDTO().getSuccess());
+                Assertions.assertEquals(true, responseDTO.getReduceRespDTO().getSuccess(), "The first request failed");
             });
 
             // second
@@ -207,7 +208,7 @@ public class CorneastAioClientIT {
                 Assertions.assertEquals(CorneastOperation.REDUCE, idempotentedResponseDTO.getType());
                 Assertions.assertEquals("CorneastAioClient#testIdempotent", idempotentedResponseDTO.getId());
                 Assertions.assertEquals("CorneastAioClient#testIdempotent", idempotentedResponseDTO.getReduceRespDTO().getKey());
-                Assertions.assertEquals(true, idempotentedResponseDTO.getReduceRespDTO().getSuccess());
+                Assertions.assertEquals(true, idempotentedResponseDTO.getReduceRespDTO().getSuccess(), "The second request failed");
             });
 
         } catch (IOException e) {
