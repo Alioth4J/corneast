@@ -1,6 +1,6 @@
 /*
  * Corneast
- * Copyright (C) 2025 Alioth Null
+ * Copyright (C) 2025-2026 Alioth Null
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,12 +18,15 @@
 
 package com.alioth4j.corneast.core.shutdown;
 
+import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -39,6 +42,11 @@ public class ShutdownCoordinator {
     // injected by Spring Framework
     @Autowired
     private List<ShutdownTask> shutdownTaskList;
+
+    @PostConstruct
+    public void sortTasks() {
+        Collections.sort(shutdownTaskList, Comparator.comparingInt(ShutdownTask::getOrder));
+    }
 
     /**
      * Executes shutdown tasks before the container destroys.

@@ -1,6 +1,6 @@
 /*
  * Corneast
- * Copyright (C) 2025-2026 Alioth Null
+ * Copyright (C) 2026 Alioth Null
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,38 +18,33 @@
 
 package com.alioth4j.corneast.core.shutdown;
 
-import com.alioth4j.corneast.core.ringbuffer.ReduceDisruptor;
+import com.alioth4j.corneast.core.netty.NettyServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-/**
- * Shutdown task of disruptor.
- *
- * @author Alioth Null
- */
 @Component
-public class DisruptorShutdownTask implements ShutdownTask {
+public class NettyChannelFutureShutdownTask implements ShutdownTask {
 
-    private static final Logger log = LoggerFactory.getLogger(DisruptorShutdownTask.class);
+    private static final Logger log = LoggerFactory.getLogger(NettyChannelFutureShutdownTask.class);
 
     @Autowired
-    private ReduceDisruptor reduceDisruptor;
+    private NettyServer nettyServer;
 
     @Override
     public void shutdown() {
-        reduceDisruptor.shutdown(log);
+        nettyServer.shutdownChannelFuture(log);
     }
 
     @Override
     public String getComponentName() {
-        return "Disruptor";
+        return "NettyChannelFuture";
     }
 
     @Override
     public int getOrder() {
-        return 3;
+        return 0;
     }
 
 }

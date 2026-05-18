@@ -191,42 +191,21 @@ public class NettyServer {
     }
 
     /**
-     * Shutdown netty server.
+     * Shutdown step 1: shutdown channelFuture.
      * @param log Logger object to use
      */
-    public void shutdown(Logger log) {
-        // channelFuture
+    public void shutdownChannelFuture(Logger log) {
         if (channelFuture != null && channelFuture.channel() != null && channelFuture.channel().isOpen()) {
-            log.info("Closing channel future");
+            log.info("Closing channelFuture of Netty");
             channelFuture.channel().close();
         }
-
-        // defensive code: serverThread
-        if (serverThread != null && serverThread.isAlive()) {
-            try {
-                serverThread.join(5000);
-                if (serverThread.isAlive()) {
-                    serverThread.interrupt();
-                    serverThread.join(1000);
-                }
-            } catch (InterruptedException e) {
-                log.warn("Interrupted when joining serverThread", e);
-                Thread.currentThread().interrupt();
-                if (serverThread != null) {
-                    serverThread.interrupt();
-                }
-            }
-        }
-
-        // defensive code: bossGroup and workerGroup
-        shutdownBossAndWorkerGroups(log);
     }
 
     /**
-     * Shutdown bossGroup and workerGroup
+     * Shutdown step 2: shutdown bossGroup and workerGroup.
      * @param log Logger object to use
      */
-    private void shutdownBossAndWorkerGroups(Logger log) {
+    public void shutdownBossAndWorkerGroups(Logger log) {
         // boss group
         if (bossGroup != null) {
             log.info("Shutting down boss group");

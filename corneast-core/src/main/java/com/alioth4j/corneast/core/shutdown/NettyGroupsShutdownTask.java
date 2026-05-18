@@ -1,6 +1,6 @@
 /*
  * Corneast
- * Copyright (C) 2025 Alioth Null
+ * Copyright (C) 2026 Alioth Null
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,27 +24,27 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-/**
- * Shutdown task of netty server.
- *
- * @author Alioth Null
- */
 @Component
-public class NettyShutdownTask implements ShutdownTask {
+public class NettyGroupsShutdownTask implements ShutdownTask {
 
-    private static final Logger log = LoggerFactory.getLogger(NettyShutdownTask.class);
+    private static final Logger log = LoggerFactory.getLogger(NettyGroupsShutdownTask.class);
 
     @Autowired
     private NettyServer nettyServer;
 
     @Override
     public void shutdown() {
-        nettyServer.shutdown(log);
+        nettyServer.shutdownBossAndWorkerGroups(log);
     }
 
     @Override
     public String getComponentName() {
-        return "NettyServer";
+        return "NettyGroups";
+    }
+
+    @Override
+    public int getOrder() {
+        return 5;
     }
 
 }
