@@ -62,7 +62,7 @@ public class CorneastNioClient implements Closeable {
         }
         CorneastNioClient instance = new CorneastNioClient(config.getHost(), config.getPort());
         instance.openConnection();
-        log.info("SocketChannel has been initialized");
+        log.info("SocketChannel initialized successfully");
         return instance;
     }
     
