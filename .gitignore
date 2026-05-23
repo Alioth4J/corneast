@@ -34,3 +34,6 @@ build/
 
 ### generated request files
 /corneast-client/request/
+
+### Claude
+.claude/
