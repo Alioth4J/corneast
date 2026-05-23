@@ -29,7 +29,7 @@ import java.nio.channels.ClosedChannelException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class NettyStabilityTest {
+class NettyStabilityTests {
 
     // ---
     // long connection reuse
