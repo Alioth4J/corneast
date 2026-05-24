@@ -18,6 +18,7 @@
 
 package com.alioth4j.corneast.it.eureka;
 
+import com.alioth4j.corneast.client.eureka.EurekaConsumer;
 import com.netflix.appinfo.InstanceInfo;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
