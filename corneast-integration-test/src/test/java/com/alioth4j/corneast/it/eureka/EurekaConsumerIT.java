@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.alioth4j.corneast.client.eureka;
+package com.alioth4j.corneast.it.eureka;
 
 import com.netflix.appinfo.InstanceInfo;
 import org.junit.jupiter.api.Assertions;

@@ -16,12 +16,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.alioth4j.corneast.client.send;
+package com.alioth4j.corneast.it.client;
 
 import com.alioth4j.corneast.client.config.CorneastConfig;
 import com.alioth4j.corneast.client.eureka.EurekaConsumer;
 import com.alioth4j.corneast.client.exception.RequestBuildException;
 import com.alioth4j.corneast.client.request.CorneastRequest;
+import com.alioth4j.corneast.client.send.CorneastBioClient;
 import com.alioth4j.corneast.common.algo.RandomSelector;
 import com.alioth4j.corneast.common.algo.Selector;
 import com.alioth4j.corneast.common.operation.CorneastOperation;

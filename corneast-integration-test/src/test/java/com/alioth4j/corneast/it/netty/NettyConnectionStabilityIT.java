@@ -16,11 +16,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.alioth4j.corneast.client.send;
+package com.alioth4j.corneast.it.netty;
 
 import com.alioth4j.corneast.client.config.CorneastConfig;
 import com.alioth4j.corneast.client.eureka.EurekaConsumer;
 import com.alioth4j.corneast.client.request.CorneastRequest;
+import com.alioth4j.corneast.client.send.CorneastAioClient;
+import com.alioth4j.corneast.client.send.CorneastBioClient;
+import com.alioth4j.corneast.client.send.CorneastNioClient;
 import com.alioth4j.corneast.common.algo.RandomSelector;
 import com.alioth4j.corneast.common.algo.Selector;
 import com.alioth4j.corneast.common.operation.CorneastOperation;
@@ -36,7 +39,6 @@ import java.net.Socket;
 import java.nio.channels.AsynchronousSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.util.List;
-import java.util.Random;
 import java.util.concurrent.CompletableFuture;
 
 public class NettyConnectionStabilityIT {
