@@ -39,6 +39,7 @@ import java.util.List;
 public class IdempotentIT {
 
     private CorneastNioClient client;
+    private CorneastConfig config;
 
     @BeforeEach
     void setup() {
@@ -47,7 +48,7 @@ public class IdempotentIT {
         Selector<InstanceInfo> selector = new RandomSelector<>(instanceInfoList);
         InstanceInfo instanceInfo = selector.select();
 
-        CorneastConfig config = new CorneastConfig();
+        config = new CorneastConfig();
         config.setHost(instanceInfo.getHostName());
         config.setPort(instanceInfo.getPort());
 
@@ -225,6 +226,49 @@ public class IdempotentIT {
 
             // assert redis data
             ResponseProto.ResponseDTO queryResponseDTO = client.send(queryReqDTO);
+            Assertions.assertEquals(CorneastOperation.QUERY, queryResponseDTO.getType());
+            Assertions.assertEquals("", queryResponseDTO.getId());
+            Assertions.assertEquals(key, queryResponseDTO.getQueryRespDTO().getKey());
+            Assertions.assertEquals(99, queryResponseDTO.getQueryRespDTO().getRemainingTokenCount());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Test
+    void testRetryWithAnotherClient() {
+        String id = "IdempotentIT#testRetryWithAnotherClient";
+        String key = "IdempotentIT#testRetryWithAnotherClient";
+        RequestProto.RequestDTO registerReqDTO = new CorneastRequest(CorneastOperation.REGISTER, "", key, 100).instance;
+        RequestProto.RequestDTO reduceReqDTO = new CorneastRequest(CorneastOperation.REDUCE, id, key).instance;
+        RequestProto.RequestDTO queryReqDTO = new CorneastRequest(CorneastOperation.QUERY, "", key).instance;
+
+        try {
+            // register
+            client.send(registerReqDTO);
+
+            // first reduce
+            client.send(reduceReqDTO);
+
+            // close original client and create another client
+            client.close();
+            client = null;
+            CorneastNioClient client2 = null;
+            try {
+                client2 = CorneastNioClient.of(config);
+            } catch (IOException e) {
+                throw new RuntimeException("Error creating client2", e);
+            }
+
+            // second, idempotented
+            ResponseProto.ResponseDTO responseDTO2 = client2.send(reduceReqDTO);
+            Assertions.assertEquals(CorneastOperation.REDUCE, responseDTO2.getType());
+            Assertions.assertEquals(id, responseDTO2.getId());
+            Assertions.assertEquals(key, responseDTO2.getReduceRespDTO().getKey());
+            Assertions.assertTrue(responseDTO2.getReduceRespDTO().getSuccess());
+
+            // assert redis data
+            ResponseProto.ResponseDTO queryResponseDTO = client2.send(queryReqDTO);
             Assertions.assertEquals(CorneastOperation.QUERY, queryResponseDTO.getType());
             Assertions.assertEquals("", queryResponseDTO.getId());
             Assertions.assertEquals(key, queryResponseDTO.getQueryRespDTO().getKey());
