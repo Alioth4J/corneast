@@ -1,6 +1,6 @@
 /*
  * Corneast
- * Copyright (C) 2025 Alioth Null
+ * Copyright (C) 2025-2026 Alioth Null
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,6 +20,7 @@ package com.alioth4j.corneast.client.serialize;
 
 import com.alioth4j.corneast.common.proto.ResponseProto;
 
+import java.io.EOFException;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.ReadableByteChannel;
@@ -61,9 +62,15 @@ public final class NioDeserializer extends AbstractDeserializer {
         ByteBuffer oneByte = ByteBuffer.allocate(1);
         for (int i = 0; i < MAX_VARINT32_BYTES; i++) {
             oneByte.clear();
-            int read = channel.read(oneByte);
-            if (read != 1) {
-                throw new IOException("Premature end of stream while reading length prefix");
+            while (oneByte.hasRemaining()) {
+                int read = channel.read(oneByte);
+                if (read == -1) {
+                    throw new EOFException("Premature end of stream while reading length prefix");
+                }
+                if (read == 0) {
+                    Thread.yield();
+                    continue;
+                }
             }
             oneByte.flip();
             int b = oneByte.get() & 0xFF;

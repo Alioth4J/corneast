@@ -91,7 +91,6 @@ public class IdempotentHandler extends SimpleChannelInboundHandler<RequestProto.
                 throw new CorneastHandleException("Unable to get idempotent response, id = " + id);
             }
             ctx.writeAndFlush(ResponseProto.ResponseDTO.parseFrom(existValue));
-            ctx.close();
         }
     }
 
