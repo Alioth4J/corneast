@@ -22,7 +22,7 @@ for ((i = 1; i <= CLUSTER_COUNT; i++)); do
         --name "${MASTER_NAME}" \
         --network "${NETWORK}" \
         -p "${MASTER_PORT}:6379" \
-        -v "${MASTER_CONF}:/usr/local/etc/redis/redis.conf" \
+        -v "${MASTER_CONF}:/usr/local/etc/redis/redis.conf:z" \
         "${IMAGE}" \
         redis-server /usr/local/etc/redis/redis.conf
 
@@ -35,7 +35,7 @@ for ((i = 1; i <= CLUSTER_COUNT; i++)); do
             --name "${SLAVE_NAME}" \
             --network "${NETWORK}" \
             -p "${SLAVE_PORT}:6379" \
-            -v "${SLAVE_CONF}:/usr/local/etc/redis/redis.conf" \
+            -v "${SLAVE_CONF}:/usr/local/etc/redis/redis.conf:z" \
             "${IMAGE}" \
             redis-server /usr/local/etc/redis/redis.conf
     done

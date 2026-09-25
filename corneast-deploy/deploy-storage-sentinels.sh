@@ -22,7 +22,7 @@ for ((i = 1; i <= SENTINEL_COUNT; i++)); do
         --name "${CONTAINER_NAME}" \
         --network "${NETWORK}" \
         -p "${PORT}:26379" \
-        -v "${CONFIG_PATH}:/usr/local/etc/redis/sentinel.conf" \
+        -v "${CONFIG_PATH}:/usr/local/etc/redis/sentinel.conf:z" \
         "${IMAGE}" \
         redis-sentinel /usr/local/etc/redis/sentinel.conf
 done

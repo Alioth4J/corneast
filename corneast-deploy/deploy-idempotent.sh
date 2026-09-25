@@ -17,7 +17,7 @@ for i in $(seq 0 $((N-1))); do
         --name corneast-idempotent-$PORT \
         --network $NETWORK \
         -p $PORT:6379 \
-        -v "${SCRIPT_DIR}/idempotent/${PORT}.conf":/usr/local/etc/redis/redis.conf \
+        -v "${SCRIPT_DIR}/idempotent/${PORT}.conf":/usr/local/etc/redis/redis.conf:z \
         $IMAGE \
         redis-server /usr/local/etc/redis/redis.conf
 done
